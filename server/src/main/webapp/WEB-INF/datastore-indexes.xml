@@ -1,0 +1,8 @@
+<datastore-indexes autoGenerate="false">
+    <datastore-index kind="fuelstation" ancestor="false" source="auto">
+        <property name="address" direction="asc"/>
+        <property name="latitude" direction="asc"/>
+        <property name="longitude" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>
