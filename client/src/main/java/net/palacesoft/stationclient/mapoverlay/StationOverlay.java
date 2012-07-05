@@ -58,12 +58,12 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
                         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number.trim()));
                         mContext.startActivity(intent);
                     } catch (Exception e) {
-                        Toast.makeText(mContext, "Could not make call", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Kunde inte placera samtalet", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
-        dialog.setPositiveButton("Directions", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Vägbeskrivning", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 try {
@@ -73,12 +73,12 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
                                     + item.getLatitude() + "," + item.getLongitude()));
                     mContext.startActivity(intent);
                 } catch (Exception e) {
-                    Toast.makeText(mContext, "Could not open map", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Kunde inte visa kartan", Toast.LENGTH_SHORT).show();
 
                 }
             }
         });
-        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -93,10 +93,10 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
         String[] phoneNo = item.getPhoneNo().split(",");
 
         for (String aPhoneNo : phoneNo) {
-            items.add("Phone: " + aPhoneNo);
+            items.add("Tel: " + aPhoneNo);
         }
-        items.add("Price: " + item.getPrice() + " kr");
-        items.add("Opening Hours: " + item.getOpeningHours());
+        items.add("Pris: " + item.getPrice() + " kr");
+        items.add("Öppetider: " + item.getOpeningHours());
 
         return items;
     }
