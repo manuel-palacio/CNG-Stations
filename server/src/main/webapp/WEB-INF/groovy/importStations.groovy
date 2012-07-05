@@ -1,11 +1,11 @@
 import com.google.appengine.api.datastore.Entity
 import com.google.appengine.api.datastore.PreparedQuery
 import com.google.appengine.api.datastore.Query
-import net.palacesoft.stationserver.scraper.scraper.GasStationScraperSE
+import net.palacesoft.stationserver.scraper.StationScraperSE
 
 def urlScraper = [:]
 
-urlScraper.put("SE", new GasStationScraperSE())
+urlScraper.put("SE", new StationScraperSE())
 
 urlScraper.each {
     def stations = it.value.scrape()

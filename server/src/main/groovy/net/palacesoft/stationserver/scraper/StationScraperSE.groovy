@@ -1,11 +1,11 @@
-package net.palacesoft.stationserver.scraper.scraper
+package net.palacesoft.stationserver.scraper
 
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 
 import net.palacesoft.stationserver.scraper.Station
 
-class GasStationScraperSE {
+class StationScraperSE {
 
     def COUNTRY = "SWEDEN"
 

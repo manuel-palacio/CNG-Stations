@@ -1,6 +1,6 @@
-package com.fuelstation.mapoverlay;
+package net.palacesoft.stationclient.mapoverlay;
 
-import com.fuelstation.GasStationDTO;
+import net.palacesoft.stationclient.StationDTO;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
@@ -8,7 +8,7 @@ import com.google.android.maps.OverlayItem;
 /**
  * Represents station on map
  */
-public class GasStationOverlayItem extends OverlayItem {
+public class StationOverlayItem extends OverlayItem {
 
     private String phoneNo;
     private String price;
@@ -16,12 +16,12 @@ public class GasStationOverlayItem extends OverlayItem {
     private float latitude;
     private float longitude;
 
-    public GasStationOverlayItem(GeoPoint geoPoint, String title, String snippet, GasStationDTO gasStationDTO) {
+    public StationOverlayItem(GeoPoint geoPoint, String title, String snippet, StationDTO stationDTO) {
         super(geoPoint, title, snippet);
 
-        setPhoneNo(gasStationDTO.getPhoneNo());
-        setOpeningHours(gasStationDTO.getOpeningHours());
-        setPrice(gasStationDTO.getPrice());
+        setPhoneNo(stationDTO.getPhoneNo());
+        setOpeningHours(stationDTO.getOpeningHours());
+        setPrice(stationDTO.getPrice());
         setLatitude(geoPoint.getLatitudeE6());
         setLongitude(geoPoint.getLongitudeE6());
     }

@@ -1,14 +1,12 @@
 package net.palacesoft.stationserver.scraper
 
 import org.junit.Test
-import net.palacesoft.stationserver.scraper.scraper.GasStationScraperSE
 
-
-class GasStationScraperTest {
+class StationScraperTest {
 
     @Test
     void scrapeSE(){
-        GasStationScraperSE gasStationScraper = new GasStationScraperSE()
+        StationScraperSE gasStationScraper = new StationScraperSE()
 
         def stations = gasStationScraper.scrape()
 

@@ -1,7 +1,7 @@
-package com.fuelstation;
+package net.palacesoft.stationclient;
 
 
-public class GasStationDTO {
+public class StationDTO {
     private String city;
     private float longitude;
     private float latitude;

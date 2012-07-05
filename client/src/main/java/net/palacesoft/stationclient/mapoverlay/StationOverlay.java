@@ -1,4 +1,4 @@
-package com.fuelstation.mapoverlay;
+package net.palacesoft.stationclient.mapoverlay;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.Toast;
-import com.fuelstation.GasStationActivity;
+import net.palacesoft.stationclient.StationActivity;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GasStationOverlay extends ItemizedOverlay<OverlayItem> {
+public class StationOverlay extends ItemizedOverlay<OverlayItem> {
 
     private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 
-    private GasStationActivity mContext;
+    private StationActivity mContext;
 
 
-    public GasStationOverlay(Drawable defaultMarker, GasStationActivity context) {
+    public StationOverlay(Drawable defaultMarker, StationActivity context) {
         super(boundCenterBottom(defaultMarker));
         mContext = context;
     }
@@ -43,7 +43,7 @@ public class GasStationOverlay extends ItemizedOverlay<OverlayItem> {
 
     @Override
     protected boolean onTap(int index) {
-        final GasStationOverlayItem item = (GasStationOverlayItem) mOverlays.get(index);
+        final StationOverlayItem item = (StationOverlayItem) mOverlays.get(index);
         final AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
         dialog.setTitle(item.getTitle());
         // dialog.setMessage(item.getSnippet());
@@ -88,7 +88,7 @@ public class GasStationOverlay extends ItemizedOverlay<OverlayItem> {
         return true;
     }
 
-    private List<CharSequence> addItems(GasStationOverlayItem item) {
+    private List<CharSequence> addItems(StationOverlayItem item) {
         List<CharSequence> items = new ArrayList<CharSequence>();
         String[] phoneNo = item.getPhoneNo().split(",");
 

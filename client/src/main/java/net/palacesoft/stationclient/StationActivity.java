@@ -1,4 +1,4 @@
-package com.fuelstation;
+package net.palacesoft.stationclient;
 
 import android.location.*;
 import android.os.Bundle;
@@ -6,7 +6,8 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.fuelstation.mapoverlay.GasStationOverlay;
+import com.fuelstation.R;
+import net.palacesoft.stationclient.mapoverlay.StationOverlay;
 import com.google.android.maps.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,12 +15,12 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-public class GasStationActivity extends MapActivity {
+public class StationActivity extends MapActivity {
 
     private MapView mapView;
     private MapController mapController;
     private Handler guiThread;
-    private GasStationOverlay gasStationOverlay;
+    private StationOverlay stationOverlay;
     private Location currentLocation;
     private String country;
     private MyLocationOverlay myLocationOverlay;
@@ -65,10 +66,9 @@ public class GasStationActivity extends MapActivity {
 
         guiThread = new Handler();
 
-        gasStationOverlay = new GasStationOverlay(this.getResources().getDrawable(R.drawable.gas), this);
+        stationOverlay = new StationOverlay(this.getResources().getDrawable(R.drawable.marker), this);
 
-        mapView.getOverlays().add(gasStationOverlay);
-
+        mapView.getOverlays().add(stationOverlay);
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -131,7 +131,7 @@ public class GasStationActivity extends MapActivity {
     public void getStationsFromCloud(String country) {
 
         if (country != null) {
-            guiThread.post(new UpdateGasInfoTask(restTemplate, gasStationOverlay, country));
+            guiThread.post(new UpdateStationInfoTask(restTemplate, stationOverlay, country));
         }
     }
 }
