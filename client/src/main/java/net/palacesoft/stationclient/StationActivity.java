@@ -78,10 +78,21 @@ public class StationActivity extends MapActivity {
 
         initMapView();
 
+        addStationsOverlay();
+
+        extractOldLocationAndLoadStations();
+
+        initMyLocation();
+
+    }
+
+    private void addStationsOverlay() {
         stationOverlay = new StationOverlay(this.getResources().getDrawable(R.drawable.marker), this);
 
         mapView.getOverlays().add(stationOverlay);
+    }
 
+    private void extractOldLocationAndLoadStations() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), true));
@@ -90,9 +101,6 @@ public class StationActivity extends MapActivity {
             country = extractCountryNameFromLocation(location);
             getStationsFromCloud(country);
         }
-
-        initMyLocation();
-
     }
 
     private void initMyLocation() {
@@ -151,23 +159,10 @@ public class StationActivity extends MapActivity {
 
         @Override
         protected void onPreExecute() {
-            //Create a new progress dialog
             progressDialog = new ProgressDialog(StationActivity.this);
-            //Set the progress dialog to display a horizontal progress bar
-           // progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            //Set the dialog title to 'Loading...'
-           // progressDialog.setTitle("Laddar...");
-            //Set the dialog message to 'Loading application View, please wait...'
+
             progressDialog.setMessage("Laddar...");
-            //This dialog can't be canceled by pressing the back key
             progressDialog.setCancelable(false);
-            //This dialog isn't indeterminate
-       //     progressDialog.setIndeterminate(true);
-            //The maximum number of items is 100
-            //progressDialog.setMax(100);
-            //Set the current progress to zero
-            //progressDialog.setProgress(0);
-            //Display the progress dialog
             progressDialog.show();
         }
 
@@ -198,7 +193,6 @@ public class StationActivity extends MapActivity {
             for (StationOverlayItem next : result) {
                 stationOverlay.addOverlay(next);
             }
-
 
             progressDialog.dismiss();
         }
