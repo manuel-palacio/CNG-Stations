@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.google.android.maps.*;
 import net.palacesoft.cngstation.R;
 import net.palacesoft.cngstation.client.mapoverlay.StationOverlay;
@@ -75,11 +76,9 @@ public class StationActivity extends MapActivity {
 
         setContentView(R.layout.main);
 
-        initMapView();
+        initMap();
 
         addStationsOverlay();
-
-        extractOldLocationAndLoadStations();
 
         initMyLocation();
     }
@@ -89,40 +88,37 @@ public class StationActivity extends MapActivity {
         mapView.getOverlays().add(stationOverlay);
     }
 
-    private void extractOldLocationAndLoadStations() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), true));
-        if (location != null) {
-            mapController.animateTo(new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6)));
-            country = extractCountryNameFromLocation(location);
-            getStationsFromCloud(country);
-        }
-    }
 
     private void initMyLocation() {
         myLocationOverlay = new MyLocationOverlay(this, mapView);
         myLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationOverlay);
-
+        final ProgressDialog progressDialog = new ProgressDialog(StationActivity.this);
+        progressDialog.setMessage("Faställer position...");
+        progressDialog.show();
         myLocationOverlay.runOnFirstFix(new Runnable() {
             @Override
             public void run() {
                 currentLocation = myLocationOverlay.getLastFix();
-                String updatedCountry = extractCountryNameFromLocation(myLocationOverlay.getLastFix());
-                if (!updatedCountry.equals(country)) {
-                    mapController.animateTo(myLocationOverlay.getMyLocation());
-                    getStationsFromCloud(country);
-                }
+                country = extractCountryNameFromLocation(currentLocation);
+
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        getStationsFromCloud(country);
+                    }
+                });
+                progressDialog.dismiss();
+                mapController.animateTo(myLocationOverlay.getMyLocation());
+                mapController.setZoom(12);
             }
         });
     }
 
-    private void initMapView() {
+    private void initMap() {
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         mapController = mapView.getController();
-        mapController.setZoom(12);
     }
 
     private String extractCountryNameFromLocation(Location location) {
@@ -147,6 +143,8 @@ public class StationActivity extends MapActivity {
 
         if (country != null) {
             new LoadViewTask().execute(country);
+        } else {
+            Toast.makeText(this, "Kunde inte visa fullständing karta. Försök ladda om", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -156,7 +154,7 @@ public class StationActivity extends MapActivity {
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(StationActivity.this);
-            progressDialog.setMessage("Laddar...");
+            progressDialog.setMessage("Populerar kartan...");
             progressDialog.setCancelable(false);
             progressDialog.show();
         }
