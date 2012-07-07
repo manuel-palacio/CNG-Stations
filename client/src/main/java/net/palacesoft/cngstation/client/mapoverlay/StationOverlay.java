@@ -52,11 +52,13 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
 
             dialog.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
-                    if (items.get(item).toString().startsWith("Phone")) {
+                    if (items.get(item).toString().startsWith("Tel")) {
                         try {
                             String number = items.get(item).toString().split(":")[1];
-                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number.trim()));
-                            mContext.startActivity(intent);
+                            if (number.length() > 1) {
+                                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number.trim()));
+                                mContext.startActivity(intent);
+                            }
                         } catch (Exception e) {
                             Toast.makeText(mContext, "Kunde inte placera samtalet", Toast.LENGTH_SHORT).show();
                         }
