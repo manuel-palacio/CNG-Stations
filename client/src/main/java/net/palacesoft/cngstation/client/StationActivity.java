@@ -28,8 +28,6 @@ public class StationActivity extends MapActivity {
     private MyLocationOverlay myLocationOverlay;
     private RestTemplate restTemplate = new RestTemplate();
 
-
-
     @Override
     protected boolean isRouteDisplayed() {
         return true;
@@ -74,6 +72,7 @@ public class StationActivity extends MapActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main);
 
         initMapView();
@@ -83,12 +82,10 @@ public class StationActivity extends MapActivity {
         extractOldLocationAndLoadStations();
 
         initMyLocation();
-
     }
 
     private void addStationsOverlay() {
         stationOverlay = new StationOverlay(this.getResources().getDrawable(R.drawable.marker), this);
-
         mapView.getOverlays().add(stationOverlay);
     }
 
@@ -143,7 +140,6 @@ public class StationActivity extends MapActivity {
             return address.getCountryName();
         }
         return null;
-
     }
 
 
@@ -160,7 +156,6 @@ public class StationActivity extends MapActivity {
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(StationActivity.this);
-
             progressDialog.setMessage("Laddar...");
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -188,7 +183,6 @@ public class StationActivity extends MapActivity {
 
         @Override
         protected void onPostExecute(List<StationOverlayItem> result) {
-            //close the progress dialog
 
             for (StationOverlayItem next : result) {
                 stationOverlay.addOverlay(next);
