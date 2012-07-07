@@ -94,7 +94,7 @@ public class StationActivity extends MapActivity {
         myLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationOverlay);
         final ProgressDialog progressDialog = new ProgressDialog(StationActivity.this);
-        progressDialog.setMessage("Faställer position...");
+        progressDialog.setMessage("Fastställer position...");
         progressDialog.show();
         myLocationOverlay.runOnFirstFix(new Runnable() {
             @Override
