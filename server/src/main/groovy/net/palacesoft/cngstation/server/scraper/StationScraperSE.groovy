@@ -1,9 +1,7 @@
-package net.palacesoft.stationserver.scraper
+package net.palacesoft.cngstation.server.scraper
 
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
-
-import net.palacesoft.stationserver.scraper.Station
 
 class StationScraperSE {
 

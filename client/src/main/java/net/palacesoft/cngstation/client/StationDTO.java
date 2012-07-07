@@ -1,4 +1,4 @@
-package net.palacesoft.stationclient;
+package net.palacesoft.cngstation.client;
 
 
 public class StationDTO {

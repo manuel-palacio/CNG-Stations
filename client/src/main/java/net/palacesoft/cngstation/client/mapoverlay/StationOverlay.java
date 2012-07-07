@@ -1,4 +1,4 @@
-package net.palacesoft.stationclient.mapoverlay;
+package net.palacesoft.cngstation.client.mapoverlay;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.Toast;
-import net.palacesoft.stationclient.StationActivity;
+import net.palacesoft.cngstation.client.StationActivity;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 

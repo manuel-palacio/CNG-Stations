@@ -1,4 +1,4 @@
-package net.palacesoft.stationclient;
+package net.palacesoft.cngstation.client;
 
 import android.app.ProgressDialog;
 import android.location.*;
@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.fuelstation.R;
 import com.google.android.maps.*;
-import net.palacesoft.stationclient.mapoverlay.StationOverlay;
-import net.palacesoft.stationclient.mapoverlay.StationOverlayItem;
+import net.palacesoft.cngstation.R;
+import net.palacesoft.cngstation.client.mapoverlay.StationOverlay;
+import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;

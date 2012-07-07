@@ -1,6 +1,6 @@
-package net.palacesoft.stationclient.mapoverlay;
+package net.palacesoft.cngstation.client.mapoverlay;
 
-import net.palacesoft.stationclient.StationDTO;
+import net.palacesoft.cngstation.client.StationDTO;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 

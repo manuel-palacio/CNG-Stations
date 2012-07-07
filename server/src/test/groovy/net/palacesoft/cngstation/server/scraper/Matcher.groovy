@@ -1,4 +1,4 @@
-package net.palacesoft.stationserver.scraper
+package net.palacesoft.cngstation.server.scraper
 
 
 

@@ -1,7 +1,7 @@
 import com.google.appengine.api.datastore.Entity
 import com.google.appengine.api.datastore.PreparedQuery
 import com.google.appengine.api.datastore.Query
-import net.palacesoft.stationserver.scraper.StationScraperSE
+import net.palacesoft.cngstation.server.scraper.StationScraperSE
 
 def urlScraper = [:]
 

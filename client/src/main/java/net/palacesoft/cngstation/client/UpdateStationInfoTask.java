@@ -1,8 +1,8 @@
-package net.palacesoft.stationclient;
+package net.palacesoft.cngstation.client;
 
 
-import net.palacesoft.stationclient.mapoverlay.StationOverlay;
-import net.palacesoft.stationclient.mapoverlay.StationOverlayItem;
+import net.palacesoft.cngstation.client.mapoverlay.StationOverlay;
+import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
 import com.google.android.maps.GeoPoint;
 import org.springframework.web.client.RestTemplate;
 

@@ -11,7 +11,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:clickable="true"
-                android:apiKey="0c_Uhc0LQFcCPEXGL4dsuCIm_K_S5RYXLFT70ew"
+                android:apiKey="0c_Uhc0LQFcBdscPDkxKgq94VWMmLoXF02lfBQQ"
                 />
+
+    <!--android:apiKey="0c_Uhc0LQFcBdscPDkxKgq94VWMmLoXF02lfBQQ" PROD-->
+    <!--android:apiKey="0c_Uhc0LQFcCPEXGL4dsuCIm_K_S5RYXLFT70ew" DEV-->
 </LinearLayout>
 
