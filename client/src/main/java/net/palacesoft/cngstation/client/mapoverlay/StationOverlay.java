@@ -26,11 +26,6 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
         mContext = context;
     }
 
-    public void addOverlay(OverlayItem overlay) {
-        mOverlays.add(overlay);
-        populate();
-    }
-
     @Override
     protected OverlayItem createItem(int i) {
         return mOverlays.get(i);
@@ -104,5 +99,10 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
         items.add("Öppetider: " + item.getOpeningHours());
 
         return items;
+    }
+
+    public void addOverlays(List<StationOverlayItem> overlayItems) {
+        mOverlays.addAll(overlayItems);
+        populate();
     }
 }

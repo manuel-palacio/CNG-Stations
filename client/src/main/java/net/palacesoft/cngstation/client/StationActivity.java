@@ -93,7 +93,7 @@ public class StationActivity extends MapActivity {
         myLocationOverlay = new MyLocationOverlay(this, mapView);
         myLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationOverlay);
-        final ProgressDialog progressDialog = new ProgressDialog(StationActivity.this);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Fastställer position...");
         progressDialog.show();
         myLocationOverlay.runOnFirstFix(new Runnable() {
@@ -101,6 +101,7 @@ public class StationActivity extends MapActivity {
             public void run() {
                 currentLocation = myLocationOverlay.getLastFix();
                 country = extractCountryNameFromLocation(currentLocation);
+                progressDialog.dismiss();
 
 
                 runOnUiThread(new Runnable() {
@@ -108,9 +109,6 @@ public class StationActivity extends MapActivity {
                         getStationsFromCloud(country);
                     }
                 });
-                progressDialog.dismiss();
-                mapController.animateTo(myLocationOverlay.getMyLocation());
-                mapController.setZoom(12);
             }
         });
     }
@@ -181,12 +179,10 @@ public class StationActivity extends MapActivity {
 
         @Override
         protected void onPostExecute(List<StationOverlayItem> result) {
-
-            for (StationOverlayItem next : result) {
-                stationOverlay.addOverlay(next);
-            }
-
+            stationOverlay.addOverlays(result);
             progressDialog.dismiss();
+            mapController.animateTo(myLocationOverlay.getMyLocation());
+            mapController.setZoom(12);
         }
     }
 }
