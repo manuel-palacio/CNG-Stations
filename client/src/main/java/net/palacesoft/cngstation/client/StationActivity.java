@@ -101,11 +101,9 @@ public class StationActivity extends MapActivity {
             public void run() {
                 currentLocation = myLocationOverlay.getLastFix();
                 country = extractCountryNameFromLocation(currentLocation);
-                progressDialog.dismiss();
-
-
                 runOnUiThread(new Runnable() {
                     public void run() {
+                        progressDialog.dismiss();
                         getStationsFromCloud(country);
                     }
                 });
