@@ -52,4 +52,8 @@ class StationScraperSE {
 
     }
 
+    @Override
+    String toString() {
+        return "Scraper ${COUNTRY} (${URL})"
+    }
 }

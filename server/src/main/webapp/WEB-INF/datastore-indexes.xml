@@ -5,4 +5,9 @@
         <property name="longitude" direction="asc"/>
     </datastore-index>
 
+    <datastore-index kind="Station" ancestor="false" source="manual">
+        <property name="country" direction="asc"/>
+        <property name="city" direction="asc"/>
+    </datastore-index>
+
 </datastore-indexes>
