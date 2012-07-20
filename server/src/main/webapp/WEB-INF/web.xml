@@ -43,8 +43,4 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- Define index.gtpl as a welcome file -->
-    <welcome-file-list>
-        <welcome-file>index.gtpl</welcome-file>
-    </welcome-file-list>
 </web-app>

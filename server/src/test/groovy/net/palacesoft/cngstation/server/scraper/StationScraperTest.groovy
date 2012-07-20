@@ -6,9 +6,8 @@ class StationScraperTest {
 
     @Test
     void scrapeSE(){
-        StationScraperSE gasStationScraper = new StationScraperSE()
 
-        def stations = gasStationScraper.scrape()
+        def stations = new StationScraperSE().scrape()
 
         assert !stations.empty
 
@@ -17,6 +16,8 @@ class StationScraperTest {
             assert it.street
             assert it.latitude
             assert it.longitude
+            assert it.price
+            assert it.payment
         }
     }
 }

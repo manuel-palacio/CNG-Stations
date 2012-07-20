@@ -20,7 +20,6 @@ def results = preparedQuery.asList(withDefaults())
 
 
 if (!results.empty) {
-    response.contentType = "application/json"
 
     JSONArray json = new JSONArray()
 
@@ -29,6 +28,7 @@ if (!results.empty) {
         "openingHours":it.openingHours,"price":it.price])
     }
 
+    response.contentType = "application/json"
     response.setHeader("Cache-Control","max-age=" + 60 * 60 * 24 * 2)
     json.write(out)
 } else {

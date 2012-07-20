@@ -1,7 +1,6 @@
 package net.palacesoft.cngstation.server.scraper
 
-import com.gargoylesoftware.htmlunit.WebClient
-import com.gargoylesoftware.htmlunit.html.HtmlPage
+import geb.*
 
 class StationScraperSE {
 
@@ -9,48 +8,46 @@ class StationScraperSE {
 
     def URL = "http://www.gasbilen.se/Att-tanka-din-gasbil/Tankstallelista"
 
-
     List<Station> scrape() {
+
         def gasStations = []
-        def webClient = new WebClient()
-        webClient.javaScriptEnabled = false
-        webClient.cssEnabled = false
-        HtmlPage page = webClient.getPage(URL)
 
-        page.getElementById("tankstallelist").getHtmlElementsByTagName("table").each {
+        Browser.drive {
+            go URL
 
-            def wholeAddress = it.getRows()[0].getCells()[0].asText()
-            def city = wholeAddress.split(",")[0].trim()
-            def street = wholeAddress.split(",")[1].trim()
-            def operatedBy = it.getRows()[1].getCells()[1].asText().trim()
-            def openingHours = it.getRows()[2].getCells()[1].asText().trim()
-            def payment = it.getRows()[3].getCells()[1].asText().trim()
-            def price = it.getRows()[4].getCells()[1].asText().trim()
-            def telephones = it.getRows()[5].getCells()[1].asText().trim().split(",")
-            def results = []
-            telephones.each {
-                if (it) {
-                    def m = it =~ /([\w\W]*\s)*(\d*[-\/][\d\s]*)/
-                    results << m[0][2].replaceAll("\\D", "")
+            $("table").each {  station ->
+
+                def wholeAddress = station.find("tr", 0).text()
+                def city = wholeAddress.split(",")[0].trim()
+                def street = wholeAddress.split(",")[1].trim()
+                def operatedBy = station.find("tr", 1).find("td", 1).text().trim()
+                def openingHours = station.find("tr", 2).find("td", 1).text().trim()
+                def payment = station.find("tr", 3).find("td", 1).text().trim()
+                def price = station.find("tr", 4).find("td", 1).text().trim()
+                def telephones = station.find("tr", 5).find("td", 1).text().trim().split(",")
+                def results = []
+                telephones.each { phone ->
+                    if (phone) {
+                        def m = phone =~ /([\w\W]*\s)*(\d*[-\/][\d\s]*)/
+                        results << m[0][2].replaceAll("\\D", "")
+                    }
                 }
+
+                String coordinates = station.find("tr", 6).find("td", 1).text().trim()
+                String latitude = coordinates.split(",")[0].split(":")[1].trim()
+                String longitude = coordinates.split(",")[1].split(":")[1].trim()
+
+
+                gasStations << new Station(city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
+                        payment: payment, price: price, phoneNo: results.join(","), latitude: latitude,
+                        longitude: longitude,
+                        country: COUNTRY)
             }
-
-            String coordinates = it.getRows()[6].getCells()[1].asText().trim()
-            String latitude = coordinates.split(",")[0].split(":")[1].trim()
-            String longitude = coordinates.split(",")[1].split(":")[1].trim()
-
-            Station station = new Station(city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
-                    payment: payment, price: price, phoneNo: results.join(","), latitude: latitude, longitude: longitude,
-                    country: COUNTRY)
-
-            gasStations << station
-
         }
 
-
         return gasStations
-
     }
+
 
     @Override
     String toString() {
