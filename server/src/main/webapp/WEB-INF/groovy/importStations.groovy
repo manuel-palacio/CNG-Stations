@@ -14,7 +14,7 @@ urlScraper.each { scraper ->
     try {
         stations = scraper.value.scrape()
     } catch (Exception exception) {
-        mail.send from: "fuelstationservice@fuelstationservice.appspot.com",
+        mail.send from: "emanuel.palacio@gmail.com",
                 to: "emanuel.palacio@gmail.com",
                 subject: "Problem scraping with fuelstationservice ${scraper.toString()}",
                 textBody: exception.message
