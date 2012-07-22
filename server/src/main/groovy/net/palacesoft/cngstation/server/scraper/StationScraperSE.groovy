@@ -28,7 +28,7 @@ class StationScraperSE {
             def price = table.getRows()[4].getCells()[1].asText().trim()
             def telephones = table.getRows()[5].getCells()[1].asText().trim().split(",")
             def results = []
-            telephones.each {phone ->
+            telephones.each { phone ->
                 if (phone) {
                     def m = phone =~ /([\w\W]*\s)*(\d*[-\/][\d\s]*)/
                     results << m[0][2].replaceAll("\\D", "")
