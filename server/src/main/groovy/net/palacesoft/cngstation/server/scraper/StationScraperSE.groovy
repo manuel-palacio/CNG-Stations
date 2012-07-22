@@ -15,7 +15,7 @@ class StationScraperSE {
         def webClient = new WebClient()
         webClient.javaScriptEnabled = false
         webClient.cssEnabled = false
-        HtmlPage page = webClient.getPage(URL)
+        HtmlPage page = webClient.getPage(URL) //webclient "knows" how to use URLs correctly in GAE
 
         page.getElementById("tankstallelist").getHtmlElementsByTagName("table").each {
 
