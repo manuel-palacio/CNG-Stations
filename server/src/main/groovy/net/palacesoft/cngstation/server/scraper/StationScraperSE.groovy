@@ -17,25 +17,25 @@ class StationScraperSE {
         webClient.cssEnabled = false
         HtmlPage page = webClient.getPage(URL) //webclient "knows" how to use URLs correctly in GAE
 
-        page.getElementById("tankstallelist").getHtmlElementsByTagName("table").each {
+        page.getElementById("tankstallelist").getHtmlElementsByTagName("table").each { table ->
 
-            def wholeAddress = it.getRows()[0].getCells()[0].asText()
+            def wholeAddress = table.getRows()[0].getCells()[0].asText()
             def city = wholeAddress.split(",")[0].trim()
             def street = wholeAddress.split(",")[1].trim()
-            def operatedBy = it.getRows()[1].getCells()[1].asText().trim()
-            def openingHours = it.getRows()[2].getCells()[1].asText().trim()
-            def payment = it.getRows()[3].getCells()[1].asText().trim()
-            def price = it.getRows()[4].getCells()[1].asText().trim()
-            def telephones = it.getRows()[5].getCells()[1].asText().trim().split(",")
+            def operatedBy = table.getRows()[1].getCells()[1].asText().trim()
+            def openingHours = table.getRows()[2].getCells()[1].asText().trim()
+            def payment = table.getRows()[3].getCells()[1].asText().trim()
+            def price = table.getRows()[4].getCells()[1].asText().trim()
+            def telephones = table.getRows()[5].getCells()[1].asText().trim().split(",")
             def results = []
-            telephones.each {
-                if (it) {
-                    def m = it =~ /([\w\W]*\s)*(\d*[-\/][\d\s]*)/
+            telephones.each {phone ->
+                if (phone) {
+                    def m = phone =~ /([\w\W]*\s)*(\d*[-\/][\d\s]*)/
                     results << m[0][2].replaceAll("\\D", "")
                 }
             }
 
-            String coordinates = it.getRows()[6].getCells()[1].asText().trim()
+            String coordinates = table.getRows()[6].getCells()[1].asText().trim()
             String latitude = coordinates.split(",")[0].split(":")[1].trim()
             String longitude = coordinates.split(",")[1].split(":")[1].trim()
 
