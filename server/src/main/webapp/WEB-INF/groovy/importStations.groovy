@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse
 
 def urlScraper = [:]
 
-urlScraper.put("SE", new StationScraperSE())
+urlScraper.put("SWE", new StationScraperSE())
 
 urlScraper.each { scraper ->
 

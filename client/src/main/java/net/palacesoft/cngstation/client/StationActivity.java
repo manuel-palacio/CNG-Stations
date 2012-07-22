@@ -25,7 +25,6 @@ public class StationActivity extends MapActivity {
     private MapController mapController;
     private StationOverlay stationOverlay;
     private Location currentLocation;
-    private String country;
     private MyLocationOverlay myLocationOverlay;
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -50,7 +49,7 @@ public class StationActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                getStationsFromCloud(country);
+                getStationsFromCloud();
                 mapController.setZoom(12);
                 mapController.animateTo(myLocationOverlay.getMyLocation());
         }
@@ -90,7 +89,13 @@ public class StationActivity extends MapActivity {
 
 
     private void initMyLocation() {
-        myLocationOverlay = new MyLocationOverlay(this, mapView);
+        myLocationOverlay = new MyLocationOverlay(this, mapView){
+            @Override
+            public synchronized void onLocationChanged(Location location) {
+                currentLocation = location;
+                super.onLocationChanged(location);
+            }
+        };
         myLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationOverlay);
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -100,11 +105,10 @@ public class StationActivity extends MapActivity {
             @Override
             public void run() {
                 currentLocation = myLocationOverlay.getLastFix();
-                country = extractCountryNameFromLocation(currentLocation);
                 runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
-                        getStationsFromCloud(country);
+                        getStationsFromCloud();
                     }
                 });
             }
@@ -117,31 +121,26 @@ public class StationActivity extends MapActivity {
         mapController = mapView.getController();
     }
 
-    private String extractCountryNameFromLocation(Location location) {
+    private Address extractAddressFromLocation() {
 
         Geocoder geoCoder = new Geocoder(this);
 
         List<Address> list = Collections.emptyList();
         try {
-            list = geoCoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            list = geoCoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
         } catch (IOException e) {
             //ignore
         }
         if (!list.isEmpty()) {
-            Address address = list.get(0);
-            return address.getCountryName();
+            return list.get(0);
         }
         return null;
     }
 
 
-    public void getStationsFromCloud(String country) {
+    public void getStationsFromCloud() {
 
-        if (country != null) {
-            new LoadViewTask().execute(country);
-        } else {
-            Toast.makeText(this, "Kunde inte visa fullständing karta. Försök ladda om", Toast.LENGTH_SHORT).show();
-        }
+        new LoadViewTask().execute();
     }
 
     private class LoadViewTask extends AsyncTask<String, Integer, List<StationOverlayItem>> {
@@ -157,30 +156,63 @@ public class StationActivity extends MapActivity {
 
         @Override
         protected List<StationOverlayItem> doInBackground(String... params) {
-            String url = "http://fuelstationservice.appspot.com/stations/country/{query}";
-            StationDTO[] stations = restTemplate.getForObject(url, StationDTO[].class, params[0].toUpperCase());
-            List<StationOverlayItem> stationOverlayItems = new ArrayList<StationOverlayItem>();
-            for (StationDTO stationDTO : stations) {
-                //  Log.i(StationActivity.class.getName(), stationDTO.getStreet());
 
-                float lat = stationDTO.getLatitude();
-                float lng = stationDTO.getLongitude();
+            Address locationAddress = extractAddressFromLocation();
 
-                GeoPoint point = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
-                String address = stationDTO.getStreet() + " (" + stationDTO.getCity() + ")";
-                StationOverlayItem overlayItem = new StationOverlayItem(point, address, "", stationDTO);
-                stationOverlayItems.add(overlayItem);
+            String locality = locationAddress.getLocality();
+            String countryCode = locationAddress.getCountryCode();
 
+            String queryURL;
+            if (locality != null) {
+                queryURL = "http://fuelstationservice.appspot.com/stations/city/" + locality;
+                List<StationOverlayItem> stationOverlayItems = fetchStations(queryURL);
+                if (!stationOverlayItems.isEmpty()) {
+                    return stationOverlayItems;
+                }
+            }
+
+            if (countryCode != null) {
+                queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryCode;
+                List<StationOverlayItem> stationOverlayItems = fetchStations(queryURL);
+                if (!stationOverlayItems.isEmpty()) {
+                    return stationOverlayItems;
+                }
+            }
+
+            return Collections.emptyList();
+        }
+
+        private List<StationOverlayItem> fetchStations(String queryURL) {
+            List<StationOverlayItem> stationOverlayItems = null;
+            if (queryURL != null) {
+                StationDTO[] stations = restTemplate.getForObject(queryURL, StationDTO[].class);
+                stationOverlayItems = new ArrayList<StationOverlayItem>();
+                for (StationDTO stationDTO : stations) {
+                    //  Log.i(StationActivity.class.getName(), stationDTO.getStreet());
+
+                    float lat = stationDTO.getLatitude();
+                    float lng = stationDTO.getLongitude();
+
+                    GeoPoint point = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
+                    String stationAddress = stationDTO.getStreet() + " (" + stationDTO.getCity() + ")";
+                    StationOverlayItem overlayItem = new StationOverlayItem(point, stationAddress, "", stationDTO);
+                    stationOverlayItems.add(overlayItem);
+
+                }
             }
             return stationOverlayItems;
         }
 
         @Override
         protected void onPostExecute(List<StationOverlayItem> result) {
-            stationOverlay.addOverlays(result);
-            progressDialog.dismiss();
-            mapController.animateTo(myLocationOverlay.getMyLocation());
-            mapController.setZoom(12);
+            if (!result.isEmpty()) {
+                stationOverlay.addOverlays(result);
+                progressDialog.dismiss();
+                mapController.animateTo(myLocationOverlay.getMyLocation());
+                mapController.setZoom(12);
+            } else {
+                Toast.makeText(StationActivity.this, "Kunde inte visa några resultat på karta", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

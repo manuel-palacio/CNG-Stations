@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletResponse
 
 def query = new Query("Station")
 
-if (params.country) {
-    query.addFilter("country", Query.FilterOperator.EQUAL, params.country)
+if (params.countryCode) {
+    query.addFilter("countryCode", Query.FilterOperator.EQUAL, params.countryCode)
 }
 
 if (params.city) {

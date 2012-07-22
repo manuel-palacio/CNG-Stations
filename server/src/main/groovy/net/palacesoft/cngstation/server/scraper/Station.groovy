@@ -4,7 +4,7 @@ import groovyx.gaelyk.datastore.Unindexed
 
 
 class Station {
-    String country
+    String countryCode
     String city
     String street
     @Unindexed String operatedBy

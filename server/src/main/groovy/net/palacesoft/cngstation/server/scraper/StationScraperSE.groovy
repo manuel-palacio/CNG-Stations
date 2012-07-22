@@ -5,7 +5,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage
 
 class StationScraperSE {
 
-    def COUNTRY = "SWEDEN"
+    def COUNTRY_CODE = "SWE"
 
     def URL = "http://www.gasbilen.se/Att-tanka-din-gasbil/Tankstallelista"
 
@@ -41,7 +41,7 @@ class StationScraperSE {
 
             Station station = new Station(city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
                     payment: payment, price: price, phoneNo: results.join(","), latitude: latitude, longitude: longitude,
-                    country: COUNTRY)
+                    countryCode: COUNTRY_CODE)
 
             gasStations << station
 
@@ -54,6 +54,6 @@ class StationScraperSE {
 
     @Override
     String toString() {
-        return "Scraper ${COUNTRY} (${URL})"
+        return "Scraper ${COUNTRY_CODE} (${URL})"
     }
 }

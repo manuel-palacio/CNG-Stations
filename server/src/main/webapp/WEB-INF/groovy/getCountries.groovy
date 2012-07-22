@@ -2,7 +2,7 @@ import net.sf.json.JSONArray
 import javax.servlet.http.HttpServletResponse
 
 def results = datastore.iterate {
-    select country: String from Station
+    select countryCode: String from Station
 }
 
 def uniqueResults = new HashSet<String>()
