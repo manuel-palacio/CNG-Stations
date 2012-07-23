@@ -4,7 +4,7 @@ import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
 
-class StationScraperSE {
+class StationScraperSWE {
 
     def COUNTRY_CODE = "SWE"
 

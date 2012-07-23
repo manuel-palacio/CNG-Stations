@@ -7,7 +7,7 @@ class StationScraperTest {
     @Test
     void scrapeSWE() {
 
-        def stations = new StationScraperSE().scrape()
+        def stations = new StationScraperSWE().scrape()
 
         assert !stations.empty
 
@@ -23,7 +23,7 @@ class StationScraperTest {
     @Test
     void scrapeNOR() {
 
-        def stations = new StationScraperNO().scrape()
+        def stations = new StationScraperNOR().scrape()
 
         assert !stations.empty
 

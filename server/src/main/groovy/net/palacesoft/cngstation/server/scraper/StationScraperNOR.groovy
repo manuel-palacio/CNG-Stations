@@ -5,7 +5,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
 
-class StationScraperNO {
+class StationScraperNOR {
 
     def COUNTRY_CODE = "NOR"
 

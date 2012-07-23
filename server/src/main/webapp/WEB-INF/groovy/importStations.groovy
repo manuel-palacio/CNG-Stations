@@ -1,14 +1,15 @@
 import com.google.appengine.api.datastore.Entity
 import com.google.appengine.api.datastore.PreparedQuery
 import com.google.appengine.api.datastore.Query
-import net.palacesoft.cngstation.server.scraper.StationScraperSE
-import javax.servlet.http.HttpServletResponse
-import net.palacesoft.cngstation.server.scraper.StationScraperNO
+import net.palacesoft.cngstation.server.scraper.StationScraperNOR
+import net.palacesoft.cngstation.server.scraper.StationScraperSWE
+import net.palacesoft.cngstation.server.scraper.StationScraperNOR
+import net.palacesoft.cngstation.server.scraper.StationScraperSWE
 
 def urlScraper = [:]
 
-urlScraper.put("SWE", new StationScraperSE())
-urlScraper.put("NOR", new StationScraperNO())
+urlScraper.put("SWE", new StationScraperSWE())
+urlScraper.put("NOR", new StationScraperNOR())
 
 urlScraper.each { scraper ->
 
@@ -21,7 +22,6 @@ urlScraper.each { scraper ->
                 subject: "Problem scraping with fuelstationservice ${scraper.toString()}",
                 textBody: exception.message
 
-        response.status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
     }
     stations.each { station ->
 
