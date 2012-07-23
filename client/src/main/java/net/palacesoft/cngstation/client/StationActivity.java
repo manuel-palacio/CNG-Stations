@@ -89,7 +89,7 @@ public class StationActivity extends MapActivity {
 
 
     private void initMyLocation() {
-        myLocationOverlay = new MyLocationOverlay(this, mapView){
+        myLocationOverlay = new MyLocationOverlay(this, mapView) {
             @Override
             public synchronized void onLocationChanged(Location location) {
                 currentLocation = location;
@@ -138,16 +138,20 @@ public class StationActivity extends MapActivity {
     }
 
 
-    public void getStationsFromCloud() {
+    private void getStationsFromCloud() {
 
-        new LoadViewTask().execute();
+        new StationsLoader().execute();
     }
 
-    private class LoadViewTask extends AsyncTask<String, Integer, List<StationOverlayItem>> {
+    private class StationsLoader extends AsyncTask<String, Integer, List<StationOverlayItem>> {
         private ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
+            createProgressDialog();
+        }
+
+        private void createProgressDialog() {
             progressDialog = new ProgressDialog(StationActivity.this);
             progressDialog.setMessage("Populerar kartan...");
             progressDialog.setCancelable(false);
@@ -157,33 +161,37 @@ public class StationActivity extends MapActivity {
         @Override
         protected List<StationOverlayItem> doInBackground(String... params) {
 
+            List<StationOverlayItem> stationOverlayItems = Collections.emptyList();
+
             Address locationAddress = extractAddressFromLocation();
 
-            String locality = locationAddress.getLocality();
-            String countryCode = locationAddress.getCountryCode();
+            if (locationAddress != null) {
+                String locality = locationAddress.getLocality();
+                String countryCode = locationAddress.getCountryCode();
 
-            String queryURL;
-            if (locality != null) {
-                queryURL = "http://fuelstationservice.appspot.com/stations/city/" + locality;
-                List<StationOverlayItem> stationOverlayItems = fetchStations(queryURL);
-                if (!stationOverlayItems.isEmpty()) {
-                    return stationOverlayItems;
+                String queryURL;
+                if (locality != null) {
+                    queryURL = "http://fuelstationservice.appspot.com/stations/city/" + locality;
+                    stationOverlayItems = fetchStations(queryURL);
+                    if (!stationOverlayItems.isEmpty()) {
+                        return stationOverlayItems;
+                    }
+                }
+
+                if (countryCode != null) {
+                    queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryCode;
+                    stationOverlayItems = fetchStations(queryURL);
+                    if (!stationOverlayItems.isEmpty()) {
+                        return stationOverlayItems;
+                    }
                 }
             }
 
-            if (countryCode != null) {
-                queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryCode;
-                List<StationOverlayItem> stationOverlayItems = fetchStations(queryURL);
-                if (!stationOverlayItems.isEmpty()) {
-                    return stationOverlayItems;
-                }
-            }
-
-            return Collections.emptyList();
+            return stationOverlayItems;
         }
 
         private List<StationOverlayItem> fetchStations(String queryURL) {
-            List<StationOverlayItem> stationOverlayItems = null;
+            List<StationOverlayItem> stationOverlayItems = new ArrayList<StationOverlayItem>();
             if (queryURL != null) {
                 StationDTO[] stations = restTemplate.getForObject(queryURL, StationDTO[].class);
                 stationOverlayItems = new ArrayList<StationOverlayItem>();
@@ -211,7 +219,7 @@ public class StationActivity extends MapActivity {
                 mapController.animateTo(myLocationOverlay.getMyLocation());
                 mapController.setZoom(12);
             } else {
-                Toast.makeText(StationActivity.this, "Kunde inte visa några resultat på karta", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StationActivity.this, "Kunde inte visa några resultat på kartan", Toast.LENGTH_SHORT).show();
             }
         }
     }

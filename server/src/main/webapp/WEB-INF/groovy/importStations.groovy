@@ -3,10 +3,12 @@ import com.google.appengine.api.datastore.PreparedQuery
 import com.google.appengine.api.datastore.Query
 import net.palacesoft.cngstation.server.scraper.StationScraperSE
 import javax.servlet.http.HttpServletResponse
+import net.palacesoft.cngstation.server.scraper.StationScraperNO
 
 def urlScraper = [:]
 
 urlScraper.put("SWE", new StationScraperSE())
+urlScraper.put("NOR", new StationScraperNO())
 
 urlScraper.each { scraper ->
 

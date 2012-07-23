@@ -5,7 +5,7 @@ import org.junit.Test
 class StationScraperTest {
 
     @Test
-    void scrapeSE(){
+    void scrapeSWE() {
 
         def stations = new StationScraperSE().scrape()
 
@@ -17,7 +17,22 @@ class StationScraperTest {
             assert it.latitude
             assert it.longitude
             assert it.price
-            assert it.payment
+        }
+    }
+
+    @Test
+    void scrapeNOR() {
+
+        def stations = new StationScraperNO().scrape()
+
+        assert !stations.empty
+
+        stations.each {
+            assert it.city
+            assert it.street
+            assert it.latitude
+            assert it.longitude
+            assert it.price
         }
     }
 }

@@ -2,6 +2,7 @@ package net.palacesoft.cngstation.server.scraper
 
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
+import com.gargoylesoftware.htmlunit.html.HtmlTable
 
 class StationScraperSE {
 
@@ -17,16 +18,16 @@ class StationScraperSE {
         webClient.cssEnabled = false
         HtmlPage page = webClient.getPage(URL) //webclient "knows" how to use URLs correctly in GAE
 
-        page.getElementById("tankstallelist").getHtmlElementsByTagName("table").each { table ->
+        page.getElementById("tankstallelist").getHtmlElementsByTagName("table").each { HtmlTable table ->
 
-            def wholeAddress = table.getRows()[0].getCells()[0].asText()
+            def wholeAddress = table.getRow(0).getCell(0).asText()
             def city = wholeAddress.split(",")[0].trim()
             def street = wholeAddress.split(",")[1].trim()
-            def operatedBy = table.getRows()[1].getCells()[1].asText().trim()
-            def openingHours = table.getRows()[2].getCells()[1].asText().trim()
-            def payment = table.getRows()[3].getCells()[1].asText().trim()
-            def price = table.getRows()[4].getCells()[1].asText().trim()
-            def telephones = table.getRows()[5].getCells()[1].asText().trim().split(",")
+            def operatedBy = table.getRow(1).getCell(1).asText().trim()
+            def openingHours = table.getRow(2).getCell(1).asText().trim()
+            def payment = table.getRow(3).getCell(1).asText().trim()
+            def price = table.getRow(4).getCell(1).asText().trim()
+            def telephones = table.getRow(5).getCell(1).asText().trim().split(",")
             def results = []
             telephones.each { phone ->
                 if (phone) {
@@ -35,7 +36,7 @@ class StationScraperSE {
                 }
             }
 
-            String coordinates = table.getRows()[6].getCells()[1].asText().trim()
+            String coordinates = table.getRow(6).getCell(1).asText().trim()
             String latitude = coordinates.split(",")[0].split(":")[1].trim()
             String longitude = coordinates.split(",")[1].split(":")[1].trim()
 
