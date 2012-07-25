@@ -3,8 +3,6 @@ import com.google.appengine.api.datastore.PreparedQuery
 import com.google.appengine.api.datastore.Query
 import net.palacesoft.cngstation.server.scraper.StationScraperNOR
 import net.palacesoft.cngstation.server.scraper.StationScraperSWE
-import net.palacesoft.cngstation.server.scraper.StationScraperNOR
-import net.palacesoft.cngstation.server.scraper.StationScraperSWE
 
 def urlScraper = [:]
 

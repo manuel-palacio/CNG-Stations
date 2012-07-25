@@ -1,9 +1,12 @@
 package net.palacesoft.cngstation.client;
 
 import android.app.ProgressDialog;
-import android.location.*;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,6 +15,8 @@ import com.google.android.maps.*;
 import net.palacesoft.cngstation.R;
 import net.palacesoft.cngstation.client.mapoverlay.StationOverlay;
 import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -49,9 +54,8 @@ public class StationActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
+                addStationsOverlay();
                 getStationsFromCloud();
-                mapController.setZoom(12);
-                mapController.animateTo(myLocationOverlay.getMyLocation());
         }
 
         return false;
@@ -80,6 +84,11 @@ public class StationActivity extends MapActivity {
         addStationsOverlay();
 
         initMyLocation();
+    }
+
+    private void showError(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+
     }
 
     private void addStationsOverlay() {
@@ -170,7 +179,7 @@ public class StationActivity extends MapActivity {
                 String countryCode = locationAddress.getCountryCode();
 
                 String queryURL;
-                if (locality != null) {
+                if (StringUtils.hasText(locality)) {
                     queryURL = "http://fuelstationservice.appspot.com/stations/city/" + locality;
                     stationOverlayItems = fetchStations(queryURL);
                     if (!stationOverlayItems.isEmpty()) {
@@ -178,7 +187,7 @@ public class StationActivity extends MapActivity {
                     }
                 }
 
-                if (countryCode != null) {
+                if (StringUtils.hasText(countryCode)) {
                     queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryCode;
                     stationOverlayItems = fetchStations(queryURL);
                     if (!stationOverlayItems.isEmpty()) {
@@ -193,8 +202,12 @@ public class StationActivity extends MapActivity {
         private List<StationOverlayItem> fetchStations(String queryURL) {
             List<StationOverlayItem> stationOverlayItems = new ArrayList<StationOverlayItem>();
             if (queryURL != null) {
-                StationDTO[] stations = restTemplate.getForObject(queryURL, StationDTO[].class);
-                stationOverlayItems = new ArrayList<StationOverlayItem>();
+                StationDTO[] stations = new StationDTO[0];
+                try {
+                    stations = restTemplate.getForObject(queryURL, StationDTO[].class);
+                } catch (RestClientException e) {
+                    Log.e(StationActivity.class.getName(),e.getMessage(), e);
+                }
                 for (StationDTO stationDTO : stations) {
                     //  Log.i(StationActivity.class.getName(), stationDTO.getStreet());
 
@@ -219,7 +232,9 @@ public class StationActivity extends MapActivity {
                 mapController.animateTo(myLocationOverlay.getMyLocation());
                 mapController.setZoom(12);
             } else {
-                Toast.makeText(StationActivity.this, "Kunde inte visa några resultat på kartan", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                mapView.getOverlays().remove(stationOverlay);
+                showError("Kunde inte visa några resultat på kartan. Försök ladda om");
             }
         }
     }
