@@ -46,7 +46,7 @@ public class StationActivity extends MapActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
+        menuInflater.inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -81,8 +81,6 @@ public class StationActivity extends MapActivity {
 
         initMap();
 
-        addStationsOverlay();
-
         initMyLocation();
     }
 
@@ -109,6 +107,7 @@ public class StationActivity extends MapActivity {
         mapView.getOverlays().add(myLocationOverlay);
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Fastställer position...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
         myLocationOverlay.runOnFirstFix(new Runnable() {
             @Override
@@ -149,10 +148,20 @@ public class StationActivity extends MapActivity {
 
     private void getStationsFromCloud() {
 
-        new StationsLoader().execute();
+        Address locationAddress = null;
+        if (currentLocation != null) {
+            locationAddress = extractAddressFromLocation();
+        }
+
+        if (locationAddress != null) {
+            new StationsLoader().execute(locationAddress);
+        } else {
+            mapView.getOverlays().remove(stationOverlay);
+            showError("Kunde inte visa några resultat på kartan. Försök ladda om");
+        }
     }
 
-    private class StationsLoader extends AsyncTask<String, Integer, List<StationOverlayItem>> {
+    private class StationsLoader extends AsyncTask<Address, Integer, List<StationOverlayItem>> {
         private ProgressDialog progressDialog;
 
         @Override
@@ -168,31 +177,28 @@ public class StationActivity extends MapActivity {
         }
 
         @Override
-        protected List<StationOverlayItem> doInBackground(String... params) {
+        protected List<StationOverlayItem> doInBackground(Address... locationAddress) {
 
             List<StationOverlayItem> stationOverlayItems = Collections.emptyList();
 
-            Address locationAddress = extractAddressFromLocation();
 
-            if (locationAddress != null) {
-                String locality = locationAddress.getLocality();
-                String countryCode = locationAddress.getCountryCode();
+            String locality = locationAddress[0].getLocality();
+            String countryCode = locationAddress[0].getCountryCode();
 
-                String queryURL;
-                if (StringUtils.hasText(locality)) {
-                    queryURL = "http://fuelstationservice.appspot.com/stations/city/" + locality;
-                    stationOverlayItems = fetchStations(queryURL);
-                    if (!stationOverlayItems.isEmpty()) {
-                        return stationOverlayItems;
-                    }
+            String queryURL;
+            if (StringUtils.hasText(locality)) {
+                queryURL = "http://fuelstationservice.appspot.com/stations/city/" + locality;
+                stationOverlayItems = fetchStations(queryURL);
+                if (!stationOverlayItems.isEmpty()) {
+                    return stationOverlayItems;
                 }
+            }
 
-                if (StringUtils.hasText(countryCode)) {
-                    queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryCode;
-                    stationOverlayItems = fetchStations(queryURL);
-                    if (!stationOverlayItems.isEmpty()) {
-                        return stationOverlayItems;
-                    }
+            if (StringUtils.hasText(countryCode)) {
+                queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryCode;
+                stationOverlayItems = fetchStations(queryURL);
+                if (!stationOverlayItems.isEmpty()) {
+                    return stationOverlayItems;
                 }
             }
 
@@ -206,10 +212,9 @@ public class StationActivity extends MapActivity {
                 try {
                     stations = restTemplate.getForObject(queryURL, StationDTO[].class);
                 } catch (RestClientException e) {
-                    Log.e(StationActivity.class.getName(),e.getMessage(), e);
+                    Log.e(StationActivity.class.getName(), e.getMessage(), e);
                 }
                 for (StationDTO stationDTO : stations) {
-                    //  Log.i(StationActivity.class.getName(), stationDTO.getStreet());
 
                     float lat = stationDTO.getLatitude();
                     float lng = stationDTO.getLongitude();
@@ -218,7 +223,6 @@ public class StationActivity extends MapActivity {
                     String stationAddress = stationDTO.getStreet() + " (" + stationDTO.getCity() + ")";
                     StationOverlayItem overlayItem = new StationOverlayItem(point, stationAddress, "", stationDTO);
                     stationOverlayItems.add(overlayItem);
-
                 }
             }
             return stationOverlayItems;
@@ -227,6 +231,7 @@ public class StationActivity extends MapActivity {
         @Override
         protected void onPostExecute(List<StationOverlayItem> result) {
             if (!result.isEmpty()) {
+                addStationsOverlay();
                 stationOverlay.addOverlays(result);
                 progressDialog.dismiss();
                 mapController.animateTo(myLocationOverlay.getMyLocation());
