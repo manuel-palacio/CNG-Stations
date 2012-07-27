@@ -1,13 +1,13 @@
 import com.google.appengine.api.datastore.Entity
 import com.google.appengine.api.datastore.PreparedQuery
 import com.google.appengine.api.datastore.Query
-import net.palacesoft.cngstation.server.scraper.StationScraperNOR
-import net.palacesoft.cngstation.server.scraper.StationScraperSWE
+import net.palacesoft.cngstation.server.scraper.StationScraperNO
+import net.palacesoft.cngstation.server.scraper.StationScraperSE
 
 def urlScraper = [:]
 
-urlScraper.put("SWE", new StationScraperSWE())
-urlScraper.put("NOR", new StationScraperNOR())
+urlScraper.put("SE", new StationScraperSE())
+urlScraper.put("NO", new StationScraperNO())
 
 urlScraper.each { scraper ->
 

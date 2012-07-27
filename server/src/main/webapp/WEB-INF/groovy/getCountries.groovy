@@ -2,21 +2,21 @@ import net.sf.json.JSONArray
 import javax.servlet.http.HttpServletResponse
 
 def results = datastore.iterate {
-    select countryCode: String from Station
+    select countryCode:String from Station
 }
 
 def uniqueResults = new HashSet<String>()
 
 results.each {
-    uniqueResults << it.country
+    uniqueResults << it.countryCode
 }
 
 if (!uniqueResults.empty) {
 
     JSONArray json = new JSONArray()
 
-    uniqueResults.each {
-        json.add([it])
+    uniqueResults.sort().each {
+        json.add(["countryCode":it])
     }
 
     response.contentType = "application/json"

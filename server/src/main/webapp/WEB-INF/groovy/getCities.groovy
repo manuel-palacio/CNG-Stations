@@ -16,8 +16,8 @@ if (!uniqueResults.empty) {
 
     JSONArray json = new JSONArray()
 
-    uniqueResults.each {
-        json.add([it])
+    uniqueResults.sort().each {
+        json.add(["city":it])
     }
 
     response.contentType = "application/json"

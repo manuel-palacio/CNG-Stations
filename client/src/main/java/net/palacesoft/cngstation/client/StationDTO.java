@@ -9,6 +9,15 @@ public class StationDTO {
     private String openingHours;
     private String price;
     private String phoneNo;
+    private String countryCode;
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
 
     public String getOpeningHours() {
         return openingHours;

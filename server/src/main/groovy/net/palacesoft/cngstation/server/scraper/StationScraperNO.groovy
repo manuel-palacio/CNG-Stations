@@ -5,9 +5,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
 
-class StationScraperNOR {
+class StationScraperNO {
 
-    def COUNTRY_CODE = "NOR"
+    def COUNTRY_CODE = "NO"
 
     def URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=21"
 

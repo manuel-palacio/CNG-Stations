@@ -4,9 +4,9 @@ import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
 
-class StationScraperSWE {
+class StationScraperSE {
 
-    def COUNTRY_CODE = "SWE"
+    def COUNTRY_CODE = "SE"
 
     def URL = "http://www.gasbilen.se/Att-tanka-din-gasbil/Tankstallelista"
 
