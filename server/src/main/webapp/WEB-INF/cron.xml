@@ -3,7 +3,7 @@
   <cron>
     <url>/importStations</url>
     <description>Reimport data</description>
-    <schedule>every 100 hours</schedule>
+    <schedule>every 24 hours</schedule>
   </cron>
 
 </cronentries>

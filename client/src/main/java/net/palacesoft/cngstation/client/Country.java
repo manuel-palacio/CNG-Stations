@@ -7,8 +7,9 @@ import java.util.Locale;
 
 public enum Country {
     SWEDEN("SE", 62.0, 15.0),
+    NORWAY("NO", 62.0, 10.0),
 
-    DEFAULT("",0.0,0.0);
+    DEFAULT("", 0.0, 0.0);
 
 
     private String countryCode;
@@ -30,9 +31,12 @@ public enum Country {
         return address;
     }
 
-    public static Country findAddress(String countryCode) {
-        if (countryCode.equalsIgnoreCase("SE")) {
-            return SWEDEN;
+    public static Country findAddress(CountryCode countryCode) {
+        switch (countryCode) {
+            case SE:
+                return SWEDEN;
+            case NO:
+                return NORWAY;
         }
 
         return DEFAULT;
