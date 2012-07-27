@@ -61,7 +61,7 @@ public class StationActivity extends MapActivity {
         switch (item.getItemId()) {
             case R.id.refresh:
                 Address locationAddress = extractAddressFromLocation(currentLocation);
-                new StationLoader(locationAddress).execute();
+                loadStations(locationAddress);
         }
 
         return false;
@@ -129,13 +129,12 @@ public class StationActivity extends MapActivity {
                     }
                     if (!addresses.isEmpty()) {
                         Address address = addresses.get(0);
-
                         new StationLoader(address, zoomLevel).execute();
                     } else {
                         showError("Kunde inte visa info för " + city);
                     }
                 } catch (IOException e) {
-                    //ignore
+                    Log.w(e.getMessage(), e);
                 }
             }
         });
@@ -172,11 +171,19 @@ public class StationActivity extends MapActivity {
                     public void run() {
                         progressDialog.dismiss();
                         Address locationAddress = extractAddressFromLocation(currentLocation);
-                        new StationLoader(locationAddress).execute();
+                        loadStations(locationAddress);
                     }
                 });
             }
         });
+    }
+
+    private void loadStations(Address address) {
+        if (address != null) {
+            new StationLoader(address).execute();
+        } else {
+            showError("Kunde inte fastställa din eller stadens position");
+        }
     }
 
     private void initMap() {
@@ -273,7 +280,9 @@ public class StationActivity extends MapActivity {
 
         private StationLoader(Address address, Integer zoomLevel) {
             this.address = address;
-            geoPoint = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
+            if (address != null) {
+                geoPoint = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
+            }
             if (zoomLevel != null) {
                 this.zoomLevel = zoomLevel;
             }
