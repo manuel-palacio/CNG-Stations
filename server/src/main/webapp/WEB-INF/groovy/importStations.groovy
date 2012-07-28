@@ -3,6 +3,10 @@ import com.google.appengine.api.datastore.PreparedQuery
 import com.google.appengine.api.datastore.Query
 import net.palacesoft.cngstation.server.scraper.StationScraperNO
 import net.palacesoft.cngstation.server.scraper.StationScraperSE
+import groovyx.gaelyk.logging.GroovyLogger
+
+
+def log = new GroovyLogger("import")
 
 def urlScraper = [:]
 
@@ -27,21 +31,23 @@ urlScraper.each { scraper ->
 
         query.addFilter("longitude", Query.FilterOperator.EQUAL, station.longitude)
         query.addFilter("latitude", Query.FilterOperator.EQUAL, station.latitude)
-        query.addFilter("street", Query.FilterOperator.EQUAL, station.street)
-        query.addFilter("city", Query.FilterOperator.EQUAL, station.city)
 
         PreparedQuery preparedQuery = datastore.prepare(query)
 
-        Entity found = preparedQuery.asSingleEntity()
+        try {
+            Entity found = preparedQuery.asSingleEntity()
 
-        if (!found) {
-            def entity = station as Entity
-            entity.save()
-        } else {
-            found.street = station.street
-            found.price = station.price
-            found.openingHours = station.openingHours
-            found.save()
+            if (!found) {
+                def entity = station as Entity
+                entity.save()
+            } else {
+                found.street = station.street
+                found.price = station.price
+                found.openingHours = station.openingHours
+                found.save()
+            }
+        } catch (Exception e) {
+           log.severe("duplicate station " + station.toString() +  e.getMessage())
         }
     }
 }

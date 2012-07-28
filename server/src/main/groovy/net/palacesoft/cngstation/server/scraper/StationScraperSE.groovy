@@ -58,11 +58,13 @@ class StationScraperSE {
             String latitude = coordinates.split(",")[0].split(":")[1].trim()
             String longitude = coordinates.split(",")[1].split(":")[1].trim()
 
-            Station station = new Station(city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
-                    payment: payment, price: price, phoneNo: results.join(","), latitude: latitude, longitude: longitude,
-                    countryCode: COUNTRY_CODE)
+            if (latitude && longitude) {
+                Station station = new Station(city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
+                        payment: payment, price: price, phoneNo: results.join(","), latitude: latitude, longitude: longitude,
+                        countryCode: COUNTRY_CODE)
 
-            gasStations << station
+                gasStations << station
+            }
 
         }
 

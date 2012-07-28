@@ -57,10 +57,12 @@ class StationScraperNO {
 
             String openingHours = infoTable.getRow(5).getCell(1).asText().replaceAll("\\D[^\\d{2}]", "").trim()
 
-            Station station = new Station(street: street, city: city, phoneNo: phoneNo, latitude: latitude,
-                    longitude: longitude, price: price, operatedBy: operatedBy, openingHours: openingHours, countryCode: COUNTRY_CODE)
+            if (latitude && longitude) {
+                Station station = new Station(street: street, city: city, phoneNo: phoneNo, latitude: latitude,
+                        longitude: longitude, price: price, operatedBy: operatedBy, openingHours: openingHours, countryCode: COUNTRY_CODE)
 
-            gasStations << station
+                gasStations << station
+            }
         }
 
 
