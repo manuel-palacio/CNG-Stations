@@ -43,7 +43,9 @@ class StationScraperNO {
             HtmlPage infoPage = link.click()
             HtmlTable infoTable = infoPage.getByXPath("//table[@class='forumline']").get(0)
             String street = infoTable.getRow(1).getCell(1).asText().split("-")[0].trim()
-            String city = infoTable.getRow(1).getCell(1).asText().split("-")[1].trim().toLowerCase().capitalize()
+            String cityText = infoTable.getRow(1).getCell(1).asText()
+            String [] citySplit = cityText.split("-")
+            String city = citySplit[citySplit.length-1].trim().toLowerCase().capitalize()
             String phoneNo = infoTable.getRow(2).getCell(1).asText().trim()
             String coordinates = infoTable.getRow(3).getCell(1).asText().trim()
 

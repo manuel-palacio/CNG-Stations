@@ -29,6 +29,7 @@ class StationScraperTest {
 
         stations.each {
             assert it.city
+            assert !it.city.isNumber()
             assert it.street
             assert it.latitude
             assert it.longitude

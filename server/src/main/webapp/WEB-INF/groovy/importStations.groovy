@@ -43,6 +43,7 @@ urlScraper.each { scraper ->
             } else {
                 found.street = station.street
                 found.price = station.price
+                found.city = station.city
                 found.openingHours = station.openingHours
                 found.save()
             }
