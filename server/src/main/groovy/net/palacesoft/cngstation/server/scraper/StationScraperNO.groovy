@@ -46,7 +46,7 @@ class StationScraperNO {
             String cityText = infoTable.getRow(1).getCell(1).asText()
             String [] citySplit = cityText.split("-")
             String city = citySplit[citySplit.length-1].trim().toLowerCase().capitalize()
-            String phoneNo = infoTable.getRow(2).getCell(1).asText().trim()
+            def phoneNos = infoTable.getRow(2).getCell(1).asText().trim().split("-")
             String coordinates = infoTable.getRow(3).getCell(1).asText().trim()
 
             def latitudeRegExp = coordinates.split("-")[0] =~ /(lat.)\s(.*)/
@@ -60,7 +60,9 @@ class StationScraperNO {
             String openingHours = infoTable.getRow(5).getCell(1).asText().replaceAll("\\D[^\\d{2}]", "").trim()
 
             if (latitude && longitude) {
-                Station station = new Station(street: street, city: city, phoneNo: phoneNo, latitude: latitude,
+                String id = longitude + latitude
+
+                Station station = new Station(id: id, street: street, city: city, phoneNo: phoneNos.join(","), latitude: latitude,
                         longitude: longitude, price: price, operatedBy: operatedBy, openingHours: openingHours, countryCode: COUNTRY_CODE)
 
                 gasStations << station

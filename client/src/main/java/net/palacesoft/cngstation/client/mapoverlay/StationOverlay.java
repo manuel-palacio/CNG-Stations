@@ -34,71 +34,31 @@ import java.util.List;
 
 public class StationOverlay extends ItemizedOverlay<OverlayItem> {
 
-    private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+    private ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
 
-    private StationActivity mContext;
+    private StationActivity stationActivity;
 
 
     public StationOverlay(Drawable defaultMarker, StationActivity context) {
         super(boundCenterBottom(defaultMarker));
-        mContext = context;
+        stationActivity = context;
     }
 
     @Override
     protected OverlayItem createItem(int i) {
-        return mOverlays.get(i);
+        return overlayItems.get(i);
     }
 
     @Override
     public int size() {
-        return mOverlays.size();
+        return overlayItems.size();
     }
 
     @Override
     protected boolean onTap(int index) {
-        final StationOverlayItem item = (StationOverlayItem) mOverlays.get(index);
+        final StationOverlayItem item = (StationOverlayItem) overlayItems.get(index);
         if (item != null) {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-            dialog.setTitle(item.getTitle());
-            final List<CharSequence> items = createItemsToShowList(item);
-
-
-            dialog.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    if (items.get(item).toString().startsWith("Tel")) {
-                        try {
-                            String number = items.get(item).toString().split(":")[1];
-                            if (number.length() > 1) {
-                                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number.trim()));
-                                mContext.startActivity(intent);
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(mContext, "Kunde inte placera samtalet", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            });
-            dialog.setPositiveButton("Vägbeskrivning", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("http://maps.google.com/maps?saddr=" + mContext.getCurrentLocation().getLatitude()
-                                        + "," + mContext.getCurrentLocation().getLongitude() + "&daddr="
-                                        + item.getLatitude() + "," + item.getLongitude()));
-                        mContext.startActivity(intent);
-                    } catch (Exception e) {
-                        Toast.makeText(mContext, "Kunde inte visa kartan", Toast.LENGTH_SHORT).show();
-
-                    }
-                }
-            });
-            dialog.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
+            AlertDialog.Builder dialog = buildDialog(item);
             dialog.show();
             return true;
         }
@@ -106,7 +66,64 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
         return false;
     }
 
-    private List<CharSequence> createItemsToShowList(StationOverlayItem item) {
+    private AlertDialog.Builder buildDialog(final StationOverlayItem item) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(stationActivity);
+        dialog.setTitle(item.getTitle());
+        final List<CharSequence> items = getItemsToShow(item);
+
+
+        setDialogContent(dialog, items);
+        setDialogPositiveButton(item, dialog);
+        setDialogNegativeButton(dialog);
+        return dialog;
+    }
+
+    private void setDialogNegativeButton(AlertDialog.Builder dialog) {
+        dialog.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+    }
+
+    private void setDialogPositiveButton(final StationOverlayItem item, AlertDialog.Builder dialog) {
+        dialog.setPositiveButton("Vägbeskrivning", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps?saddr=" + stationActivity.getCurrentLocation().getLatitude()
+                                    + "," + stationActivity.getCurrentLocation().getLongitude() + "&daddr="
+                                    + item.getLatitude() + "," + item.getLongitude()));
+                    stationActivity.startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(stationActivity, "Kunde inte visa kartan", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+    }
+
+    private void setDialogContent(AlertDialog.Builder dialog, final List<CharSequence> items) {
+        dialog.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                if (items.get(item).toString().startsWith("Tel")) {
+                    try {
+                        String number = items.get(item).toString().split(":")[1];
+                        if (number.length() > 1) {
+                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number.trim()));
+                            stationActivity.startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(stationActivity, "Kunde inte placera samtalet", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    private List<CharSequence> getItemsToShow(StationOverlayItem item) {
         List<CharSequence> items = new ArrayList<CharSequence>();
         String[] phoneNo = item.getPhoneNo().split(",");
 
@@ -119,8 +136,8 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
         return items;
     }
 
-    public void addOverlays(List<StationOverlayItem> overlayItems) {
-        mOverlays.addAll(overlayItems);
+    public void addOverlayItems(List<StationOverlayItem> overlayItems) {
+        this.overlayItems.addAll(overlayItems);
         populate();
     }
 }

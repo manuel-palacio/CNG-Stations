@@ -19,9 +19,11 @@
 package net.palacesoft.cngstation.server.scraper
 
 import groovyx.gaelyk.datastore.Unindexed
+import groovyx.gaelyk.datastore.Key
 
 
 class Station {
+    @Key String id
     String countryCode
     String city
     String street

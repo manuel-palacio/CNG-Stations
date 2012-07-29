@@ -1,17 +1,16 @@
 import com.google.appengine.api.datastore.Entity
-import com.google.appengine.api.datastore.PreparedQuery
-import com.google.appengine.api.datastore.Query
+import groovyx.gaelyk.logging.GroovyLogger
 import net.palacesoft.cngstation.server.scraper.StationScraperNO
 import net.palacesoft.cngstation.server.scraper.StationScraperSE
-import groovyx.gaelyk.logging.GroovyLogger
 
-
-def log = new GroovyLogger("import")
+def log = new GroovyLogger("importStations")
 
 def urlScraper = [:]
 
 urlScraper.put("SE", new StationScraperSE())
 urlScraper.put("NO", new StationScraperNO())
+
+def entitiesToSave = []
 
 urlScraper.each { scraper ->
 
@@ -27,30 +26,11 @@ urlScraper.each { scraper ->
     }
     stations.each { station ->
 
-        def query = new Query("Station")
-
-        query.addFilter("longitude", Query.FilterOperator.EQUAL, station.longitude)
-        query.addFilter("latitude", Query.FilterOperator.EQUAL, station.latitude)
-
-        PreparedQuery preparedQuery = datastore.prepare(query)
-
-        try {
-            Entity found = preparedQuery.asSingleEntity()
-
-            if (!found) {
-                def entity = station as Entity
-                entity.save()
-            } else {
-                found.street = station.street
-                found.price = station.price
-                found.city = station.city
-                found.openingHours = station.openingHours
-                found.save()
-            }
-        } catch (Exception e) {
-           log.severe("duplicate station " + station.toString() +  e.getMessage())
-        }
+        def entity = station as Entity
+        entitiesToSave << entity
     }
+
+    datastore.put entitiesToSave
 }
 
 

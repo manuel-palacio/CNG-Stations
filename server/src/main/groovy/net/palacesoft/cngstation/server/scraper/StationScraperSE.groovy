@@ -46,11 +46,11 @@ class StationScraperSE {
             def payment = table.getRow(3).getCell(1).asText().trim()
             def price = table.getRow(4).getCell(1).asText().trim()
             def telephones = table.getRow(5).getCell(1).asText().trim().split(",")
-            def results = []
+            def phones = []
             telephones.each { phone ->
                 if (phone) {
                     def m = phone =~ /([\w\W]*\s)*(\d*[-\/][\d\s]*)/
-                    results << m[0][2].replaceAll("\\D", "")
+                    phones << m[0][2].replaceAll("\\D", "")
                 }
             }
 
@@ -59,8 +59,10 @@ class StationScraperSE {
             String longitude = coordinates.split(",")[1].split(":")[1].trim()
 
             if (latitude && longitude) {
-                Station station = new Station(city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
-                        payment: payment, price: price, phoneNo: results.join(","), latitude: latitude, longitude: longitude,
+                String id = longitude + latitude
+
+                Station station = new Station(id: id, city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
+                        payment: payment, price: price, phoneNo: phones.join(","), latitude: latitude, longitude: longitude,
                         countryCode: COUNTRY_CODE)
 
                 gasStations << station
