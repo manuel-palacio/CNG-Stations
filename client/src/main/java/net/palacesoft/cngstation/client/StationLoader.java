@@ -124,7 +124,7 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
             stationActivity.getMapController().setZoom(zoomLevel);
         } else {
             stationActivity.getMapView().getOverlays().remove(stationActivity.getStationOverlay());
-            stationActivity.showError("Kunde inte visa några resultat på kartan");
+            stationActivity.showInfoMessage("Kunde inte visa några resultat på kartan");
         }
     }
 }

@@ -98,19 +98,21 @@ public class StationActivity extends MapActivity {
 
         initMap();
 
-        initStationsForm();
+        initSearchForm();
 
-        initMyLocation();
+        loadAvailableCountriesList();
+
+        initMyLocationOverlay();
     }
 
-    private void initStationsForm() {
+    private void initSearchForm() {
         countries = (Spinner) findViewById(R.id.countries);
         countries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
 
                 String country = adapterView.getItemAtPosition(pos).toString();
-                new CitiesLoader(StationActivity.this).execute(country);
+                loadAvailableCitiesList(country);
             }
 
             @Override
@@ -135,13 +137,16 @@ public class StationActivity extends MapActivity {
                 } else {
                     address = lookupAddressFromLocationName(new Locale(countries.getSelectedItem().toString()), city);
                 }
-                if (address != null) {
-                    new StationLoader(StationActivity.this, address, zoomLevel).execute();
-                } else {
-                    showError("Kunde inte visa info för " + city);
-                }
+                new StationLoader(StationActivity.this, address, zoomLevel).execute();
             }
         });
+    }
+
+    private void loadAvailableCitiesList(String country) {
+        new CitiesLoader(this).execute(country);
+    }
+
+    private void loadAvailableCountriesList() {
         new CountriesLoader(this).execute();
     }
 
@@ -182,7 +187,7 @@ public class StationActivity extends MapActivity {
     }
 
 
-    public void showError(String text) {
+    public void showInfoMessage(String text) {
         Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 
@@ -192,7 +197,7 @@ public class StationActivity extends MapActivity {
     }
 
 
-    private void initMyLocation() {
+    private void initMyLocationOverlay() {
         myLocationOverlay = new MyLocationOverlay(this, mapView) {
             @Override
             public synchronized void onLocationChanged(Location location) {
@@ -200,8 +205,14 @@ public class StationActivity extends MapActivity {
                 super.onLocationChanged(location);
             }
         };
+
         myLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationOverlay);
+        startTrackingMyLocation();
+    }
+
+    private void startTrackingMyLocation() {
+
         final ProgressDialog progressDialog = createProgressDialog("Fastställer position...");
         progressDialog.show();
         myLocationOverlay.runOnFirstFix(new Runnable() {
@@ -223,7 +234,7 @@ public class StationActivity extends MapActivity {
         if (address != null) {
             new StationLoader(this, address).execute();
         } else {
-            showError("Kunde inte fastställa din eller stadens position");
+            showInfoMessage("Kunde inte fastställa din eller stadens position");
         }
     }
 
