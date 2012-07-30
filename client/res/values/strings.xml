@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">GasMacken</string>
     <string name="show">Visa</string>
+    <string name="refresh">Ladda om</string>
 </resources>

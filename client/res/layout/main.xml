@@ -13,7 +13,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:clickable="true"
-                android:apiKey="0c_Uhc0LQFcBdscPDkxKgq94VWMmLoXF02lfBQQ"
+                android:apiKey="0c_Uhc0LQFcCPEXGL4dsuCIm_K_S5RYXLFT70ew"
                 />
 
     <!--android:apiKey="0c_Uhc0LQFcBdscPDkxKgq94VWMmLoXF02lfBQQ" PROD-->
@@ -37,10 +37,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-        <Button
+        <ImageButton
+               android:contentDescription="button"
                android:id="@+id/btnSubmit"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:src="@drawable/navigation_forward"
                android:text="@string/show" />
 
     </LinearLayout>

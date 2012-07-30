@@ -27,10 +27,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -123,7 +120,7 @@ public class StationActivity extends MapActivity {
         cities = (Spinner) findViewById(R.id.cities);
 
 
-        Button btnSubmit = (Button) findViewById(R.id.btnSubmit);
+        ImageButton btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -252,7 +249,7 @@ public class StationActivity extends MapActivity {
     public ProgressDialog createProgressDialog(String message) {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(message);
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         return progressDialog;
     }
 
