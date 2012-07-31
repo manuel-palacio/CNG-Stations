@@ -24,8 +24,8 @@ import android.location.Address;
 import java.util.Locale;
 
 public enum Country {
-    SWEDEN("SE", 62.0, 15.0),
-    NORWAY("NO", 62.0, 10.0),
+    Sweden("SE", 62.0, 15.0),
+    Norway("NO", 62.0, 10.0),
 
     DEFAULT("", 0.0, 0.0);
 
@@ -49,14 +49,27 @@ public enum Country {
         return address;
     }
 
-    public static Country findAddress(CountryCode countryCode) {
+    public static Country getAddress(CountryCode countryCode) {
         switch (countryCode) {
             case SE:
-                return SWEDEN;
+                return Sweden;
             case NO:
-                return NORWAY;
+                return Norway;
         }
 
         return DEFAULT;
+    }
+
+    public static String getCountryCode(Country country) {
+
+        switch (country) {
+            case Sweden:
+                return "SE";
+            case Norway:
+                return "NO";
+        }
+
+        return "";
+
     }
 }

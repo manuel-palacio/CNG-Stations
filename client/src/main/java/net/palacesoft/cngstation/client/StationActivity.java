@@ -131,11 +131,11 @@ public class StationActivity extends MapActivity {
 
                 Integer zoomLevel = null;
                 Address address;
-                if (city.equalsIgnoreCase("Alla")) {
-                    address = Country.findAddress(CountryCode.valueOf(countries.getSelectedItem().toString())).getAddress();
+                if (city.equalsIgnoreCase("All")) {
+                    address = Country.getAddress(CountryCode.valueOf(countries.getSelectedItem().toString())).getAddress();
                     zoomLevel = 6;
                 } else {
-                    address = lookupAddressFromLocationName(new Locale(countries.getSelectedItem().toString()), city);
+                    address = lookupAddressFromLocationName(new Locale(Country.getCountryCode(Country.valueOf(countries.getSelectedItem().toString()))), city);
                 }
                 new StationLoader(StationActivity.this, address, zoomLevel).execute();
             }
@@ -213,7 +213,7 @@ public class StationActivity extends MapActivity {
 
     private void startTrackingMyLocation() {
 
-        final ProgressDialog progressDialog = createProgressDialog("Fastställer position...");
+        final ProgressDialog progressDialog = createProgressDialog("Determining your location...");
         progressDialog.show();
         myLocationOverlay.runOnFirstFix(new Runnable() {
             @Override
@@ -234,7 +234,7 @@ public class StationActivity extends MapActivity {
         if (address != null) {
             new StationLoader(this, address).execute();
         } else {
-            showInfoMessage("Kunde inte fastställa din eller stadens position");
+            showInfoMessage("Could not determine your location");
         }
     }
 

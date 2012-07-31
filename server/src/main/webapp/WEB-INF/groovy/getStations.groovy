@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse
 def query = new Query("Station")
 
 if (params.countryCode) {
-    query.addFilter("countryCode", Query.FilterOperator.EQUAL, params.countryCode)
+    query.addFilter("countryName", Query.FilterOperator.EQUAL, params.countryName)
 }
 
 if (params.city) {
@@ -25,7 +25,7 @@ if (!results.empty) {
 
     results.each {
         json.add(["city": it.city, "longitude": it.longitude, "latitude": it.latitude, "street": it.street, "phoneNo":it.phoneNo,
-        "openingHours":it.openingHours,"price":it.price])
+        "openingHours":it.openingHours,"price":it.price, "countryName": it.countryName])
     }
 
     response.contentType = "application/json"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GasMacken</string>
-    <string name="show">Visa</string>
-    <string name="refresh">Ladda om</string>
+    <string name="show">Show</string>
+    <string name="refresh">Refresh</string>
 </resources>

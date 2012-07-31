@@ -55,8 +55,8 @@ class CountriesLoader extends AsyncTask<Object, Integer, List<StationDTO>> {
     @Override
     protected void onPostExecute(List<StationDTO> stations) {
         List<String> countriesList = new ArrayList<String>();
-        for (StationDTO next : stations) {
-            countriesList.add(next.getCountryCode());
+        for (StationDTO stationDTO : stations) {
+            countriesList.add(stationDTO.getCountryName());
         }
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(stationActivity,
                 simple_spinner_item, countriesList);

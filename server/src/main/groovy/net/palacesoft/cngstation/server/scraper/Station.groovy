@@ -25,6 +25,7 @@ import groovyx.gaelyk.datastore.Key
 class Station {
     @Key String id
     String countryCode
+    String countryName;
     String city
     String street
     @Unindexed String operatedBy

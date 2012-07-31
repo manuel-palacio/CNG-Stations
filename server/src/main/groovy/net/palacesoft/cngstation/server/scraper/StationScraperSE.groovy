@@ -25,6 +25,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable
 class StationScraperSE {
 
     def COUNTRY_CODE = "SE"
+    def COUNTRY_NAME = "Sweden"
 
     def URL = "http://www.gasbilen.se/Att-tanka-din-gasbil/Tankstallelista"
 
@@ -63,7 +64,7 @@ class StationScraperSE {
 
                 Station station = new Station(id: id, city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
                         payment: payment, price: price, phoneNo: phones.join(","), latitude: latitude, longitude: longitude,
-                        countryCode: COUNTRY_CODE)
+                        countryCode: COUNTRY_CODE, countryName:COUNTRY_NAME )
 
                 gasStations << station
             }

@@ -53,7 +53,7 @@ class CitiesLoader extends AsyncTask<String, Integer, List<String>> {
         for (StationDTO stationDTO : dtos) {
             citiesList.add(stationDTO.getCity());
         }
-        citiesList.add(0, "Alla");
+        citiesList.add(0, "All");
         return citiesList;
     }
 

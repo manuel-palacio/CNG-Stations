@@ -3,7 +3,7 @@ import javax.servlet.http.HttpServletResponse
 
 def results = datastore.iterate {
     select city:String from Station
-    where countryCode == params.countryCode
+    where countryName == params.countryName
 }
 
 def uniqueResults = new HashSet<String>()

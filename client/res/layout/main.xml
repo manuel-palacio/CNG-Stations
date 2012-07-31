@@ -6,26 +6,25 @@
                 android:layout_height="fill_parent">
 
 
-
     <com.google.android.maps.MapView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/mapview"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:clickable="true"
-                android:apiKey="0c_Uhc0LQFcBdscPDkxKgq94VWMmLoXF02lfBQQ"
-                />
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/mapview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true"
+            android:apiKey="0c_Uhc0LQFcCPEXGL4dsuCIm_K_S5RYXLFT70ew"
+            />
 
     <!--android:apiKey="0c_Uhc0LQFcBdscPDkxKgq94VWMmLoXF02lfBQQ" PROD-->
     <!--android:apiKey="0c_Uhc0LQFcCPEXGL4dsuCIm_K_S5RYXLFT70ew" DEV-->
 
 
     <LinearLayout
-                  android:orientation="horizontal"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentBottom="false"
-                  android:layout_centerHorizontal="true">
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_centerHorizontal="true">
 
         <Spinner
                 android:id="@+id/countries"
@@ -38,12 +37,12 @@
                 android:layout_height="wrap_content"/>
 
         <ImageButton
-               android:contentDescription="button"
-               android:id="@+id/btnSubmit"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:src="@drawable/navigation_forward"
-               android:text="@string/show" />
+                android:contentDescription="button"
+                android:id="@+id/btnSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/navigation_forward"
+                android:text="@string/show"/>
 
     </LinearLayout>
 

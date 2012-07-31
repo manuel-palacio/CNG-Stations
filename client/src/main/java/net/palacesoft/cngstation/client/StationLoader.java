@@ -60,7 +60,7 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
 
     @Override
     protected void onPreExecute() {
-        progressDialog = stationActivity.createProgressDialog("Populerar kartan...");
+        progressDialog = stationActivity.createProgressDialog("Loading CNG map...");
         progressDialog.show();
     }
 
@@ -70,20 +70,20 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
         List<StationOverlayItem> results = new ArrayList<StationOverlayItem>();
         if (address != null) {
             String locality = address.getLocality();
-            String countryCode = address.getCountryCode();
+            String countryName = address.getCountryName();
 
             if (hasText(locality)) {
                 results = getLocalStations(locality);
-            } else if (hasText(countryCode)) {
-                results = getCountryStations(countryCode);
+            } else if (hasText(countryName)) {
+                results = getCountryStations(countryName);
             }
         }
 
         return results;
     }
 
-    private List<StationOverlayItem> getCountryStations(String countryCode) {
-        String queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryCode;
+    private List<StationOverlayItem> getCountryStations(String countryName) {
+        String queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryName;
         return fetchStations(queryURL);
     }
 
@@ -124,7 +124,7 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
             stationActivity.getMapController().setZoom(zoomLevel);
         } else {
             stationActivity.getMapView().getOverlays().remove(stationActivity.getStationOverlay());
-            stationActivity.showInfoMessage("Kunde inte visa några resultat på kartan");
+            stationActivity.showInfoMessage("Could not find CNG stations for the actual location");
         }
     }
 }

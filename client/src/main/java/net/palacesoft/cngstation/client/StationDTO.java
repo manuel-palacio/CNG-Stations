@@ -28,6 +28,15 @@ public class StationDTO {
     private String price;
     private String phoneNo;
     private String countryCode;
+    private String countryName;
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
 
     public String getCountryCode() {
         return countryCode;
