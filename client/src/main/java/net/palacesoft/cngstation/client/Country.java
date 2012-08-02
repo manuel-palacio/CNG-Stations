@@ -24,20 +24,22 @@ import android.location.Address;
 import java.util.Locale;
 
 public enum Country {
-    Sweden("SE", 62.0, 15.0),
-    Norway("NO", 62.0, 10.0),
+    Sweden("Sweden", "SE", 62.0, 15.0),
+    Norway("Norway", "NO", 62.0, 10.0),
 
-    DEFAULT("", 0.0, 0.0);
+    DEFAULT("","", 0.0, 0.0);
 
 
     private String countryCode;
     private double longitude;
     private double latitude;
+    private String countryName;
 
-    private Country(String countryCode, double latitude, double longitude) {
+    private Country(String countryName, String countryCode, double latitude, double longitude) {
         this.countryCode = countryCode;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.countryName = countryName;
     }
 
 
@@ -46,18 +48,8 @@ public enum Country {
         address.setLatitude(latitude);
         address.setLongitude(longitude);
         address.setCountryCode(countryCode);
+        address.setCountryName(countryName);
         return address;
-    }
-
-    public static Country getAddress(CountryCode countryCode) {
-        switch (countryCode) {
-            case SE:
-                return Sweden;
-            case NO:
-                return Norway;
-        }
-
-        return DEFAULT;
     }
 
     public static String getCountryCode(Country country) {

@@ -41,6 +41,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.springframework.util.StringUtils.hasText;
+
 public class StationActivity extends MapActivity {
 
     private MapView mapView;
@@ -72,7 +74,7 @@ public class StationActivity extends MapActivity {
         switch (item.getItemId()) {
             case R.id.refresh:
                 Address locationAddress = lookupAddressFromLocation(Locale.getDefault(), currentLocation);
-                loadStations(locationAddress);
+                loadStations(new StationLoader(this, locationAddress));
         }
 
         return false;
@@ -112,7 +114,7 @@ public class StationActivity extends MapActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
 
                 String country = adapterView.getItemAtPosition(pos).toString();
-                loadAvailableCitiesList(country);
+                new CitiesLoader(StationActivity.this).execute(country);
             }
 
             @Override
@@ -130,21 +132,20 @@ public class StationActivity extends MapActivity {
                 String city = cities.getSelectedItem().toString();
 
                 Integer zoomLevel = null;
-                Address address;
-                if (city.equalsIgnoreCase("All")) {
-                    address = Country.getAddress(CountryCode.valueOf(countries.getSelectedItem().toString())).getAddress();
-                    zoomLevel = 6;
-                } else {
-                    address = lookupAddressFromLocationName(new Locale(Country.getCountryCode(Country.valueOf(countries.getSelectedItem().toString()))), city);
+                Address address = null;
+                if (hasText(city)) {
+                    if (city.equalsIgnoreCase("All")) {
+                        address = Country.valueOf(countries.getSelectedItem().toString()).getAddress();
+                        zoomLevel = 6;
+                    } else {
+                        address = lookupAddressFromLocationName(new Locale(Country.getCountryCode(Country.valueOf(countries.getSelectedItem().toString()))), city);
+                    }
                 }
-                new StationLoader(StationActivity.this, address, zoomLevel).execute();
+                loadStations(new StationLoader(StationActivity.this, address, zoomLevel));
             }
         });
     }
 
-    private void loadAvailableCitiesList(String country) {
-        new CitiesLoader(this).execute(country);
-    }
 
     private void loadAvailableCountriesList() {
         new CountriesLoader(this).execute();
@@ -223,17 +224,17 @@ public class StationActivity extends MapActivity {
                     public void run() {
                         progressDialog.dismiss();
                         Address locationAddress = lookupAddressFromLocation(Locale.getDefault(), currentLocation);
-                        loadStations(locationAddress);
+                        loadStations(new StationLoader(StationActivity.this, locationAddress));
                     }
                 });
             }
         });
     }
 
-    private void loadStations(Address address) {
-        if (address != null) {
-            new StationLoader(this, address).execute();
-        } else {
+    private void loadStations(StationLoader stationLoader) {
+        try {
+            stationLoader.execute();
+        } catch (IllegalArgumentException e) {
             showInfoMessage("Could not determine your location");
         }
     }

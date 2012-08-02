@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GasMacken</string>
+    <string name="app_name">CNG Stations</string>
     <string name="show">Show</string>
     <string name="refresh">Refresh</string>
 </resources>

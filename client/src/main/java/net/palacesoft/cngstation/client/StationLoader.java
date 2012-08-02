@@ -44,10 +44,11 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
 
     StationLoader(StationActivity stationActivity, Address address, Integer zoomLevel) {
         this.stationActivity = stationActivity;
-        this.address = address;
-        if (address != null) {
-            geoPoint = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
+        if (address == null) {
+            throw new IllegalArgumentException("Cannot load stations without a location");
         }
+        this.address = address;
+        geoPoint = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
         if (zoomLevel != null) {
             this.zoomLevel = zoomLevel;
         }
@@ -68,15 +69,13 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
     @Override
     protected List<StationOverlayItem> doInBackground(Object... params) {
         List<StationOverlayItem> results = new ArrayList<StationOverlayItem>();
-        if (address != null) {
-            String locality = address.getLocality();
-            String countryName = address.getCountryName();
+        String locality = address.getLocality();
+        String countryName = address.getCountryName();
 
-            if (hasText(locality)) {
-                results = getLocalStations(locality);
-            } else if (hasText(countryName)) {
-                results = getCountryStations(countryName);
-            }
+        if (hasText(locality)) {
+            results = getLocalStations(locality);
+        } else if (hasText(countryName)) {
+            results = getCountryStations(countryName);
         }
 
         return results;
