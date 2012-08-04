@@ -26,6 +26,8 @@ import java.util.Locale;
 public enum Country {
     Sweden("Sweden", "SE", 62.0, 15.0),
     Norway("Norway", "NO", 62.0, 10.0),
+    France("France", "FR", 46.0, 2.0),
+    Germany("Germany", "DE", 51.0, 9.0),
 
     DEFAULT("","", 0.0, 0.0);
 
@@ -42,6 +44,10 @@ public enum Country {
         this.countryName = countryName;
     }
 
+    public String getCountryCode(){
+        return countryCode;
+    }
+
 
     public Address getAddress() {
         Address address = new Address(Locale.getDefault());
@@ -50,18 +56,5 @@ public enum Country {
         address.setCountryCode(countryCode);
         address.setCountryName(countryName);
         return address;
-    }
-
-    public static String getCountryCode(Country country) {
-
-        switch (country) {
-            case Sweden:
-                return "SE";
-            case Norway:
-                return "NO";
-        }
-
-        return "";
-
     }
 }

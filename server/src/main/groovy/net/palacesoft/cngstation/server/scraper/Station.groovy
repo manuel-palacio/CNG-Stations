@@ -38,6 +38,21 @@ class Station {
     @Unindexed String web
     @Unindexed String email
 
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (getClass() != o.class) return false
+
+        Station station = (Station) o
+
+        if (id != station.id) return false
+
+        return true
+    }
+
+    int hashCode() {
+        return (id != null ? id.hashCode() : 0)
+    }
+
     @Override
     public String toString() {
         return "Station{" +

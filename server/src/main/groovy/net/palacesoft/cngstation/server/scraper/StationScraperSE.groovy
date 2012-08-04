@@ -22,7 +22,7 @@ import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
 
-class StationScraperSE {
+class StationScraperSE implements Scraper {
 
     def COUNTRY_CODE = "SE"
     def COUNTRY_NAME = "Sweden"
@@ -30,12 +30,12 @@ class StationScraperSE {
     def URL = "http://www.gasbilen.se/Att-tanka-din-gasbil/Tankstallelista"
 
 
-    List<Station> scrape() {
-        def gasStations = []
+    Set<Station> scrape() {
+        Set gasStations = []
         def webClient = new WebClient()
         webClient.javaScriptEnabled = false
         webClient.cssEnabled = false
-        HtmlPage page = webClient.getPage(URL) //webclient "knows" how to use URLs correctly in GAE
+        HtmlPage page = webClient.getPage(URL)
 
         page.getElementById("tankstallelist").getHtmlElementsByTagName("table").each { HtmlTable table ->
 

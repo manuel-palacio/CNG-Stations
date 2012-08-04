@@ -73,6 +73,7 @@ public class StationActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
+                mapView.getOverlays().clear();
                 Address locationAddress = lookupAddressFromLocation(Locale.getDefault(), currentLocation);
                 loadStations(new StationLoader(this, locationAddress));
         }
@@ -138,7 +139,7 @@ public class StationActivity extends MapActivity {
                         address = Country.valueOf(countries.getSelectedItem().toString()).getAddress();
                         zoomLevel = 6;
                     } else {
-                        address = lookupAddressFromLocationName(new Locale(Country.getCountryCode(Country.valueOf(countries.getSelectedItem().toString()))), city);
+                        address = lookupAddressFromLocationName(new Locale(Country.valueOf(countries.getSelectedItem().toString()).getCountryCode()), city);
                     }
                 }
                 loadStations(new StationLoader(StationActivity.this, address, zoomLevel));

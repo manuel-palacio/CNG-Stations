@@ -24,29 +24,36 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable
 import com.gargoylesoftware.htmlunit.WebClient
 
 
-class MetanoAutoScraper {
+abstract class MetanoAutoScraper implements Scraper {
 
-    protected WebClient webClient
+    protected def webClient
+    protected String countryCode, countryName
 
-    MetanoAutoScraper() {
+    MetanoAutoScraper(String countryCode, String countryName) {
         webClient = new WebClient()
         webClient.javaScriptEnabled = false
         webClient.cssEnabled = false
+        this.countryCode = countryCode
+        this.countryName = countryName
     }
 
-    protected List<Station> scrapePage(HtmlPage page) {
-        def gasStations = []
+    protected Set<Station> scrapePage(HtmlPage page, int openCellNo) {
+        Set gasStations = []
         List<?> links = page.getByXPath("//a[@title='Dettagli']")
 
-        links.each { HtmlAnchor link ->
-            boolean isOpen = link.getParentNode().getParentNode().getCell(8).asText() == "Aperto"
+        links.each { HtmlAnchor stationLink ->
+            boolean isOpen = stationLink.getParentNode().getParentNode().getCell(openCellNo).asText() == "Aperto"
             if (isOpen) {
-                HtmlPage infoPage = link.click()
-                HtmlTable infoTable = infoPage.getByXPath("//table[@class='forumline']").get(0)
+                HtmlPage stationPage = stationLink.click()
+                HtmlTable infoTable = stationPage.getByXPath("//table[@class='forumline']").get(0)
                 String street = infoTable.getRow(1).getCell(1).asText().split("-")[0].trim()
                 String cityText = infoTable.getRow(1).getCell(1).asText()
                 String[] citySplit = cityText.split("-")
                 String city = citySplit[citySplit.length - 1].trim().toLowerCase().capitalize()
+                if(city.contains("(")){
+                    city = city.substring(0, city.indexOf("(")).trim()
+                }
+
                 def phoneNos = infoTable.getRow(2).getCell(1).asText().trim().split("-")
                 String coordinates = infoTable.getRow(3).getCell(1).asText().trim()
 
@@ -65,7 +72,7 @@ class MetanoAutoScraper {
 
                     Station station = new Station(id: id, street: street, city: city, phoneNo: phoneNos.join(","), latitude: latitude,
                             longitude: longitude, price: price, operatedBy: operatedBy, openingHours: openingHours,
-                            countryCode: COUNTRY_CODE, countryName: COUNTRY_NAME)
+                            countryCode: countryCode, countryName: countryName)
 
                     gasStations << station
                 }

@@ -22,16 +22,18 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage
 
 class StationScraperNO extends MetanoAutoScraper {
 
-    def COUNTRY_CODE = "NO"
-    def COUNTRY_NAME = "Norway"
+    def static COUNTRY_CODE = "NO"
+    def static COUNTRY_NAME = "Norway"
+    def static  OPEN_CELL_NO = 8
     def URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=21"
 
+    StationScraperNO() {
+        super(COUNTRY_CODE, COUNTRY_NAME)
+    }
 
-    List<Station> scrape() {
-
-        HtmlPage page = webClient.getPage(URL) //webclient "knows" how to use URLs correctly in GAE
-
-        scrapePage(page)
+    Set<Station> scrape() {
+        HtmlPage page = webClient.getPage(URL)
+        scrapePage(page, OPEN_CELL_NO)
     }
 
 
