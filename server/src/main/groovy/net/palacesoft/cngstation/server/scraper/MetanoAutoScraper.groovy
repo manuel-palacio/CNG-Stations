@@ -22,6 +22,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor
 import com.gargoylesoftware.htmlunit.html.HtmlTable
 import com.gargoylesoftware.htmlunit.WebClient
+import com.gargoylesoftware.htmlunit.ElementNotFoundException
 
 
 abstract class MetanoAutoScraper implements Scraper {
@@ -37,6 +38,25 @@ abstract class MetanoAutoScraper implements Scraper {
         this.countryName = countryName
     }
 
+    protected List<HtmlPage> gatherPages(HtmlPage firstPage) {
+        List<HtmlPage> pages = []
+        try {
+            getAndSavePage(pages, firstPage)
+        } catch (ElementNotFoundException e) {
+            //ignore
+        }
+        return pages
+
+    }
+
+    def anchor = {HtmlPage nextPage -> nextPage.getAnchorByText("Successiva >>").click()}
+
+    private def getAndSavePage(List<HtmlPage> pages, HtmlPage htmlPage) {
+
+        pages << htmlPage
+        getAndSavePage(pages, anchor(htmlPage))
+    }
+
     protected Set<Station> scrapePage(HtmlPage page, int openCellNo) {
         Set gasStations = []
         List<?> links = page.getByXPath("//a[@title='Dettagli']")
@@ -50,7 +70,7 @@ abstract class MetanoAutoScraper implements Scraper {
                 String cityText = infoTable.getRow(1).getCell(1).asText()
                 String[] citySplit = cityText.split("-")
                 String city = citySplit[citySplit.length - 1].trim().toLowerCase().capitalize()
-                if(city.contains("(")){
+                if (city.contains("(")) {
                     city = city.substring(0, city.indexOf("(")).trim()
                 }
 

@@ -20,19 +20,21 @@ package net.palacesoft.cngstation.server.scraper
 
 import groovyx.gaelyk.datastore.Unindexed
 import groovyx.gaelyk.datastore.Key
+import groovyx.gaelyk.datastore.Entity
 
 
-class Station {
+@Entity(unindexed=false)
+class Station implements Serializable{
     @Key String id
     String countryCode
     String countryName;
     String city
-    String street
+    @Unindexed String street
     @Unindexed String operatedBy
-    String openingHours
+    @Unindexed String openingHours
     @Unindexed String price
-    String latitude
-    String longitude
+    @Unindexed String latitude
+    @Unindexed String longitude
     @Unindexed String payment
     @Unindexed String phoneNo
     @Unindexed String web

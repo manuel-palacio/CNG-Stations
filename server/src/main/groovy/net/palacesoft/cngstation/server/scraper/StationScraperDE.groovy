@@ -18,7 +18,6 @@
  */
 package net.palacesoft.cngstation.server.scraper
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 
 class StationScraperDE extends MetanoAutoScraper {
@@ -26,7 +25,7 @@ class StationScraperDE extends MetanoAutoScraper {
     def static COUNTRY_CODE = "DE"
     def static COUNTRY_NAME = "Germany"
     def static  OPEN_CELL_NO = 8
-    def URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=9"
+    def static URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=9"
 
     StationScraperDE() {
         super(COUNTRY_CODE, COUNTRY_NAME)
@@ -43,15 +42,10 @@ class StationScraperDE extends MetanoAutoScraper {
     @Override
     Set<Station> scrape() {
         Set<Station> stations = []
-        List<HtmlPage> pages = []
+
         HtmlPage firstPage = webClient.getPage(URL)
 
-        try {
-            getAndSavePage(pages, firstPage)
-        } catch (ElementNotFoundException e) {
-            //ignore
-        }
-
+        List<HtmlPage> pages = gatherPages(firstPage)
 
         pages.each { page ->
             stations.addAll(scrapePage(page, OPEN_CELL_NO))
