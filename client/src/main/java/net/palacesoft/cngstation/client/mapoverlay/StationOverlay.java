@@ -79,7 +79,7 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
     }
 
     private void setDialogNegativeButton(AlertDialog.Builder dialog) {
-        dialog.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -88,7 +88,7 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
     }
 
     private void setDialogPositiveButton(final StationOverlayItem item, AlertDialog.Builder dialog) {
-        dialog.setPositiveButton("Vägbeskrivning", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Directions", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 try {
@@ -98,7 +98,7 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
                                     + item.getLatitude() + "," + item.getLongitude()));
                     stationActivity.startActivity(intent);
                 } catch (Exception e) {
-                    Toast.makeText(stationActivity, "Kunde inte visa kartan", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(stationActivity, "Could not show map", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -116,7 +116,7 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
                             stationActivity.startActivity(intent);
                         }
                     } catch (Exception e) {
-                        Toast.makeText(stationActivity, "Kunde inte placera samtalet", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(stationActivity, "Could not make call", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -130,8 +130,8 @@ public class StationOverlay extends ItemizedOverlay<OverlayItem> {
         for (String aPhoneNo : phoneNo) {
             items.add("Tel: " + aPhoneNo);
         }
-        items.add("Pris: " + item.getPrice() + " kr");
-        items.add("Öppetider: " + item.getOpeningHours());
+        items.add("Price: " + item.getPrice());
+        items.add("Opening hours: " + item.getOpeningHours());
 
         return items;
     }

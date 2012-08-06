@@ -73,7 +73,7 @@ public class StationActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                mapView.getOverlays().clear();
+                mapView.getOverlays().remove(stationOverlay);
                 Address locationAddress = lookupAddressFromLocation(Locale.getDefault(), currentLocation);
                 loadStations(new StationLoader(this, locationAddress));
         }
@@ -139,7 +139,8 @@ public class StationActivity extends MapActivity {
                         address = Country.valueOf(countries.getSelectedItem().toString()).getAddress();
                         zoomLevel = 6;
                     } else {
-                        address = lookupAddressFromLocationName(new Locale(Country.valueOf(countries.getSelectedItem().toString()).getCountryCode()), city);
+                        String country = countries.getSelectedItem().toString();
+                        address = lookupAddressFromLocationName(new Locale(Country.valueOf(country).getCountryCode()), city);
                     }
                 }
                 loadStations(new StationLoader(StationActivity.this, address, zoomLevel));
@@ -167,17 +168,22 @@ public class StationActivity extends MapActivity {
         return extractAddress(addresses);
     }
 
-    private Address lookupAddressFromLocationName(Locale locale, String locationName) {
+    private Address lookupAddressFromLocationName(Locale locale, String city) {
         Geocoder geocoder = new Geocoder(this, locale);
         List<Address> addresses = Collections.emptyList();
-        if (StringUtils.hasText(locationName)) {
+        if (StringUtils.hasText(city)) {
             try {
-                addresses = geocoder.getFromLocationName(locationName, 1);
+                addresses = geocoder.getFromLocationName(city, 1);
             } catch (IOException e) {
                 //ignore
             }
         }
-        return extractAddress(addresses);
+        Address address = extractAddress(addresses);
+        if (address != null) {
+            address.setLocality(city); //set the location name according to value stored in GAE
+        }
+
+        return address;
     }
 
     private Address extractAddress(List<Address> addresses) {

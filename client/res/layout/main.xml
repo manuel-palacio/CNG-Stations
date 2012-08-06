@@ -12,7 +12,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:clickable="true"
-            android:apiKey="0c_Uhc0LQFcBdscPDkxKgq94VWMmLoXF02lfBQQ"
+            android:apiKey="0c_Uhc0LQFcCPEXGL4dsuCIm_K_S5RYXLFT70ew"
             />
 
     <!--android:apiKey="0c_Uhc0LQFcBdscPDkxKgq94VWMmLoXF02lfBQQ" PROD-->
@@ -21,26 +21,28 @@
 
     <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="false"
-            android:layout_centerHorizontal="true">
+            android:layout_alignParentBottom="false">
 
         <Spinner
                 android:id="@+id/countries"
+                android:layout_weight="0.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
         <Spinner
                 android:id="@+id/cities"
-                android:layout_width="100dip"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
                 android:layout_height="wrap_content"/>
 
         <ImageButton
-                android:contentDescription="button"
+                android:contentDescription=""
                 android:id="@+id/btnSubmit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:src="@drawable/navigation_forward"
                 android:text="@string/show"/>
 
