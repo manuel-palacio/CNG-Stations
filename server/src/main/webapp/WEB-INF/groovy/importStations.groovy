@@ -37,6 +37,8 @@ urlScraper.each { scraper ->
     datastore.put entitiesToSave
 }
 
+memcache.clearAll()
+
 
 
 

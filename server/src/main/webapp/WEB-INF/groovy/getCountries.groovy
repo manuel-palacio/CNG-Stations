@@ -3,7 +3,7 @@ import javax.servlet.http.HttpServletResponse
 
 
 if ('countries' in memcache) {
-    JSONArray json = memcache['countries']
+    String json = memcache['countries']
     outputData(json)
 
 } else {
@@ -25,9 +25,10 @@ if ('countries' in memcache) {
             json.add(["countryName": it])
         }
 
-        memcache["countries"] = json
+        String jsonString = json.toString()
+        memcache["countries"] = jsonString
 
-       outputData(json)
+       outputData(jsonString)
     } else {
         response.status = HttpServletResponse.SC_NOT_FOUND
     }
@@ -37,6 +38,6 @@ if ('countries' in memcache) {
 private def outputData(def json) {
     response.contentType = "application/json"
     response.setHeader("Cache-Control", "public, max-age=" + 604800)
-    json.write(out)
+    print json
 }
 

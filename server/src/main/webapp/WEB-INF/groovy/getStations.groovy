@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletResponse
 
 
 if (params.countryName && 'stations_' + params.countryName in memcache) {
-    JSONArray json = memcache['stations_' + params.countryName]
+    String json = memcache['stations_' + params.countryName]
     outputData(json)
 
 } else if (params.city && 'stations_' + params.city in memcache) {
-    JSONArray json = memcache['stations_' + params.city]
+    String json = memcache['stations_' + params.city]
     outputData(json)
 
 } else {
@@ -39,15 +39,16 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
                     "openingHours": it.openingHours, "price": it.price, "countryName": it.countryName])
         }
 
+        String jsonString = json.toString()
         if (params.countryName) {
-            memcache["stations_" + params.countryName] = json
+            memcache["stations_" + params.countryName] = jsonString
         }
 
         if (params.city) {
-            memcache["stations_" + params.city] = json
+            memcache["stations_" + params.city] = jsonString
         }
 
-        outputData(json)
+        outputData(jsonString)
     } else {
         response.status = HttpServletResponse.SC_NOT_FOUND
     }
@@ -57,6 +58,6 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
 private def outputData(def json) {
     response.contentType = "application/json"
     response.setHeader("Cache-Control", "public, max-age=" + 604800)
-    json.write(out)
+    print json
 }
 
