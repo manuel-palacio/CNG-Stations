@@ -32,13 +32,13 @@ import static android.R.layout.simple_spinner_dropdown_item;
 import static android.R.layout.simple_spinner_item;
 
 
-class CitiesLoader extends AsyncTask<String, Integer, List<String>> {
+class CityLoader extends AsyncTask<String, Integer, List<String>> {
     private StationActivity stationActivity;
     private ProgressDialog progressDialog;
     private RestTemplate restTemplate = new RestTemplate();
 
 
-    public CitiesLoader(StationActivity stationActivity) {
+    public CityLoader(StationActivity stationActivity) {
         this.stationActivity = stationActivity;
     }
 

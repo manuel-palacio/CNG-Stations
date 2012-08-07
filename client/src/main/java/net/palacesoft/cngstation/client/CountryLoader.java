@@ -32,12 +32,12 @@ import static android.R.layout.simple_spinner_item;
 import static java.util.Arrays.asList;
 
 
-class CountriesLoader extends AsyncTask<Object, Integer, List<StationDTO>> {
+class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> {
     private StationActivity stationActivity;
     private RestTemplate restTemplate = new RestTemplate();
 
 
-    public CountriesLoader(StationActivity stationActivity) {
+    public CountryLoader(StationActivity stationActivity) {
         this.stationActivity = stationActivity;
     }
 

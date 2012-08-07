@@ -28,6 +28,7 @@ public enum Country {
     Norway("Norway", "NO", 62.0, 10.0),
     France("France", "FR", 46.0, 2.0),
     Germany("Germany", "DE", 51.0, 9.0),
+    Italy("Italy", "IT", 42.8333, 12.8333),
 
     DEFAULT("","", 0.0, 0.0);
 

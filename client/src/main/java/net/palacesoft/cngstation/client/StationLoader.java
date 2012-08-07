@@ -42,10 +42,10 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
     private RestTemplate restTemplate = new RestTemplate();
 
 
-    StationLoader(StationActivity stationActivity, Address address, Integer zoomLevel) {
+    StationLoader(StationActivity stationActivity, Address address, Integer zoomLevel) throws AddressEmptyException {
         this.stationActivity = stationActivity;
         if (address == null) {
-            throw new IllegalArgumentException("Cannot load stations without a location");
+            throw new AddressEmptyException("Cannot load stations without a location");
         }
         this.address = address;
         geoPoint = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
@@ -54,7 +54,7 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
         }
     }
 
-    StationLoader(StationActivity stationActivity, Address address) {
+    StationLoader(StationActivity stationActivity, Address address) throws AddressEmptyException {
         this(stationActivity, address, null);
     }
 
@@ -108,8 +108,8 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
 
     private StationOverlayItem createOverlayItem(StationDTO stationDTO) {
         GeoPoint geoPoint = new GeoPoint((int) (stationDTO.getLatitude() * 1E6), (int) (stationDTO.getLongitude() * 1E6));
-        String stationAddress = stationDTO.getStreet() + " (" + stationDTO.getCity() + ")";
-        return new StationOverlayItem(geoPoint, stationAddress, "", stationDTO);
+        String stationText = stationDTO.getStreet() + "\nPrice: " + stationDTO.getPrice();
+        return new StationOverlayItem(geoPoint, stationText, "", stationDTO);
     }
 
     @Override
@@ -123,7 +123,7 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
             stationActivity.getMapController().setZoom(zoomLevel);
         } else {
             stationActivity.getMapView().getOverlays().remove(stationActivity.getStationOverlay());
-            stationActivity.showInfoMessage("Could not find CNG stations for the actual location");
+            stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());
         }
     }
 }

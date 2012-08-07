@@ -1,7 +1,7 @@
 /**
  * *******************************************************************************************************************
  * <p/>
- * Copyright (C) 7/28/12 by Manuel Palacio
+ * Copyright (C) 8/7/12 by Manuel Palacio
  * <p/>
  * **********************************************************************************************************************
  * <p/>
@@ -19,7 +19,8 @@
 package net.palacesoft.cngstation.client;
 
 
-public enum CountryCode {
-
-    SE, NO
+public class AddressEmptyException extends Exception {
+    public AddressEmptyException(String message) {
+        super(message);
+    }
 }

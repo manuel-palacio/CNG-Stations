@@ -23,17 +23,16 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.readystatesoftware.maps.OnSingleTapListener;
+import com.readystatesoftware.maps.TapControlledMapView;
 import net.palacesoft.cngstation.R;
-import net.palacesoft.cngstation.client.mapoverlay.StationOverlay;
+import net.palacesoft.cngstation.client.mapoverlay.StationBalloonOverlay;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -45,9 +44,9 @@ import static org.springframework.util.StringUtils.hasText;
 
 public class StationActivity extends MapActivity {
 
-    private MapView mapView;
+    private TapControlledMapView mapView;
     private MapController mapController;
-    private StationOverlay stationOverlay;
+    private StationBalloonOverlay stationOverlay;
     private Location currentLocation;
     private MyLocationOverlay myLocationOverlay;
     private Spinner countries, cities;
@@ -75,7 +74,11 @@ public class StationActivity extends MapActivity {
             case R.id.refresh:
                 mapView.getOverlays().remove(stationOverlay);
                 Address locationAddress = lookupAddressFromLocation(Locale.getDefault(), currentLocation);
-                loadStations(new StationLoader(this, locationAddress));
+                try {
+                    new StationLoader(this, locationAddress).execute();
+                } catch (AddressEmptyException e) {
+                    showInfoMessage("Could not determine your location");
+                }
         }
 
         return false;
@@ -115,7 +118,7 @@ public class StationActivity extends MapActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
 
                 String country = adapterView.getItemAtPosition(pos).toString();
-                new CitiesLoader(StationActivity.this).execute(country);
+                new CityLoader(StationActivity.this).execute(country);
             }
 
             @Override
@@ -143,14 +146,18 @@ public class StationActivity extends MapActivity {
                         address = lookupAddressFromLocationName(new Locale(Country.valueOf(country).getCountryCode()), city);
                     }
                 }
-                loadStations(new StationLoader(StationActivity.this, address, zoomLevel));
+                try {
+                    new StationLoader(StationActivity.this, address, zoomLevel).execute();
+                } catch (AddressEmptyException e) {
+                    showInfoMessage("Problem finding CNG stations for chosen location");
+                }
             }
         });
     }
 
 
     private void loadAvailableCountriesList() {
-        new CountriesLoader(this).execute();
+        new CountryLoader(this).execute();
     }
 
     private Address lookupAddressFromLocation(Locale locale, Location location) {
@@ -200,7 +207,10 @@ public class StationActivity extends MapActivity {
     }
 
     public void addStationOverlay() {
-        stationOverlay = new StationOverlay(this.getResources().getDrawable(R.drawable.marker), this);
+        stationOverlay = new StationBalloonOverlay(this.getResources().getDrawable(R.drawable.marker), this);
+        stationOverlay.setShowClose(false);
+        stationOverlay.setShowDisclosure(true);
+        stationOverlay.setSnapToCenter(true);
         mapView.getOverlays().add(stationOverlay);
     }
 
@@ -231,24 +241,27 @@ public class StationActivity extends MapActivity {
                     public void run() {
                         progressDialog.dismiss();
                         Address locationAddress = lookupAddressFromLocation(Locale.getDefault(), currentLocation);
-                        loadStations(new StationLoader(StationActivity.this, locationAddress));
+                        try {
+                            new StationLoader(StationActivity.this, locationAddress).execute();
+                        } catch (AddressEmptyException e) {
+                            showInfoMessage("Could not determine your location");
+                        }
                     }
                 });
             }
         });
     }
 
-    private void loadStations(StationLoader stationLoader) {
-        try {
-            stationLoader.execute();
-        } catch (IllegalArgumentException e) {
-            showInfoMessage("Could not determine your location");
-        }
-    }
-
     private void initMap() {
-        mapView = (MapView) findViewById(R.id.mapview);
+        mapView = (TapControlledMapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
+        mapView.setOnSingleTapListener(new OnSingleTapListener() {
+            @Override
+            public boolean onSingleTap(MotionEvent e) {
+                stationOverlay.hideAllBalloons();
+                return true;
+            }
+        });
         mapController = mapView.getController();
     }
 
@@ -261,7 +274,7 @@ public class StationActivity extends MapActivity {
         return mapView;
     }
 
-    public StationOverlay getStationOverlay() {
+    public StationBalloonOverlay getStationOverlay() {
         return stationOverlay;
     }
 
