@@ -16,13 +16,16 @@
  * <p/>
  * **********************************************************************************************************************
  */
-package net.palacesoft.cngstation.client;
+package net.palacesoft.cngstation.client.loader;
 
 import android.app.ProgressDialog;
 import android.location.Address;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.google.android.maps.GeoPoint;
+import net.palacesoft.cngstation.client.AddressEmptyException;
+import net.palacesoft.cngstation.client.StationActivity;
+import net.palacesoft.cngstation.client.StationDTO;
 import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -33,7 +36,7 @@ import java.util.List;
 import static org.springframework.util.StringUtils.hasText;
 
 
-class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>> {
+public class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>> {
     private ProgressDialog progressDialog;
     private GeoPoint geoPoint;
     private Address address;
@@ -42,7 +45,7 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
     private RestTemplate restTemplate = new RestTemplate();
 
 
-    StationLoader(StationActivity stationActivity, Address address, Integer zoomLevel) throws AddressEmptyException {
+    public StationLoader(StationActivity stationActivity, Address address, Integer zoomLevel) throws AddressEmptyException {
         this.stationActivity = stationActivity;
         if (address == null) {
             throw new AddressEmptyException("Cannot load stations without a location");
@@ -54,7 +57,7 @@ class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>>
         }
     }
 
-    StationLoader(StationActivity stationActivity, Address address) throws AddressEmptyException {
+    public StationLoader(StationActivity stationActivity, Address address) throws AddressEmptyException {
         this(stationActivity, address, null);
     }
 

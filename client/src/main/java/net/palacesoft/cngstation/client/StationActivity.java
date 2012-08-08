@@ -32,6 +32,9 @@ import com.google.android.maps.MyLocationOverlay;
 import com.readystatesoftware.maps.OnSingleTapListener;
 import com.readystatesoftware.maps.TapControlledMapView;
 import net.palacesoft.cngstation.R;
+import net.palacesoft.cngstation.client.loader.CityLoader;
+import net.palacesoft.cngstation.client.loader.CountryLoader;
+import net.palacesoft.cngstation.client.loader.StationLoader;
 import net.palacesoft.cngstation.client.mapoverlay.StationBalloonOverlay;
 import org.springframework.util.StringUtils;
 

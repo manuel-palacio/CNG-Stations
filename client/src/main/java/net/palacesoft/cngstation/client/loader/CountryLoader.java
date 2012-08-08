@@ -16,11 +16,13 @@
 * <p/>
 * **********************************************************************************************************************
 */
-package net.palacesoft.cngstation.client;
+package net.palacesoft.cngstation.client.loader;
 
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import net.palacesoft.cngstation.client.StationActivity;
+import net.palacesoft.cngstation.client.StationDTO;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,7 +34,7 @@ import static android.R.layout.simple_spinner_item;
 import static java.util.Arrays.asList;
 
 
-class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> {
+public class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> {
     private StationActivity stationActivity;
     private RestTemplate restTemplate = new RestTemplate();
 

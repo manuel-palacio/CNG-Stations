@@ -16,12 +16,14 @@
  * <p/>
  * **********************************************************************************************************************
  */
-package net.palacesoft.cngstation.client;
+package net.palacesoft.cngstation.client.loader;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import net.palacesoft.cngstation.client.StationActivity;
+import net.palacesoft.cngstation.client.StationDTO;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,7 +34,7 @@ import static android.R.layout.simple_spinner_dropdown_item;
 import static android.R.layout.simple_spinner_item;
 
 
-class CityLoader extends AsyncTask<String, Integer, List<String>> {
+public class CityLoader extends AsyncTask<String, Integer, List<String>> {
     private StationActivity stationActivity;
     private ProgressDialog progressDialog;
     private RestTemplate restTemplate = new RestTemplate();
