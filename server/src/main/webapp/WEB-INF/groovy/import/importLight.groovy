@@ -1,9 +1,8 @@
 import com.google.appengine.api.datastore.Entity
 import groovyx.gaelyk.logging.GroovyLogger
+import net.palacesoft.cngstation.server.scraper.StationScraperFR
 import net.palacesoft.cngstation.server.scraper.StationScraperNO
 import net.palacesoft.cngstation.server.scraper.StationScraperSE
-import net.palacesoft.cngstation.server.scraper.StationScraperFR
-import net.palacesoft.cngstation.server.scraper.StationScraperDE
 
 def log = new GroovyLogger("importStations")
 
@@ -12,7 +11,6 @@ def urlScraper = [:]
 urlScraper.put("SE", new StationScraperSE())
 urlScraper.put("NO", new StationScraperNO())
 urlScraper.put("FR", new StationScraperFR())
-urlScraper.put("DE", new StationScraperDE())
 
 def entitiesToSave = []
 

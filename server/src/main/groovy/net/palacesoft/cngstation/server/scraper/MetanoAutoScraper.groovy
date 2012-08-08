@@ -18,51 +18,33 @@
  */
 package net.palacesoft.cngstation.server.scraper
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor
-import com.gargoylesoftware.htmlunit.html.HtmlTable
 import com.gargoylesoftware.htmlunit.WebClient
-import com.gargoylesoftware.htmlunit.ElementNotFoundException
-
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor
+import com.gargoylesoftware.htmlunit.html.HtmlPage
+import com.gargoylesoftware.htmlunit.html.HtmlTable
 
 abstract class MetanoAutoScraper implements Scraper {
 
     protected def webClient
     protected String countryCode, countryName
+    protected int openCellNumber
 
-    MetanoAutoScraper(String countryCode, String countryName) {
+    MetanoAutoScraper(String countryCode, String countryName, int openCellNumber) {
         webClient = new WebClient()
         webClient.javaScriptEnabled = false
         webClient.cssEnabled = false
         this.countryCode = countryCode
         this.countryName = countryName
+        this.openCellNumber = openCellNumber
     }
 
-    protected List<HtmlPage> gatherPages(HtmlPage firstPage) {
-        List<HtmlPage> pages = []
-        try {
-            getAndSavePage(pages, firstPage)
-        } catch (ElementNotFoundException e) {
-            //ignore
-        }
-        return pages
 
-    }
-
-    def anchor = {HtmlPage nextPage -> nextPage.getAnchorByText("Successiva >>").click()}
-
-    private def getAndSavePage(List<HtmlPage> pages, HtmlPage htmlPage) {
-
-        pages << htmlPage
-        getAndSavePage(pages, anchor(htmlPage))
-    }
-
-    protected Set<Station> scrapePage(HtmlPage page, int openCellNo) {
+    protected Set<Station> scrapePage(HtmlPage page) {
         Set gasStations = []
         List<?> links = page.getByXPath("//a[@title='Dettagli']")
 
         links.each { HtmlAnchor stationLink ->
-            boolean isOpen = stationLink.getParentNode().getParentNode().getCell(openCellNo).asText() == "Aperto"
+            boolean isOpen = stationLink.getParentNode().getParentNode().getCell(openCellNumber).asText() == "Aperto"
             if (isOpen) {
                 HtmlPage stationPage = stationLink.click()
                 HtmlTable infoTable = stationPage.getByXPath("//table[@class='forumline']").get(0)

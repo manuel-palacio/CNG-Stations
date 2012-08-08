@@ -20,16 +20,17 @@ package net.palacesoft.cngstation.server.scraper
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 
-class StationScraperDE extends MetanoAutoScraper {
+class StationScraperIT extends MetanoAutoScraper {
 
-    def static COUNTRY_CODE = "DE"
-    def static COUNTRY_NAME = "Germany"
-    def static  OPEN_CELL_NO = 8
-    def static URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=9"
+    def static COUNTRY_CODE = "IT"
+    def static COUNTRY_NAME = "Italy"
+    def static  OPEN_CELL_NO = 9
+    def static URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=1"
 
-    StationScraperDE() {
+    StationScraperIT() {
         super(COUNTRY_CODE, COUNTRY_NAME, OPEN_CELL_NO)
     }
+
 
     def anchor = {HtmlPage nextPage -> nextPage.getAnchorByText("Successiva >>").click()}
 

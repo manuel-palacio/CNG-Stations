@@ -1,5 +1,6 @@
 import net.sf.json.JSONArray
 import javax.servlet.http.HttpServletResponse
+import com.google.appengine.api.datastore.Query
 
 
 if ('countries' in memcache) {
@@ -7,8 +8,11 @@ if ('countries' in memcache) {
     outputData(json)
 
 } else {
-    def results = datastore.iterate {
+
+
+    def results = datastore.execute {
         select countryName: String from Station
+        chunkSize 100
     }
 
     def uniqueResults = new HashSet<String>()

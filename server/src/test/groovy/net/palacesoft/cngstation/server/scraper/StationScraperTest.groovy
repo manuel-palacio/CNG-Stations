@@ -21,20 +21,20 @@ class StationScraperTest {
     }
 
     @Test
-        void scrapeFR() {
+    void scrapeFR() {
 
-            def stations = new StationScraperFR().scrape()
+        def stations = new StationScraperFR().scrape()
 
-            assert !stations.empty
+        assert !stations.empty
 
-            stations.each {
-                assert it.city
-                assert it.street
-                assert it.latitude
-                assert it.longitude
-                assert it.price
-            }
+        stations.each {
+            assert it.city
+            assert it.street
+            assert it.latitude
+            assert it.longitude
+            assert it.price
         }
+    }
 
     @Test
     void scrapeNO() {
@@ -57,6 +57,22 @@ class StationScraperTest {
     void scrapeDE() {
 
         def stations = new StationScraperDE().scrape()
+
+        assert !stations.empty
+
+        stations.each {
+            assert it.city
+            assert it.street
+            assert it.latitude
+            assert it.longitude
+            assert it.price
+        }
+    }
+
+    @Test
+    void scrapeIT() {
+
+        def stations = new StationScraperIT().scrape()
 
         assert !stations.empty
 

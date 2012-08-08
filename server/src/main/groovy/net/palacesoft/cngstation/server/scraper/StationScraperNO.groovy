@@ -28,12 +28,12 @@ class StationScraperNO extends MetanoAutoScraper {
     def URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=21"
 
     StationScraperNO() {
-        super(COUNTRY_CODE, COUNTRY_NAME)
+        super(COUNTRY_CODE, COUNTRY_NAME, OPEN_CELL_NO)
     }
 
     Set<Station> scrape() {
         HtmlPage page = webClient.getPage(URL)
-        scrapePage(page, OPEN_CELL_NO)
+        scrapePage(page)
     }
 
 

@@ -28,13 +28,13 @@ class StationScraperFR extends MetanoAutoScraper {
     def URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=8"
 
     StationScraperFR() {
-        super(COUNTRY_CODE, COUNTRY_NAME)
+        super(COUNTRY_CODE, COUNTRY_NAME, OPEN_CELL_NO)
     }
 
     @Override
     Set<Station> scrape() {
-        HtmlPage page = webClient.getPage(URL) //webclient "knows" how to use URLs correctly in GAE
-        scrapePage(page, OPEN_CELL_NO)
+        HtmlPage page = webClient.getPage(URL)
+        scrapePage(page)
     }
 
     @Override
