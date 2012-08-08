@@ -3,4 +3,5 @@
     <string name="app_name">CNG Stations</string>
     <string name="show">Show</string>
     <string name="refresh">Refresh</string>
+    <string name="search">Search</string>
 </resources>

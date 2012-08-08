@@ -22,9 +22,14 @@ package net.palacesoft.cngstation.client.mapoverlay;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.Toast;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 import net.palacesoft.cngstation.client.StationActivity;
@@ -132,6 +137,44 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
         return items;
     }
+
+    /*@Override
+    public void draw(android.graphics.Canvas canvas, MapView mapView, boolean shadow) {
+        super.draw(canvas, mapView, shadow);
+
+        if (!shadow) {
+            //cycle through all overlays
+            for (OverlayItem item : overlayItems) {
+                // Converts lat/lng-Point to coordinates on the screen
+                GeoPoint point = item.getPoint();
+                Point ptScreenCoord = new Point();
+                mapView.getProjection().toPixels(point, ptScreenCoord);
+
+                //Paint
+                Paint paint = new Paint();
+                //paint.setTextAlign(Paint.Align.CENTER);
+                paint.setTextSize(30);
+                paint.setARGB(150, 0, 0, 0); // alpha, r, g, b (Black, semi see-through)
+                StationOverlayItem stationOverlayItem = (StationOverlayItem) item;
+                //show text to the right of the icon
+                canvas.drawText(stationOverlayItem.getPrice(), ptScreenCoord.x + 30, ptScreenCoord.y, paint);
+
+            }
+        }
+
+
+    }*/
+
+    public void removeOverlay(OverlayItem overlay) {
+        overlayItems.remove(overlay);
+        populate();
+    }
+
+    public void clear() {
+        overlayItems.clear();
+        populate();
+    }
+
 
     public void addOverlayItems(List<StationOverlayItem> overlayItems) {
         this.overlayItems.addAll(overlayItems);

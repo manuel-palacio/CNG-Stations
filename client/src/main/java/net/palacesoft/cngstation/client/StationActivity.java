@@ -82,6 +82,20 @@ public class StationActivity extends MapActivity {
                 } catch (AddressEmptyException e) {
                     showInfoMessage("Could not determine your location");
                 }
+
+                break;
+
+            case R.id.search:
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.searchLayout);
+                if (linearLayout.getVisibility() == View.VISIBLE) {
+                    linearLayout.setVisibility(View.INVISIBLE);
+                } else {
+                    linearLayout.setVisibility(View.VISIBLE);
+                    if (countries == null) {
+                        initSearchForm();
+                        loadAvailableCountriesList();
+                    }
+                }
         }
 
         return false;
@@ -107,10 +121,6 @@ public class StationActivity extends MapActivity {
 
         initMap();
 
-        initSearchForm();
-
-        loadAvailableCountriesList();
-
         initMyLocationOverlay();
     }
 
@@ -121,7 +131,7 @@ public class StationActivity extends MapActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
 
                 String country = adapterView.getItemAtPosition(pos).toString();
-                new CityLoader(StationActivity.this).execute(country);
+                new CityLoader(StationActivity.this, country).execute();
             }
 
             @Override
@@ -131,7 +141,7 @@ public class StationActivity extends MapActivity {
         cities = (Spinner) findViewById(R.id.cities);
 
 
-        ImageButton btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
+        Button btnSubmit = (Button) findViewById(R.id.btnSubmit);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -156,6 +166,7 @@ public class StationActivity extends MapActivity {
                 }
             }
         });
+
     }
 
 

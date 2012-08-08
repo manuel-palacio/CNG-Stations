@@ -38,15 +38,17 @@ public class CityLoader extends AsyncTask<String, Integer, List<String>> {
     private StationActivity stationActivity;
     private ProgressDialog progressDialog;
     private RestTemplate restTemplate = new RestTemplate();
+    private String country;
 
 
-    public CityLoader(StationActivity stationActivity) {
+    public CityLoader(StationActivity stationActivity, String country) {
         this.stationActivity = stationActivity;
+        this.country = country;
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog = stationActivity.createProgressDialog("Loading cities...");
+        progressDialog = stationActivity.createProgressDialog("Loading cities for " + country);
         progressDialog.show();
     }
 
@@ -54,7 +56,7 @@ public class CityLoader extends AsyncTask<String, Integer, List<String>> {
     protected List<String> doInBackground(String... params) {
         StationDTO[] dtos = new StationDTO[0];
         try {
-            dtos = restTemplate.getForObject("http://fuelstationservice.appspot.com/cities/country/{query}", StationDTO[].class, params[0]);
+            dtos = restTemplate.getForObject("http://fuelstationservice.appspot.com/cities/country/{query}", StationDTO[].class, country);
         } catch (RestClientException e) {
             Log.e(StationActivity.class.getName(), e.getMessage(), e);
         }

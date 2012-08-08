@@ -18,6 +18,7 @@
 */
 package net.palacesoft.cngstation.client.loader;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -37,11 +38,18 @@ import static java.util.Arrays.asList;
 public class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> {
     private StationActivity stationActivity;
     private RestTemplate restTemplate = new RestTemplate();
+    private ProgressDialog progressDialog;
 
 
     public CountryLoader(StationActivity stationActivity) {
         this.stationActivity = stationActivity;
     }
+
+    @Override
+        protected void onPreExecute() {
+            progressDialog = stationActivity.createProgressDialog("Loading countries...");
+            progressDialog.show();
+        }
 
     @Override
     protected List<StationDTO> doInBackground(Object... objects) {
@@ -56,6 +64,7 @@ public class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> 
 
     @Override
     protected void onPostExecute(List<StationDTO> stations) {
+        progressDialog.dismiss();
         List<String> countriesList = new ArrayList<String>();
         for (StationDTO stationDTO : stations) {
             countriesList.add(stationDTO.getCountryName());
