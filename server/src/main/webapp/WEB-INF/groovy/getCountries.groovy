@@ -1,38 +1,31 @@
 import net.sf.json.JSONArray
 import javax.servlet.http.HttpServletResponse
-import com.google.appengine.api.datastore.Query
 
 
 if ('countries' in memcache) {
     String json = memcache['countries']
     outputData(json)
-
 } else {
 
-
     def results = datastore.execute {
-        select countryName: String from Station
-        chunkSize 100
+        select all from Country
+        sort asc by countryName
     }
 
-    def uniqueResults = new HashSet<String>()
 
-    results.each {
-        uniqueResults << it.countryName
-    }
 
-    if (!uniqueResults.empty) {
+    if (!results.empty) {
 
         JSONArray json = new JSONArray()
 
-        uniqueResults.sort().each {
-            json.add(["countryName": it])
+        results.each {
+            json.add(["countryName": it.countryName])
         }
 
         String jsonString = json.toString()
         memcache["countries"] = jsonString
 
-       outputData(jsonString)
+        outputData(jsonString)
     } else {
         response.status = HttpServletResponse.SC_NOT_FOUND
     }
@@ -41,7 +34,7 @@ if ('countries' in memcache) {
 
 private def outputData(def json) {
     response.contentType = "application/json"
-    response.setHeader("Cache-Control", "public, max-age=" + 604800)
+//    response.setHeader("Cache-Control", "public, max-age=" + 604800)
     print json
 }
 

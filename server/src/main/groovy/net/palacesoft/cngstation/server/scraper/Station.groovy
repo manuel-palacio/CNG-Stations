@@ -18,27 +18,28 @@
  */
 package net.palacesoft.cngstation.server.scraper
 
-import groovyx.gaelyk.datastore.Unindexed
-import groovyx.gaelyk.datastore.Key
 import groovyx.gaelyk.datastore.Entity
+import groovyx.gaelyk.datastore.Indexed
+import groovyx.gaelyk.datastore.Key
 
-
-@Entity(unindexed=false)
-class Station implements Serializable{
+@Entity
+class Station implements Serializable {
     @Key String id
     String countryCode
-    String countryName;
-    String city
-    @Unindexed String street
-    @Unindexed String operatedBy
-    @Unindexed String openingHours
-    @Unindexed String price
-    @Unindexed String latitude
-    @Unindexed String longitude
-    @Unindexed String payment
-    @Unindexed String phoneNo
-    @Unindexed String web
-    @Unindexed String email
+    @Indexed String countryName;
+    @Indexed String city
+    String street
+    String operatedBy
+    String openingHours
+    String price
+    String latitude
+    String longitude
+    String payment
+    String phoneNo
+    String web
+    String email
+    String type
+    @Indexed Date dateUpdated = new Date()
 
     boolean equals(o) {
         if (this.is(o)) return true

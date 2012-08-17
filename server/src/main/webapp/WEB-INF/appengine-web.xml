@@ -2,7 +2,7 @@
     <!-- Your application ID -->
     <application>fuelstationservice</application>
 
-    <version>2</version>
+    <version>4</version>
 
     <threadsafe>true</threadsafe>
 
@@ -26,6 +26,7 @@
     -->
 
     <static-files>
+        <include path="/favicon.ico" />
         <exclude path="/WEB-INF/**.groovy"/>
         <exclude path="**.gtpl"/>
     </static-files>

@@ -57,7 +57,7 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
 
 private def outputData(def json) {
     response.contentType = "application/json"
-    response.setHeader("Cache-Control", "public, max-age=" + 604800)
-    print json
+   // response.setHeader("Cache-Control", "public, max-age=" + 604800)
+    out << json
 }
 

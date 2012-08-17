@@ -16,13 +16,20 @@
  *
  ***********************************************************************************************************************
  */
-
 package net.palacesoft.cngstation.server.scraper
 
-public interface Scraper {
+class ScraperFactory {
 
-    public Set<Station> scrapePage(String url)
+    public static Scraper newInstance(def params) {
+        if (params.countryCode == "SE") {
+            return new StationScraperSE(countryCode: params.countryCode, countryName: params.countryName)
+        }
 
-    public List<String> getUrlsToScrape(String baseUrl)
+        if (params.countryCode == "IT" || params.countryCode == "FR") {
+            return new MetanoAutoScraper(openCellNumber: 9, countryCode: params.countryCode, countryName: params.countryName)
+        }
+
+        return new MetanoAutoScraper(openCellNumber: 8, countryCode: params.countryCode, countryName: params.countryName)
+    }
 
 }

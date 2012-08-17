@@ -23,25 +23,62 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
 
-abstract class MetanoAutoScraper implements Scraper {
+public class MetanoAutoScraper implements Scraper {
 
-    protected def webClient
-    protected String countryCode, countryName
-    protected int openCellNumber
+    private int openCellNumber
 
-    MetanoAutoScraper(String countryCode, String countryName, int openCellNumber) {
-        webClient = new WebClient()
+    private String baseUrl = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=%"
+    private String countryCode, countryName
+
+    def webClient = new WebClient()
+
+    MetanoAutoScraper(Map params) {
+
+        this.openCellNumber = params.openCellNumber
+        this.countryCode = params.countryCode
+        this.countryName = params.countryName
+
         webClient.javaScriptEnabled = false
         webClient.cssEnabled = false
-        this.countryCode = countryCode
-        this.countryName = countryName
-        this.openCellNumber = openCellNumber
     }
 
 
-    protected Set<Station> scrapePage(HtmlPage page) {
+    private void getPage(List urls, HtmlPage htmlPage) {
+
+        urls << htmlPage.getUrl().toString()
+        getPage(urls, htmlPage.getAnchorByText("Successiva >>").click())
+    }
+
+
+    public List<String> getUrlsToScrape(String baseUrl) {
+
+        if (!baseUrl) {
+            throw new IllegalArgumentException("Base URL cannot be null")
+        }
+
+        String url = this.baseUrl.replace("%", baseUrl)
+        List urlList = []
+
+        HtmlPage firstPage = webClient.getPage(url)
+
+        try {
+            getPage(urlList, firstPage)
+        } catch (Exception e) {
+            //ignore
+        }
+
+        return urlList
+
+    }
+
+
+    public Set<Station> scrapePage(String url) {
+        if (!url) {
+            throw new IllegalArgumentException("Url cannot be null")
+        }
+
         Set gasStations = []
-        List<?> links = page.getByXPath("//a[@title='Dettagli']")
+        List<?> links = webClient.getPage(url).getByXPath("//a[@title='Dettagli']")
 
         links.each { HtmlAnchor stationLink ->
             boolean isOpen = stationLink.getParentNode().getParentNode().getCell(openCellNumber).asText() == "Aperto"
@@ -57,12 +94,12 @@ abstract class MetanoAutoScraper implements Scraper {
                 }
 
                 def phoneNos = infoTable.getRow(2).getCell(1).asText().trim().split("-")
-                String coordinates = infoTable.getRow(3).getCell(1).asText().trim()
+                String coordinates = infoTable.getRow(3).getCell(1).asText().trim().replaceFirst("-", "&")
 
-                def latitudeRegExp = coordinates.split("-")[0] =~ /(lat.)\s(.*)/
-                def longitudeRegExp = coordinates.split("-")[1] =~ /(long.)\s(.*)/
-                String latitude = latitudeRegExp[0][2]
-                String longitude = longitudeRegExp[0][2]
+                def latitudeRegExp = coordinates.split("&")[0] =~ /(lat.)\s(.*)/
+                def longitudeRegExp = coordinates.split("&")[1] =~ /(long.)\s(.*)/
+                String latitude = latitudeRegExp[0][2].trim()
+                String longitude = longitudeRegExp[0][2].trim()
 
                 String price = infoTable.getRow(6).getCell(1).asText().replaceAll("\\(.*\\)", "").trim()
                 String operatedBy = infoTable.getRow(7).getCell(1).asText().trim()
@@ -74,7 +111,7 @@ abstract class MetanoAutoScraper implements Scraper {
 
                     Station station = new Station(id: id, street: street, city: city, phoneNo: phoneNos.join(","), latitude: latitude,
                             longitude: longitude, price: price, operatedBy: operatedBy, openingHours: openingHours,
-                            countryCode: countryCode, countryName: countryName)
+                            countryCode: countryCode, countryName: countryName, type: StationType.CNG.name())
 
                     gasStations << station
                 }

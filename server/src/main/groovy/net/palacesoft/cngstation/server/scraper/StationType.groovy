@@ -1,7 +1,7 @@
 /**
  ********************************************************************************************************************
  *
- * Copyright (C) 8/4/12 by Manuel Palacio
+ * Copyright (C) 8/14/12 by Manuel Palacio
  *
  ***********************************************************************************************************************
  *
@@ -18,27 +18,8 @@
  */
 package net.palacesoft.cngstation.server.scraper
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage
+public enum StationType {
 
-class StationScraperFR extends MetanoAutoScraper {
+    CNG
 
-    def static COUNTRY_CODE = "FR"
-    def static COUNTRY_NAME = "France"
-    def static  OPEN_CELL_NO = 9
-    def URL = "http://www.metanoauto.com/modules.php?name=Distributori&op=DistUELista&p=8"
-
-    StationScraperFR() {
-        super(COUNTRY_CODE, COUNTRY_NAME, OPEN_CELL_NO)
-    }
-
-    @Override
-    Set<Station> scrape() {
-        HtmlPage page = webClient.getPage(URL)
-        scrapePage(page)
-    }
-
-    @Override
-    String toString() {
-        return "Scraper ${COUNTRY_CODE} (${URL})"
-    }
 }

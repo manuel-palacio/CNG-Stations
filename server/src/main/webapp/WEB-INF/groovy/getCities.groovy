@@ -12,6 +12,8 @@ if ('cities_' + params.countryName in memcache) {
     def results = datastore.iterate {
         select city: String from Station
         where countryName == params.countryName
+        prefetchSize 200
+        chunkSize 200
     }
 
     def uniqueResults = new HashSet<String>()
@@ -39,7 +41,7 @@ if ('cities_' + params.countryName in memcache) {
 
 private def outputData(String json) {
     response.contentType = "application/json"
-    response.setHeader("Cache-Control", "public, max-age=" + 604800)
-    print json
+   // response.setHeader("Cache-Control", "public, max-age=" + 604800)
+    out << json
 }
 

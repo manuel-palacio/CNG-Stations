@@ -21,52 +21,70 @@ package net.palacesoft.cngstation.server.scraper
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
+import groovyx.gaelyk.GaelykBindings
 
 class StationScraperSE implements Scraper {
 
-    def COUNTRY_CODE = "SE"
-    def COUNTRY_NAME = "Sweden"
 
-    def URL = "http://www.gasbilen.se/Att-tanka-din-gasbil/Tankstallelista"
+    private String countryCode, countryName
 
+    def webClient = new WebClient()
 
-    Set<Station> scrape() {
-        Set gasStations = []
-        def webClient = new WebClient()
+    StationScraperSE(Map params) {
+        this.countryCode = params.countryCode
+        this.countryName = params.countryName
+
         webClient.javaScriptEnabled = false
         webClient.cssEnabled = false
-        HtmlPage page = webClient.getPage(URL)
+    }
+
+    List<String> getUrlsToScrape(String baseUrl) {
+        return [baseUrl]
+    }
+
+    public Set<Station> scrapePage(String url) {
+
+        if(!url){
+            throw new IllegalArgumentException("Url cannot be null")
+        }
+
+        Set gasStations = []
+
+        HtmlPage page = webClient.getPage(url)
 
         page.getElementById("tankstallelist").getHtmlElementsByTagName("table").each { HtmlTable table ->
 
-            def wholeAddress = table.getRow(0).getCell(0).asText()
-            def city = wholeAddress.split(",")[0].trim()
-            def street = wholeAddress.split(",")[1].trim()
-            def operatedBy = table.getRow(1).getCell(1).asText().trim()
-            def openingHours = table.getRow(2).getCell(1).asText().trim()
-            def payment = table.getRow(3).getCell(1).asText().trim()
-            def price = table.getRow(4).getCell(1).asText().trim()
-            def telephones = table.getRow(5).getCell(1).asText().trim().split(",")
-            def phones = []
-            telephones.each { phone ->
-                if (phone) {
-                    def m = phone =~ /([\w\W]*\s)*(\d*[-\/][\d\s]*)/
-                    phones << m[0][2].replaceAll("\\D", "")
+            String wholeAddress = table.getRow(0).getCell(0).asText()
+            String city = wholeAddress.split(",")[0].trim()
+
+            if (city) {
+                def street = wholeAddress.split(",")[1].trim()
+                def operatedBy = table.getRow(1).getCell(1).asText().trim()
+                def openingHours = table.getRow(2).getCell(1).asText().trim()
+                def payment = table.getRow(3).getCell(1).asText().trim()
+                def price = table.getRow(4).getCell(1).asText().trim()
+                def telephones = table.getRow(5).getCell(1).asText().trim().split(",")
+                def phones = []
+                telephones.each { phone ->
+                    if (phone) {
+                        def m = phone =~ /([\w\W]*\s)*(\d*[-\/][\d\s]*)/
+                        phones << m[0][2].replaceAll("\\D", "")
+                    }
                 }
-            }
 
-            String coordinates = table.getRow(6).getCell(1).asText().trim()
-            String latitude = coordinates.split(",")[0].split(":")[1].trim()
-            String longitude = coordinates.split(",")[1].split(":")[1].trim()
+                String coordinates = table.getRow(6).getCell(1).asText().trim()
+                String latitude = coordinates.split(",")[0].split(":")[1].trim()
+                String longitude = coordinates.split(",")[1].split(":")[1].trim()
 
-            if (latitude && longitude) {
-                String id = longitude + latitude
+                if (latitude && longitude) {
+                    String id = longitude + latitude
 
-                Station station = new Station(id: id, city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
-                        payment: payment, price: price, phoneNo: phones.join(","), latitude: latitude, longitude: longitude,
-                        countryCode: COUNTRY_CODE, countryName:COUNTRY_NAME )
+                    Station station = new Station(id: id, city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
+                            payment: payment, price: price, phoneNo: phones.join(","), latitude: latitude, longitude: longitude,
+                            countryCode: countryCode, countryName: countryName)
 
-                gasStations << station
+                    gasStations << station
+                }
             }
 
         }
@@ -74,10 +92,5 @@ class StationScraperSE implements Scraper {
 
         return gasStations
 
-    }
-
-    @Override
-    String toString() {
-        return "Scraper ${COUNTRY_CODE} (${URL})"
     }
 }

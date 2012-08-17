@@ -3,6 +3,12 @@
     <datastore-index kind="Station" ancestor="false" source="manual">
         <property name="countryName" direction="asc"/>
         <property name="city" direction="asc"/>
+        <property name="dateUpdated" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="ReadableStation" ancestor="false" source="manual">
+        <property name="countryName" direction="asc"/>
+        <property name="city" direction="asc"/>
     </datastore-index>
 
 
