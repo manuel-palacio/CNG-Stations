@@ -29,6 +29,15 @@ public class StationDTO {
     private String phoneNo;
     private String countryCode;
     private String countryName;
+    private String filteredPrice;
+
+    public String getFilteredPrice() {
+        return filteredPrice;
+    }
+
+    public void setFilteredPrice(String filteredPrice) {
+        this.filteredPrice = filteredPrice;
+    }
 
     public String getCountryName() {
         return countryName;

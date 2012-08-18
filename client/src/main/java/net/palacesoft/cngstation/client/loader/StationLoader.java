@@ -36,7 +36,7 @@ import java.util.List;
 import static org.springframework.util.StringUtils.hasText;
 
 
-public class StationLoader extends AsyncTask<Object, Integer, List<StationOverlayItem>> {
+public class StationLoader extends AsyncTask<String, Integer, List<StationOverlayItem>> {
     private ProgressDialog progressDialog;
     private GeoPoint geoPoint;
     private Address address;
@@ -64,13 +64,14 @@ public class StationLoader extends AsyncTask<Object, Integer, List<StationOverla
 
     @Override
     protected void onPreExecute() {
+        stationActivity.addStationOverlay();
         progressDialog = stationActivity.createProgressDialog("Loading CNG map...");
         progressDialog.show();
     }
 
 
     @Override
-    protected List<StationOverlayItem> doInBackground(Object... params) {
+    protected List<StationOverlayItem> doInBackground(String... params) {
         List<StationOverlayItem> results = new ArrayList<StationOverlayItem>();
         String locality = address.getLocality();
         String countryName = address.getCountryName();
@@ -111,8 +112,8 @@ public class StationLoader extends AsyncTask<Object, Integer, List<StationOverla
 
     private StationOverlayItem createOverlayItem(StationDTO stationDTO) {
         GeoPoint geoPoint = new GeoPoint((int) (stationDTO.getLatitude() * 1E6), (int) (stationDTO.getLongitude() * 1E6));
-        String stationText = stationDTO.getStreet() + "\nPrice: " + stationDTO.getPrice();
-        return new StationOverlayItem(geoPoint, stationText, "", stationDTO);
+        String stationText = stationDTO.getStreet();
+        return new StationOverlayItem(geoPoint, stationText, "Price: " + stationDTO.getPrice(), stationDTO);
     }
 
     @Override
@@ -120,12 +121,8 @@ public class StationLoader extends AsyncTask<Object, Integer, List<StationOverla
         progressDialog.dismiss();
 
         if (!overlayItems.isEmpty()) {
-            stationActivity.addStationOverlay();
-            stationActivity.getStationOverlay().addOverlayItems(overlayItems);
-            stationActivity.getMapController().animateTo(geoPoint);
-            stationActivity.getMapController().setZoom(zoomLevel);
+            stationActivity.showStations(overlayItems, geoPoint, zoomLevel);
         } else {
-            stationActivity.getMapView().getOverlays().remove(stationActivity.getStationOverlay());
             stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());
         }
     }

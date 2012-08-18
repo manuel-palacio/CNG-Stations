@@ -28,6 +28,8 @@ public enum Country {
     Norway("Norway", "NO", 62.0, 10.0),
     France("France", "FR", 46.0, 2.0),
     Germany("Germany", "DE", 51.0, 9.0),
+    Spain("Spain", "ES", 40.0, -4.0),
+    Austria("Austria", "AT", 47.3333, 13.3333),
     Italy("Italy", "IT", 42.8333, 12.8333),
 
     DEFAULT("","", 0.0, 0.0);
@@ -51,7 +53,7 @@ public enum Country {
 
 
     public Address getAddress() {
-        Address address = new Address(Locale.getDefault());
+        Address address = new Address(Locale.ENGLISH);
         address.setLatitude(latitude);
         address.setLongitude(longitude);
         address.setCountryCode(countryCode);

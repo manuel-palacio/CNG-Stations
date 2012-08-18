@@ -55,7 +55,7 @@ public class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> 
     protected List<StationDTO> doInBackground(Object... objects) {
         StationDTO[] dtos = new StationDTO[0];
         try {
-            dtos = restTemplate.getForObject("http://fuelstationservice.appspot.com/countries", StationDTO[].class);
+            dtos = restTemplate.getForObject("http://fuelstationservice.appspot.com/country", StationDTO[].class);
         } catch (RestClientException e) {
             Log.e(StationActivity.class.getName(), e.getMessage(), e);
         }
@@ -69,9 +69,7 @@ public class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> 
         for (StationDTO stationDTO : stations) {
             countriesList.add(stationDTO.getCountryName());
         }
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(stationActivity,
-                simple_spinner_item, countriesList);
-        dataAdapter.setDropDownViewResource(simple_spinner_dropdown_item);
-        stationActivity.getCountries().setAdapter(dataAdapter);
+
+        stationActivity.setCountries(countriesList);
     }
 }

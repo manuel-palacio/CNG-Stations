@@ -34,8 +34,7 @@ import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 import net.palacesoft.cngstation.client.StationActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
@@ -173,6 +172,41 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
     public void clear() {
         overlayItems.clear();
         populate();
+    }
+
+    public void popupCheapest() {
+        List<OverlayItem> copy = new ArrayList<OverlayItem>(overlayItems);
+
+        if (copy.size() == 1) {
+            tapOverlay(copy.get(0));
+            return;
+        }
+
+        try {
+            Collections.sort(copy, new Comparator<OverlayItem>() {
+                @Override
+                public int compare(OverlayItem overlayItem1, OverlayItem overlayItem2) {
+                    StationOverlayItem item1 = (StationOverlayItem) overlayItem1;
+                    StationOverlayItem item2 = (StationOverlayItem) overlayItem2;
+
+                    return Double.valueOf(item1.getFilteredPrice()).compareTo(Double.valueOf(item2.getFilteredPrice()));
+
+                }
+            });
+
+            OverlayItem found = copy.get(0);
+
+            tapOverlay(found);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //ignore
+        }
+    }
+
+    private void tapOverlay(OverlayItem item) {
+        int index = overlayItems.lastIndexOf(item);
+
+        onTap(index);
     }
 
 

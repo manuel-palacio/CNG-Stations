@@ -24,7 +24,7 @@ import com.google.android.maps.OverlayItem;
 
 
 /**
- * Represents station on map
+ * Represents station point on map
  */
 public class StationOverlayItem extends OverlayItem {
 
@@ -33,6 +33,7 @@ public class StationOverlayItem extends OverlayItem {
     private String openingHours;
     private float latitude;
     private float longitude;
+    private String filteredPrice;
 
     public StationOverlayItem(GeoPoint geoPoint, String title, String snippet, StationDTO stationDTO) {
         super(geoPoint, title, snippet);
@@ -42,6 +43,16 @@ public class StationOverlayItem extends OverlayItem {
         setPrice(stationDTO.getPrice());
         setLatitude(geoPoint.getLatitudeE6());
         setLongitude(geoPoint.getLongitudeE6());
+        setFilteredPrice(stationDTO.getFilteredPrice());
+    }
+
+    private void setFilteredPrice(String filteredPrice) {
+
+        this.filteredPrice = filteredPrice;
+    }
+
+    public String getFilteredPrice() {
+        return filteredPrice;
     }
 
     public double getLatitude() {

@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">CNG Stations</string>
     <string name="show">Show</string>
-    <string name="refresh">Refresh</string>
+    <string name="refresh">Refresh location</string>
     <string name="search">Search</string>
+    <string name="discard">Clear map</string>
 </resources>

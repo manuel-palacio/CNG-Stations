@@ -36,7 +36,7 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
 
         results.each {
             json.add(["city": it.city, "longitude": it.longitude, "latitude": it.latitude, "street": it.street, "phoneNo": it.phoneNo,
-                    "openingHours": it.openingHours, "price": it.price, "countryName": it.countryName])
+                    "openingHours": it.openingHours, "price": it.price, "filteredPrice": filterPrice(it.price), "countryName": it.countryName])
         }
 
         String jsonString = json.toString()
@@ -55,9 +55,16 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
 
 }
 
-private def outputData(def json) {
+def filterPrice(String price) {
+    price = price.replace(",",".")
+    def regExp = price =~ /(\d+.\d+)(\W*kg)/
+    if(regExp.size() == 0) return price
+    regExp[0][1]
+}
+
+def outputData(def json) {
     response.contentType = "application/json"
-   // response.setHeader("Cache-Control", "public, max-age=" + 604800)
+    // response.setHeader("Cache-Control", "public, max-age=" + 604800)
     out << json
 }
 

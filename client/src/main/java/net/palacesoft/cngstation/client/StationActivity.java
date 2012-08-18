@@ -25,10 +25,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.*;
 import com.readystatesoftware.maps.OnSingleTapListener;
 import com.readystatesoftware.maps.TapControlledMapView;
 import net.palacesoft.cngstation.R;
@@ -36,6 +33,7 @@ import net.palacesoft.cngstation.client.loader.CityLoader;
 import net.palacesoft.cngstation.client.loader.CountryLoader;
 import net.palacesoft.cngstation.client.loader.StationLoader;
 import net.palacesoft.cngstation.client.mapoverlay.StationBalloonOverlay;
+import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -43,6 +41,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static android.R.layout.simple_spinner_dropdown_item;
+import static android.R.layout.simple_spinner_item;
 import static org.springframework.util.StringUtils.hasText;
 
 public class StationActivity extends MapActivity {
@@ -53,6 +53,7 @@ public class StationActivity extends MapActivity {
     private Location currentLocation;
     private MyLocationOverlay myLocationOverlay;
     private Spinner countries, cities;
+    private Address currentLocationAddress;
 
     @Override
     protected boolean isRouteDisplayed() {
@@ -75,10 +76,9 @@ public class StationActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                mapView.getOverlays().remove(stationOverlay);
-                Address locationAddress = lookupAddressFromLocation(Locale.getDefault(), currentLocation);
+                Address locationAddress = lookupAddressFromLocation(Locale.ENGLISH, currentLocation);
                 try {
-                    new StationLoader(this, locationAddress).execute();
+                    new StationLoader(this, locationAddress).execute("");
                 } catch (AddressEmptyException e) {
                     showInfoMessage("Could not determine your location");
                 }
@@ -96,9 +96,19 @@ public class StationActivity extends MapActivity {
                         loadAvailableCountriesList();
                     }
                 }
+                break;
+
+            case R.id.discard:
+                 clearStationOverlay();
+                break;
         }
 
         return false;
+    }
+
+    public void clearStationOverlay() {
+        mapView.getOverlays().remove(stationOverlay);
+        mapView.invalidate();
     }
 
     @Override
@@ -122,6 +132,8 @@ public class StationActivity extends MapActivity {
         initMap();
 
         initMyLocationOverlay();
+
+        addStationOverlay();
     }
 
     private void initSearchForm() {
@@ -131,7 +143,7 @@ public class StationActivity extends MapActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
 
                 String country = adapterView.getItemAtPosition(pos).toString();
-                new CityLoader(StationActivity.this, country).execute();
+                new CityLoader(StationActivity.this, country).execute("");
             }
 
             @Override
@@ -149,20 +161,20 @@ public class StationActivity extends MapActivity {
                 String city = cities.getSelectedItem().toString();
 
                 Integer zoomLevel = null;
-                Address address = null;
+                Address address;
                 if (hasText(city)) {
-                    if (city.equalsIgnoreCase("All")) {
+                    if (city.equals("All")) {
                         address = Country.valueOf(countries.getSelectedItem().toString()).getAddress();
                         zoomLevel = 6;
                     } else {
                         String country = countries.getSelectedItem().toString();
                         address = lookupAddressFromLocationName(new Locale(Country.valueOf(country).getCountryCode()), city);
                     }
-                }
-                try {
-                    new StationLoader(StationActivity.this, address, zoomLevel).execute();
-                } catch (AddressEmptyException e) {
-                    showInfoMessage("Problem finding CNG stations for chosen location");
+                    try {
+                        new StationLoader(StationActivity.this, address, zoomLevel).execute("");
+                    } catch (AddressEmptyException e) {
+                        showInfoMessage("Problem finding CNG stations for chosen location");
+                    }
                 }
             }
         });
@@ -171,7 +183,7 @@ public class StationActivity extends MapActivity {
 
 
     private void loadAvailableCountriesList() {
-        new CountryLoader(this).execute();
+        new CountryLoader(this).execute("");
     }
 
     private Address lookupAddressFromLocation(Locale locale, Location location) {
@@ -221,11 +233,15 @@ public class StationActivity extends MapActivity {
     }
 
     public void addStationOverlay() {
-        stationOverlay = new StationBalloonOverlay(this.getResources().getDrawable(R.drawable.marker), this);
-        stationOverlay.setShowClose(false);
-        stationOverlay.setShowDisclosure(true);
-        stationOverlay.setSnapToCenter(true);
-        mapView.getOverlays().add(stationOverlay);
+        if (stationOverlay == null) {
+            stationOverlay = new StationBalloonOverlay(this.getResources().getDrawable(R.drawable.marker), this);
+            stationOverlay.setShowClose(false);
+            stationOverlay.setShowDisclosure(true);
+            stationOverlay.setSnapToCenter(true);
+        }
+        if (!mapView.getOverlays().contains(stationOverlay)) {
+            mapView.getOverlays().add(stationOverlay);
+        }
     }
 
 
@@ -254,9 +270,9 @@ public class StationActivity extends MapActivity {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
-                        Address locationAddress = lookupAddressFromLocation(Locale.getDefault(), currentLocation);
+                        currentLocationAddress = lookupAddressFromLocation(Locale.ENGLISH, currentLocation);
                         try {
-                            new StationLoader(StationActivity.this, locationAddress).execute();
+                            new StationLoader(StationActivity.this, currentLocationAddress).execute("");
                         } catch (AddressEmptyException e) {
                             showInfoMessage("Could not determine your location");
                         }
@@ -299,11 +315,28 @@ public class StationActivity extends MapActivity {
         return progressDialog;
     }
 
-    public Spinner getCountries() {
-        return countries;
-    }
-
     public Spinner getCities() {
         return cities;
+    }
+
+    public void setCountries(List<String> countriesList) {
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                simple_spinner_item, countriesList);
+        dataAdapter.setDropDownViewResource(simple_spinner_dropdown_item);
+        countries.setAdapter(dataAdapter);
+
+        String country = currentLocationAddress.getCountryName();
+        int countryIndex = countriesList.indexOf(country);
+        if (countryIndex > -1) {
+            countries.setSelection(countryIndex);
+        }
+    }
+
+    public void showStations(List<StationOverlayItem> overlayItems, GeoPoint geoPoint, int zoomLevel) {
+        stationOverlay.clear();
+        stationOverlay.addOverlayItems(overlayItems);
+        mapController.animateTo(geoPoint);
+        mapController.setZoom(zoomLevel);
+        stationOverlay.popupCheapest();
     }
 }
