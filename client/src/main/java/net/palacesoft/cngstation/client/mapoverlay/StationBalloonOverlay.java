@@ -22,13 +22,10 @@ package net.palacesoft.cngstation.client.mapoverlay;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.net.Uri;
 import android.widget.Toast;
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
@@ -43,8 +40,8 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
     private StationActivity stationActivity;
 
 
-    public StationBalloonOverlay(Drawable defaultMarker, StationActivity context) {
-        super(boundCenterBottom(defaultMarker), context.getMapView());
+    public StationBalloonOverlay(Drawable defaultMarker, StationActivity context, MapView mapView) {
+        super(boundCenterBottom(defaultMarker), mapView);
         stationActivity = context;
     }
 
@@ -137,33 +134,6 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
         return items;
     }
 
-    /*@Override
-    public void draw(android.graphics.Canvas canvas, MapView mapView, boolean shadow) {
-        super.draw(canvas, mapView, shadow);
-
-        if (!shadow) {
-            //cycle through all overlays
-            for (OverlayItem item : overlayItems) {
-                // Converts lat/lng-Point to coordinates on the screen
-                GeoPoint point = item.getPoint();
-                Point ptScreenCoord = new Point();
-                mapView.getProjection().toPixels(point, ptScreenCoord);
-
-                //Paint
-                Paint paint = new Paint();
-                //paint.setTextAlign(Paint.Align.CENTER);
-                paint.setTextSize(30);
-                paint.setARGB(150, 0, 0, 0); // alpha, r, g, b (Black, semi see-through)
-                StationOverlayItem stationOverlayItem = (StationOverlayItem) item;
-                //show text to the right of the icon
-                canvas.drawText(stationOverlayItem.getPrice(), ptScreenCoord.x + 30, ptScreenCoord.y, paint);
-
-            }
-        }
-
-
-    }*/
-
     public void removeOverlay(OverlayItem overlay) {
         overlayItems.remove(overlay);
         populate();
@@ -175,37 +145,31 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
     }
 
     public void popupCheapest() {
-        List<OverlayItem> copy = new ArrayList<OverlayItem>(overlayItems);
-
-        if (copy.size() == 1) {
-            tapOverlay(copy.get(0));
-            return;
-        }
+        Set<OverlayItem> copy = new TreeSet<OverlayItem>(overlayItems);
 
         try {
-            Collections.sort(copy, new Comparator<OverlayItem>() {
-                @Override
-                public int compare(OverlayItem overlayItem1, OverlayItem overlayItem2) {
-                    StationOverlayItem item1 = (StationOverlayItem) overlayItem1;
-                    StationOverlayItem item2 = (StationOverlayItem) overlayItem2;
-
-                    return Double.valueOf(item1.getFilteredPrice()).compareTo(Double.valueOf(item2.getFilteredPrice()));
-
-                }
-            });
-
-            OverlayItem found = copy.get(0);
-
-            tapOverlay(found);
+            tapOverlay(copy.iterator().next());
         } catch (Exception e) {
             e.printStackTrace();
             //ignore
         }
     }
 
+    public void popupClosest(){
+        Map<Float, StationOverlayItem> distances = new TreeMap<Float, StationOverlayItem>();
+        Location current = stationActivity.getCurrentLocation();
+
+        for (OverlayItem overlayItem : overlayItems) {
+            StationOverlayItem next = (StationOverlayItem) overlayItem;
+            float distance = current.distanceTo(next.getLocation());
+            distances.put(distance, next);
+        }
+
+        tapOverlay(distances.get(distances.keySet().iterator().next()));
+    }
+
     private void tapOverlay(OverlayItem item) {
         int index = overlayItems.lastIndexOf(item);
-
         onTap(index);
     }
 

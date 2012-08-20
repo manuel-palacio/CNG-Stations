@@ -18,6 +18,7 @@
  */
 package net.palacesoft.cngstation.client.mapoverlay;
 
+import android.location.Location;
 import net.palacesoft.cngstation.client.StationDTO;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
@@ -26,7 +27,7 @@ import com.google.android.maps.OverlayItem;
 /**
  * Represents station point on map
  */
-public class StationOverlayItem extends OverlayItem {
+public class StationOverlayItem extends OverlayItem implements Comparable<StationOverlayItem>{
 
     private String phoneNo;
     private String price;
@@ -94,5 +95,17 @@ public class StationOverlayItem extends OverlayItem {
 
     public void setPhoneNo(String telephone) {
         this.phoneNo = telephone;
+    }
+
+    public Location getLocation(){
+        Location location = new Location("Station");
+        location.setLatitude(getLatitude());
+        location.setLongitude(getLongitude());
+        return location;
+    }
+
+    @Override
+    public int compareTo(StationOverlayItem stationOverlayItem) {
+        return Double.valueOf(getFilteredPrice()).compareTo(Double.valueOf(stationOverlayItem.getFilteredPrice()));
     }
 }

@@ -5,4 +5,6 @@
     <string name="refresh">Refresh location</string>
     <string name="search">Search</string>
     <string name="discard">Clear map</string>
+    <string name="cheapest">Mark cheapest</string>
+    <string name="closest">Mark closest</string>
 </resources>

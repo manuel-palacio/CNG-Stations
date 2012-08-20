@@ -26,8 +26,6 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 import com.google.android.maps.*;
-import com.readystatesoftware.maps.OnSingleTapListener;
-import com.readystatesoftware.maps.TapControlledMapView;
 import net.palacesoft.cngstation.R;
 import net.palacesoft.cngstation.client.loader.CityLoader;
 import net.palacesoft.cngstation.client.loader.CountryLoader;
@@ -47,7 +45,7 @@ import static org.springframework.util.StringUtils.hasText;
 
 public class StationActivity extends MapActivity {
 
-    private TapControlledMapView mapView;
+    private MapView mapView;
     private MapController mapController;
     private StationBalloonOverlay stationOverlay;
     private Location currentLocation;
@@ -99,7 +97,15 @@ public class StationActivity extends MapActivity {
                 break;
 
             case R.id.discard:
-                 clearStationOverlay();
+                clearStationOverlay();
+                break;
+
+            case R.id.cheapest:
+                stationOverlay.popupCheapest();
+                break;
+
+            case R.id.closest:
+                stationOverlay.popupClosest();
                 break;
         }
 
@@ -129,11 +135,13 @@ public class StationActivity extends MapActivity {
 
         setContentView(R.layout.main);
 
-        initMap();
+        initMapView();
 
         initMyLocationOverlay();
 
         addStationOverlay();
+
+        startTrackingMyLocation();
     }
 
     private void initSearchForm() {
@@ -234,8 +242,7 @@ public class StationActivity extends MapActivity {
 
     public void addStationOverlay() {
         if (stationOverlay == null) {
-            stationOverlay = new StationBalloonOverlay(this.getResources().getDrawable(R.drawable.marker), this);
-            stationOverlay.setShowClose(false);
+            stationOverlay = new StationBalloonOverlay(this.getResources().getDrawable(R.drawable.marker), this, mapView);
             stationOverlay.setShowDisclosure(true);
             stationOverlay.setSnapToCenter(true);
         }
@@ -256,7 +263,6 @@ public class StationActivity extends MapActivity {
 
         myLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationOverlay);
-        startTrackingMyLocation();
     }
 
     private void startTrackingMyLocation() {
@@ -282,30 +288,10 @@ public class StationActivity extends MapActivity {
         });
     }
 
-    private void initMap() {
-        mapView = (TapControlledMapView) findViewById(R.id.mapview);
+    private void initMapView() {
+        mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
-        mapView.setOnSingleTapListener(new OnSingleTapListener() {
-            @Override
-            public boolean onSingleTap(MotionEvent e) {
-                stationOverlay.hideAllBalloons();
-                return true;
-            }
-        });
         mapController = mapView.getController();
-    }
-
-
-    public MapController getMapController() {
-        return mapController;
-    }
-
-    public MapView getMapView() {
-        return mapView;
-    }
-
-    public StationBalloonOverlay getStationOverlay() {
-        return stationOverlay;
     }
 
     public ProgressDialog createProgressDialog(String message) {
@@ -337,6 +323,5 @@ public class StationActivity extends MapActivity {
         stationOverlay.addOverlayItems(overlayItems);
         mapController.animateTo(geoPoint);
         mapController.setZoom(zoomLevel);
-        stationOverlay.popupCheapest();
     }
 }

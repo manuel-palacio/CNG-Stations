@@ -6,7 +6,7 @@
                 android:layout_height="fill_parent">
 
 
-    <com.readystatesoftware.maps.TapControlledMapView
+    <com.google.android.maps.MapView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/mapview"
             android:layout_width="fill_parent"
@@ -29,21 +29,19 @@
 
         <Spinner
                 android:id="@+id/countries"
-                android:layout_weight="0.1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
         <Spinner
                 android:id="@+id/cities"
                 android:layout_width="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.4"
                 android:layout_height="wrap_content"/>
 
         <Button
                 android:id="@+id/btnSubmit"
-                android:layout_weight="1.75"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/show"/>
 
     </LinearLayout>

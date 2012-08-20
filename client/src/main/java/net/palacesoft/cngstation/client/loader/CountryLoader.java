@@ -55,7 +55,7 @@ public class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> 
     protected List<StationDTO> doInBackground(Object... objects) {
         StationDTO[] dtos = new StationDTO[0];
         try {
-            dtos = restTemplate.getForObject("http://fuelstationservice.appspot.com/country", StationDTO[].class);
+            dtos = restTemplate.getForObject("http://fuelstationservice.appspot.com/countries", StationDTO[].class);
         } catch (RestClientException e) {
             Log.e(StationActivity.class.getName(), e.getMessage(), e);
         }
