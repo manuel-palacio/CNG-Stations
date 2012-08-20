@@ -10,6 +10,8 @@ if ('countries' in memcache) {
     def results = datastore.execute {
         select all from Country
         sort asc by countryName
+        prefetchSize 200
+        chunkSize 200
     }
 
 
