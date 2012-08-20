@@ -13,7 +13,7 @@ datastore.delete results
 def now = new Date()
 results = datastore.iterate {
     select all from Station
-    where dateUpdated > now - 1
+    where dateUpdated > now - 30
     prefetchSize 400
     chunkSize 400
 }
@@ -45,4 +45,4 @@ results.each {
 datastore.put entities
 
 
-memcache.clearAll()
+//memcache.clearAll()

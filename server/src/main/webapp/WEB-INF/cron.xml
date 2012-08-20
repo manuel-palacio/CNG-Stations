@@ -18,19 +18,19 @@
     <cron>
         <url>/importStations?baseUrl=9&#38;countryName=Germany&#38;countryCode=DE</url>
         <description>import DE</description>
-        <schedule>every 200 hours</schedule>
+        <schedule>every 201 hours</schedule>
     </cron>
 
     <cron>
         <url>/importStations?baseUrl=1&#38;countryName=Italy&#38;countryCode=IT</url>
         <description>import IT</description>
-        <schedule>every 200 hours</schedule>
+        <schedule>every 202 hours</schedule>
     </cron>
 
     <cron>
         <url>/importStations?baseUrl=8&#38;countryName=France&#38;countryCode=FR</url>
         <description>import FR</description>
-        <schedule>every 200 hours</schedule>
+        <schedule>every 202 hours</schedule>
     </cron>
 
     <cron>
@@ -49,7 +49,7 @@
     <cron>
         <url>/exportImport</url>
         <description>Export data for reading</description>
-        <schedule>every 201 hours</schedule>
+        <schedule>every 203 hours</schedule>
     </cron>
 
 

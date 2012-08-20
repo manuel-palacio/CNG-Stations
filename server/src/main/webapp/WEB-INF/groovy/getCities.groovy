@@ -10,7 +10,7 @@ if ('cities_' + params.countryName in memcache) {
 
 
     def results = datastore.iterate {
-        select city: String from Station
+        select city: String from ReadableStation
         where countryName == params.countryName
         prefetchSize 200
         chunkSize 200

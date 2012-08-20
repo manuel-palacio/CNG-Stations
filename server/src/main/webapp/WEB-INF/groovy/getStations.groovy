@@ -15,7 +15,7 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
     outputData(json)
 
 } else {
-    def query = new Query("Station")
+    def query = new Query("ReadableStation")
 
     if (params.countryName) {
         query.addFilter("countryName", Query.FilterOperator.EQUAL, params.countryName)
