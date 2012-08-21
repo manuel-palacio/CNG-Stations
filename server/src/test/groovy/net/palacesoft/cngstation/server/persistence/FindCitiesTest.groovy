@@ -23,8 +23,9 @@ class FindCitiesTest {
         DatastoreService ds = DatastoreServiceFactory.datastoreService
 
         def station = new Station.Builder("lat", "long", "Stockholm", Country.Sweden).build()
-        def entity = new Entity("ReadableEntity")
+        def entity = new Entity("ReadableStation")
         entity.setProperty("city", station.city)
+        entity.setProperty("countryName", station.countryName)
 
         ds.put entity
     }
@@ -39,8 +40,9 @@ class FindCitiesTest {
     void findCities() {
 
         def cities = CngDao.findCities("Sweden")
+        assert cities.size() == 1
         cities.each {
-            assert it
+            assert it == "Stockholm"
         }
 
     }

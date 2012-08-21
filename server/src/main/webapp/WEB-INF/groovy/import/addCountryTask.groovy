@@ -1,12 +1,3 @@
-import com.google.appengine.api.datastore.Entity
+import net.palacesoft.cngstation.server.persistence.CngDao
 
-def country = datastore.execute {
-    select single from Country
-    where countryName == params.countryName
-}
-
-if (!country) {
-    country = new Entity("Country")
-    country.countryName = params.countryName
-    datastore.put country
-}
+CngDao.addCountry(params.countryName)
