@@ -30,10 +30,12 @@ import com.google.appengine.api.datastore.Entity
 
 class CngDao {
 
+    static String READABLE_STATION = "ReadableStation"
+
     private static DatastoreService dataStore = DatastoreServiceFactory.datastoreService
 
     static def findStationsByCountryName(String countryName) {
-        def query = new Query("ReadableStation")
+        def query = new Query(READABLE_STATION)
 
         query.addFilter("countryName", Query.FilterOperator.EQUAL, countryName)
 
@@ -43,7 +45,7 @@ class CngDao {
     }
 
     static def findStationsByCity(String city) {
-        def query = new Query("ReadableStation")
+        def query = new Query(READABLE_STATION)
 
         query.addFilter("city", Query.FilterOperator.EQUAL, city)
 
@@ -62,7 +64,7 @@ class CngDao {
     }
 
     static def findCities(String countryName) {
-        Query query = new Query("ReadableStation");
+        Query query = new Query(READABLE_STATION);
         query.addProjection(new PropertyProjection("city", String.class));
         query.addFilter("countryName", Query.FilterOperator.EQUAL, countryName)
 

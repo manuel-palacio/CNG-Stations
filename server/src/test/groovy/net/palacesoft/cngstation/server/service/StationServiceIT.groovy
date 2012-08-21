@@ -23,6 +23,6 @@ class StationServiceIT {
     @Test
        void canGetListOfCities() {
 
-           expect().statusCode(404).when().get("${BASE_URL}/stations/city/XXX")
+           expect().statusCode(200).when().get("${BASE_URL}/stations/city/Stockholm")
        }
 }

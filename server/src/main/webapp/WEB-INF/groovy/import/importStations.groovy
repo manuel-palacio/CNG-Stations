@@ -4,7 +4,7 @@ import net.palacesoft.cngstation.server.scraper.ScraperFactory
 
 def log = new GroovyLogger("importStations")
 
-def pagesToScrape = Collections.emptyList()
+def pagesToScrape = []
 
 try {
 
