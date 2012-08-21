@@ -12,17 +12,12 @@ if ('cities_' + params.countryName in memcache) {
 
     def results = CngDao.findCities(params.countryName)
 
-    def uniqueResults = new HashSet<String>()
 
-    results.each {
-        uniqueResults << it.city
-    }
-
-    if (!uniqueResults.empty) {
+    if (!results.empty) {
 
         JSONArray json = new JSONArray()
 
-        uniqueResults.sort().each {
+        results.sort().each {
             json.add(["city": it])
         }
 
