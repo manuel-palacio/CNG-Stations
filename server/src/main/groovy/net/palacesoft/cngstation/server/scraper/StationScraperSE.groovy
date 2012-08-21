@@ -21,7 +21,9 @@ package net.palacesoft.cngstation.server.scraper
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
-import groovyx.gaelyk.GaelykBindings
+
+import net.palacesoft.cngstation.server.model.Country
+import net.palacesoft.cngstation.server.model.Station
 
 class StationScraperSE implements Scraper {
 
@@ -44,7 +46,7 @@ class StationScraperSE implements Scraper {
 
     public Set<Station> scrapePage(String url) {
 
-        if(!url){
+        if (!url) {
             throw new IllegalArgumentException("Url cannot be null")
         }
 
@@ -77,11 +79,11 @@ class StationScraperSE implements Scraper {
                 String longitude = coordinates.split(",")[1].split(":")[1].trim()
 
                 if (latitude && longitude) {
-                    String id = longitude + latitude
 
-                    Station station = new Station(id: id, city: city, street: street, operatedBy: operatedBy, openingHours: openingHours,
-                            payment: payment, price: price, phoneNo: phones.join(","), latitude: latitude, longitude: longitude,
-                            countryCode: countryCode, countryName: countryName)
+                    Country country = Country.values().find {it.countryCode == countryCode}
+                    Station station = new Station.Builder(latitude, longitude, city, country).withPrice(price).
+                            withPhoneNo(phones.join(",")).withStreet(street).withOperatedBy(operatedBy).
+                            withOpeningHours(openingHours).withPayment(payment).build()
 
                     gasStations << station
                 }

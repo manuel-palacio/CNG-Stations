@@ -16,7 +16,7 @@
  *
  ***********************************************************************************************************************
  */
-package net.palacesoft.cngstation.server.scraper
+package net.palacesoft.cngstation.server.model
 
 public enum StationType {
 

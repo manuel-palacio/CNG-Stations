@@ -19,6 +19,8 @@
 
 package net.palacesoft.cngstation.server.scraper
 
+import net.palacesoft.cngstation.server.model.Station
+
 public interface Scraper {
 
     public Set<Station> scrapePage(String url)

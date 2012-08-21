@@ -4,7 +4,7 @@ import static com.jayway.restassured.RestAssured.*
 import static org.hamcrest.Matchers.*
 import org.junit.Test
 
-class StationServiceTest {
+class StationServiceIT {
 
     def String BASE_URL = "http://fuelstationservice.appspot.com"
 

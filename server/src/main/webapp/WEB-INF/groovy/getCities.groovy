@@ -1,5 +1,6 @@
 import net.sf.json.JSONArray
 import javax.servlet.http.HttpServletResponse
+import net.palacesoft.cngstation.server.persistence.CngDao
 
 
 if ('cities_' + params.countryName in memcache) {
@@ -9,12 +10,7 @@ if ('cities_' + params.countryName in memcache) {
 } else {
 
 
-    def results = datastore.iterate {
-        select city: String from ReadableStation
-        where countryName == params.countryName
-        prefetchSize 200
-        chunkSize 200
-    }
+    def results = CngDao.findCities(params.countryName)
 
     def uniqueResults = new HashSet<String>()
 

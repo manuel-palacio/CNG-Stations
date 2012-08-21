@@ -22,6 +22,8 @@ import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlTable
+import net.palacesoft.cngstation.server.model.Country
+import net.palacesoft.cngstation.server.model.Station
 
 public class MetanoAutoScraper implements Scraper {
 
@@ -107,11 +109,10 @@ public class MetanoAutoScraper implements Scraper {
                 String openingHours = infoTable.getRow(5).getCell(1).asText().replaceAll("\\D[^\\d{2}]", "").trim()
 
                 if (latitude && longitude) {
-                    String id = longitude + latitude
 
-                    Station station = new Station(id: id, street: street, city: city, phoneNo: phoneNos.join(","), latitude: latitude,
-                            longitude: longitude, price: price, operatedBy: operatedBy, openingHours: openingHours,
-                            countryCode: countryCode, countryName: countryName, type: StationType.CNG.name())
+                    Country country = Country.values().find {it.countryCode == countryCode}
+                    Station station = new Station.Builder(latitude, longitude, city, country).withPrice(price).
+                            withPhoneNo(phoneNos.join(",")).withStreet(street).withOperatedBy(operatedBy).withOpeningHours(openingHours).build()
 
                     gasStations << station
                 }

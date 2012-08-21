@@ -2,7 +2,7 @@ package net.palacesoft.cngstation.server.scraper
 
 import org.junit.Test
 
-class StationScraperTest {
+class StationScraperIT {
 
     @Test
     void scrapeSE() {

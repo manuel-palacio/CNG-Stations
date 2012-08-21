@@ -49,7 +49,7 @@
     <cron>
         <url>/exportImport</url>
         <description>Export data for reading</description>
-        <schedule>every 203 hours</schedule>
+        <schedule>every 400 hours</schedule>
     </cron>
 
 

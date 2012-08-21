@@ -1,5 +1,6 @@
 import net.sf.json.JSONArray
 import javax.servlet.http.HttpServletResponse
+import net.palacesoft.cngstation.server.persistence.CngDao
 
 
 if ('countries' in memcache) {
@@ -7,20 +8,13 @@ if ('countries' in memcache) {
     outputData(json)
 } else {
 
-    def results = datastore.execute {
-        select all from Country
-        sort asc by countryName
-        prefetchSize 200
-        chunkSize 200
-    }
+    def countries = CngDao.findCountries()
 
-
-
-    if (!results.empty) {
+    if (!countries.empty) {
 
         JSONArray json = new JSONArray()
 
-        results.each {
+        countries.each {
             json.add(["countryName": it.countryName])
         }
 

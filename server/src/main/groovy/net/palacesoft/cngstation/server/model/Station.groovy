@@ -16,7 +16,7 @@
  * <p/>
  * **********************************************************************************************************************
  */
-package net.palacesoft.cngstation.server.scraper
+package net.palacesoft.cngstation.server.model
 
 import groovyx.gaelyk.datastore.Entity
 import groovyx.gaelyk.datastore.Indexed
@@ -38,8 +38,70 @@ class Station implements Serializable {
     String phoneNo
     String web
     String email
-    String type
+    String type = StationType.CNG.name()
     @Indexed Date dateUpdated = new Date()
+
+
+    private Station() {}
+
+    static class Builder {
+
+        private Station station = new Station()
+
+        Builder(String latitude, String longitude, String city, Country country) {
+            station.latitude = latitude
+            station.longitude = longitude
+            station.city = city
+            station.countryName = country.name()
+            station.countryCode = country.countryCode
+            station.id = longitude + latitude
+        }
+
+        Builder withStreet(String street) {
+            station.street = street
+            return this
+        }
+
+        Builder withPhoneNo(String phoneNo) {
+            station.phoneNo = phoneNo
+            return this
+        }
+
+        Builder withPrice(String price) {
+            station.price = price
+            return this
+        }
+
+        Builder withPayment(String payment) {
+            station.payment = payment
+            return this
+        }
+
+        Builder withWeb(String web) {
+            station.web = web
+            return this
+        }
+
+        Builder withEmail(String email) {
+            station.email = email
+            return this
+        }
+
+        Builder withOperatedBy(String operatedBy) {
+            station.operatedBy = operatedBy
+            return this
+        }
+
+        Builder withOpeningHours(String openingHours) {
+            station.openingHours = openingHours
+            return this
+        }
+
+
+        Station build() {
+            return station
+        }
+    }
 
     boolean equals(o) {
         if (this.is(o)) return true

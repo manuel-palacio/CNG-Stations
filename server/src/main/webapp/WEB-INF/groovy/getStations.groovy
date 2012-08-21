@@ -1,10 +1,7 @@
-import com.google.appengine.api.datastore.PreparedQuery
-import com.google.appengine.api.datastore.Query
+import net.palacesoft.cngstation.server.persistence.CngDao
 import net.sf.json.JSONArray
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withDefaults
+
 import javax.servlet.http.HttpServletResponse
-
-
 
 if (params.countryName && 'stations_' + params.countryName in memcache) {
     String json = memcache['stations_' + params.countryName]
@@ -15,26 +12,23 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
     outputData(json)
 
 } else {
-    def query = new Query("ReadableStation")
 
-    if (params.countryName) {
-        query.addFilter("countryName", Query.FilterOperator.EQUAL, params.countryName)
-    }
+    def stations = []
 
     if (params.city) {
-        query.addFilter("city", Query.FilterOperator.EQUAL, params.city)
+        stations = CngDao.findStationsByCity(params.city)
     }
 
-    PreparedQuery preparedQuery = datastore.prepare(query)
+    if (params.countryName) {
+        stations = CngDao.findStationsByCountryName(params.countryName)
+    }
 
-    def results = preparedQuery.asList(withDefaults())
 
-
-    if (!results.empty) {
+    if (!stations.empty) {
 
         JSONArray json = new JSONArray()
 
-        results.each {
+        stations.each {
             json.add(["city": it.city, "longitude": it.longitude, "latitude": it.latitude, "street": it.street, "phoneNo": it.phoneNo,
                     "openingHours": it.openingHours, "price": it.price, "filteredPrice": filterPrice(it.price), "countryName": it.countryName])
         }
@@ -56,9 +50,9 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
 }
 
 def filterPrice(String price) {
-    price = price.replace(",",".")
+    price = price?.replace(",", ".")
     def regExp = price =~ /(\d+.\d+)(\W*kg)/
-    if(regExp.size() == 0) return price
+    if (regExp.size() == 0) return price
     regExp[0][1]
 }
 
