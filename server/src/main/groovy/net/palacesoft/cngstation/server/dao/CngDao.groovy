@@ -17,7 +17,7 @@
  ***********************************************************************************************************************
  */
 
-package net.palacesoft.cngstation.server.persistence
+package net.palacesoft.cngstation.server.dao
 
 import com.google.appengine.api.datastore.PreparedQuery
 import com.google.appengine.api.datastore.Query

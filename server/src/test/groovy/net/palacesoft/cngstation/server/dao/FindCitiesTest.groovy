@@ -1,6 +1,5 @@
-package net.palacesoft.cngstation.server.persistence
+package net.palacesoft.cngstation.server.dao
 
-import org.junit.After
 import org.junit.Test
 
 class FindCitiesTest extends AbstractStationTest {

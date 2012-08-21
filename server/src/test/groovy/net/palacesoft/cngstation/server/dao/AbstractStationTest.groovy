@@ -16,7 +16,7 @@
  *
  ***********************************************************************************************************************
  */
-package net.palacesoft.cngstation.server.persistence
+package net.palacesoft.cngstation.server.dao
 
 import org.junit.Before
 import com.google.appengine.api.datastore.DatastoreService

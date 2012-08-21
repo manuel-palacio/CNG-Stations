@@ -1,6 +1,6 @@
 import net.sf.json.JSONArray
 import javax.servlet.http.HttpServletResponse
-import net.palacesoft.cngstation.server.persistence.CngDao
+import net.palacesoft.cngstation.server.dao.CngDao
 
 
 if ('cities_' + params.countryName in memcache) {

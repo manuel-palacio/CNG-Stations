@@ -1,4 +1,4 @@
-package net.palacesoft.cngstation.server.persistence
+package net.palacesoft.cngstation.server.dao
 
 import org.junit.Test
 

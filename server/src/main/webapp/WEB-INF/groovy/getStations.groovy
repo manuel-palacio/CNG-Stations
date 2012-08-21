@@ -1,4 +1,4 @@
-import net.palacesoft.cngstation.server.persistence.CngDao
+import net.palacesoft.cngstation.server.dao.CngDao
 import net.sf.json.JSONArray
 
 import javax.servlet.http.HttpServletResponse

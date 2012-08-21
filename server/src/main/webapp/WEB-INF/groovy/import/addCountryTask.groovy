@@ -1,3 +1,3 @@
-import net.palacesoft.cngstation.server.persistence.CngDao
+import net.palacesoft.cngstation.server.dao.CngDao
 
 CngDao.addCountry(params.countryName)
