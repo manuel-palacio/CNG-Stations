@@ -150,7 +150,6 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
         try {
             tapOverlay(copy.iterator().next());
         } catch (Exception e) {
-            e.printStackTrace();
             //ignore
         }
     }
