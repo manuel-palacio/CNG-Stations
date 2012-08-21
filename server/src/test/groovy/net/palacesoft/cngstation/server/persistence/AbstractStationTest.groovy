@@ -31,12 +31,16 @@ import org.junit.After
 abstract class AbstractStationTest {
 
     private final LocalServiceTestHelper helper =
-           new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig())
+        new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig())
 
     @Before
     public void setUp() {
         helper.setUp();
 
+        createEntity()
+    }
+
+    private void createEntity() {
         DatastoreService ds = DatastoreServiceFactory.datastoreService
 
 
@@ -55,7 +59,7 @@ abstract class AbstractStationTest {
     }
 
     @After
-       public void tearDown() {
-           helper.tearDown();
-       }
+    public void tearDown() {
+        helper.tearDown()
+    }
 }
