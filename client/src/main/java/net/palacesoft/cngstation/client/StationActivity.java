@@ -25,6 +25,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
+import com.bugsense.trace.BugSenseHandler;
 import com.google.android.maps.*;
 import net.palacesoft.cngstation.R;
 import net.palacesoft.cngstation.client.loader.CityLoader;
@@ -35,9 +36,7 @@ import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static android.R.layout.simple_spinner_dropdown_item;
 import static android.R.layout.simple_spinner_item;
@@ -101,15 +100,34 @@ public class StationActivity extends MapActivity {
                 break;
 
             case R.id.cheapest:
-                stationOverlay.popupCheapest();
+                try {
+                    stationOverlay.popupCheapest();
+                } catch (Exception e) {
+                    logError(e, "Problem showing the cheapest station");
+                }
                 break;
 
             case R.id.closest:
-                stationOverlay.popupClosest();
+                try {
+                    stationOverlay.popupClosest();
+                } catch (Exception e) {
+                    logError(e, "Problem showing the closest station");
+                }
+                break;
+
+            case R.id.location:
+                mapController.animateTo(myLocationOverlay.getMyLocation());
                 break;
         }
 
         return false;
+    }
+
+    private void logError(Exception e, String text) {
+        Map<String, String> extraData = new HashMap<String, String>();
+        extraData.put("location", currentLocationAddress.getLocality());
+        BugSenseHandler.log(text, extraData, e);
+        showInfoMessage(text);
     }
 
     public void clearStationOverlay() {
@@ -134,6 +152,8 @@ public class StationActivity extends MapActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main);
+
+        BugSenseHandler.setup(this, "4812ac69");
 
         initMapView();
 
@@ -169,17 +189,17 @@ public class StationActivity extends MapActivity {
                 String city = cities.getSelectedItem().toString();
 
                 Integer zoomLevel = null;
-                Address address;
+                Address addressToZoomTo;
                 if (hasText(city)) {
                     if (city.equals("All")) {
-                        address = Country.valueOf(countries.getSelectedItem().toString()).getAddress();
+                        addressToZoomTo = Country.valueOf(countries.getSelectedItem().toString()).getAddress();
                         zoomLevel = 6;
                     } else {
                         String country = countries.getSelectedItem().toString();
-                        address = lookupAddressFromLocationName(new Locale(Country.valueOf(country).getCountryCode()), city);
+                        addressToZoomTo = lookupAddressFromLocationName(new Locale(Country.valueOf(country).getCountryCode()), city);
                     }
                     try {
-                        new StationLoader(StationActivity.this, address, zoomLevel).execute("");
+                        new StationLoader(StationActivity.this, addressToZoomTo, zoomLevel).execute("");
                     } catch (AddressEmptyException e) {
                         showInfoMessage("Problem finding CNG stations for chosen location");
                     }
@@ -216,7 +236,7 @@ public class StationActivity extends MapActivity {
             try {
                 addresses = geocoder.getFromLocationName(city, 1);
             } catch (IOException e) {
-                //ignore
+                BugSenseHandler.log("Error getting location name with geocoder", e);
             }
         }
         Address address = extractAddress(addresses);
@@ -242,7 +262,7 @@ public class StationActivity extends MapActivity {
 
     public void addStationOverlay() {
         if (stationOverlay == null) {
-            stationOverlay = new StationBalloonOverlay(this.getResources().getDrawable(R.drawable.marker), this, mapView);
+            stationOverlay = new StationBalloonOverlay(this.getResources().getDrawable(R.drawable.pin_02), this, mapView);
             stationOverlay.setShowDisclosure(true);
             stationOverlay.setSnapToCenter(true);
         }

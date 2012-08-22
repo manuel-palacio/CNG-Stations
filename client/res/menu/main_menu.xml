@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/refresh" android:title="@string/refresh" android:icon="@drawable/navigation_refresh_dark" android:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/search" android:title="@string/search" android:icon="@drawable/action_search" android:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/cheapest" android:title="@string/cheapest" android:icon="@drawable/rating_good" android:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/closest" android:title="@string/closest" android:icon="@drawable/closest" android:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/discard" android:title="@string/discard" android:icon="@drawable/content_discard" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/refresh" android:title="@string/refresh" android:icon="@drawable/refresh" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/search" android:title="@string/search" android:icon="@drawable/search_1" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/cheapest" android:title="@string/cheapest" android:icon="@drawable/money" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/closest" android:title="@string/closest" android:icon="@drawable/radar" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/discard" android:title="@string/discard" android:icon="@drawable/edit_clear" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/location" android:title="@string/location" android:icon="@drawable/location" android:showAsAction="ifRoom|withText"/>
 
 </menu>

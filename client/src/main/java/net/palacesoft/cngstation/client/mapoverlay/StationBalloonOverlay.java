@@ -43,6 +43,7 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
     public StationBalloonOverlay(Drawable defaultMarker, StationActivity context, MapView mapView) {
         super(boundCenterBottom(defaultMarker), mapView);
         stationActivity = context;
+        populate();
     }
 
     @Override
@@ -146,15 +147,11 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
     public void popupCheapest() {
         Set<OverlayItem> copy = new TreeSet<OverlayItem>(overlayItems);
-
-        try {
-            tapOverlay(copy.iterator().next());
-        } catch (Exception e) {
-            //ignore
-        }
+        OverlayItem cheapest = copy.iterator().next();
+        tapOverlay(cheapest);
     }
 
-    public void popupClosest(){
+    public void popupClosest() {
         Map<Float, StationOverlayItem> distances = new TreeMap<Float, StationOverlayItem>();
         Location current = stationActivity.getCurrentLocation();
 

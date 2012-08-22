@@ -38,20 +38,20 @@ import static org.springframework.util.StringUtils.hasText;
 
 public class StationLoader extends AsyncTask<String, Integer, List<StationOverlayItem>> {
     private ProgressDialog progressDialog;
-    private GeoPoint geoPoint;
+    private GeoPoint geoPointToZoomTo;
     private Address address;
     private Integer zoomLevel = 12;
     private StationActivity stationActivity;
     private RestTemplate restTemplate = new RestTemplate();
 
 
-    public StationLoader(StationActivity stationActivity, Address address, Integer zoomLevel) throws AddressEmptyException {
+    public StationLoader(StationActivity stationActivity, Address addressToZoomTo, Integer zoomLevel) throws AddressEmptyException {
         this.stationActivity = stationActivity;
-        if (address == null) {
+        if (addressToZoomTo == null) {
             throw new AddressEmptyException("Cannot load stations without a location");
         }
-        this.address = address;
-        geoPoint = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
+        this.address = addressToZoomTo;
+        geoPointToZoomTo = new GeoPoint((int) (addressToZoomTo.getLatitude() * 1E6), (int) (addressToZoomTo.getLongitude() * 1E6));
         if (zoomLevel != null) {
             this.zoomLevel = zoomLevel;
         }
@@ -121,7 +121,7 @@ public class StationLoader extends AsyncTask<String, Integer, List<StationOverla
         progressDialog.dismiss();
 
         if (!overlayItems.isEmpty()) {
-            stationActivity.showStations(overlayItems, geoPoint, zoomLevel);
+            stationActivity.showStations(overlayItems, geoPointToZoomTo, zoomLevel);
         } else {
             stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());
         }

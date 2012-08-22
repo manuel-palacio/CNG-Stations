@@ -35,16 +35,21 @@ public class StationOverlayItem extends OverlayItem implements Comparable<Statio
     private float latitude;
     private float longitude;
     private String filteredPrice;
+    private StationDTO stationDTO;
 
     public StationOverlayItem(GeoPoint geoPoint, String title, String snippet, StationDTO stationDTO) {
         super(geoPoint, title, snippet);
-
+        this.stationDTO = stationDTO;
         setPhoneNo(stationDTO.getPhoneNo());
         setOpeningHours(stationDTO.getOpeningHours());
         setPrice(stationDTO.getPrice());
         setLatitude(geoPoint.getLatitudeE6());
         setLongitude(geoPoint.getLongitudeE6());
         setFilteredPrice(stationDTO.getFilteredPrice());
+    }
+
+    public StationDTO getStationDTO() {
+        return stationDTO;
     }
 
     private void setFilteredPrice(String filteredPrice) {
