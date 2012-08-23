@@ -36,29 +36,21 @@ import java.util.List;
 import static org.springframework.util.StringUtils.hasText;
 
 
-public class StationLoader extends AsyncTask<String, Integer, List<StationOverlayItem>> {
+public class StationLoader extends AsyncTask<String, Void, List<StationOverlayItem>> {
     private ProgressDialog progressDialog;
     private GeoPoint geoPointToZoomTo;
     private Address address;
-    private Integer zoomLevel = 12;
     private StationActivity stationActivity;
     private RestTemplate restTemplate = new RestTemplate();
 
 
-    public StationLoader(StationActivity stationActivity, Address addressToZoomTo, Integer zoomLevel) throws AddressEmptyException {
+    public StationLoader(StationActivity stationActivity, Address address) throws AddressEmptyException {
         this.stationActivity = stationActivity;
-        if (addressToZoomTo == null) {
+        if (address == null) {
             throw new AddressEmptyException("Cannot load stations without a location");
         }
-        this.address = addressToZoomTo;
-        geoPointToZoomTo = new GeoPoint((int) (addressToZoomTo.getLatitude() * 1E6), (int) (addressToZoomTo.getLongitude() * 1E6));
-        if (zoomLevel != null) {
-            this.zoomLevel = zoomLevel;
-        }
-    }
-
-    public StationLoader(StationActivity stationActivity, Address address) throws AddressEmptyException {
-        this(stationActivity, address, null);
+        this.address = address;
+        geoPointToZoomTo = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
     }
 
 
@@ -71,27 +63,27 @@ public class StationLoader extends AsyncTask<String, Integer, List<StationOverla
 
 
     @Override
-    protected List<StationOverlayItem> doInBackground(String... params) {
+    protected List<StationOverlayItem> doInBackground(String... urls) {
         List<StationOverlayItem> results = new ArrayList<StationOverlayItem>();
         String locality = address.getLocality();
         String countryName = address.getCountryName();
 
         if (hasText(locality)) {
-            results = getLocalStations(locality);
+            results = getLocalStations(locality, urls[1]);
         } else if (hasText(countryName)) {
-            results = getCountryStations(countryName);
+            results = getCountryStations(countryName, urls[0]);
         }
 
         return results;
     }
 
-    private List<StationOverlayItem> getCountryStations(String countryName) {
-        String queryURL = "http://fuelstationservice.appspot.com/stations/country/" + countryName;
+    private List<StationOverlayItem> getCountryStations(String countryName, String url) {
+        String queryURL = url + countryName;
         return fetchStations(queryURL);
     }
 
-    private List<StationOverlayItem> getLocalStations(String locality) {
-        String queryURL = "http://fuelstationservice.appspot.com/stations/city/" + locality;
+    private List<StationOverlayItem> getLocalStations(String locality, String url) {
+        String queryURL = url + locality + "?latitude=" + geoPointToZoomTo.getLatitudeE6() + "&longitude=" + geoPointToZoomTo.getLongitudeE6();
         return fetchStations(queryURL);
     }
 
@@ -121,6 +113,7 @@ public class StationLoader extends AsyncTask<String, Integer, List<StationOverla
         progressDialog.dismiss();
 
         if (!overlayItems.isEmpty()) {
+            Integer zoomLevel = 12;
             stationActivity.showStations(overlayItems, geoPointToZoomTo, zoomLevel);
         } else {
             stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());

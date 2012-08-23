@@ -21,7 +21,6 @@ package net.palacesoft.cngstation.client.loader;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import net.palacesoft.cngstation.client.StationActivity;
 import net.palacesoft.cngstation.client.StationDTO;
 import org.springframework.web.client.RestClientException;
@@ -30,12 +29,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.layout.simple_spinner_dropdown_item;
-import static android.R.layout.simple_spinner_item;
 import static java.util.Arrays.asList;
 
 
-public class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> {
+public class CountryLoader extends AsyncTask<String, Void, List<StationDTO>> {
     private StationActivity stationActivity;
     private RestTemplate restTemplate = new RestTemplate();
     private ProgressDialog progressDialog;
@@ -52,10 +49,10 @@ public class CountryLoader extends AsyncTask<Object, Integer, List<StationDTO>> 
         }
 
     @Override
-    protected List<StationDTO> doInBackground(Object... objects) {
+    protected List<StationDTO> doInBackground(String... urls) {
         StationDTO[] dtos = new StationDTO[0];
         try {
-            dtos = restTemplate.getForObject("http://fuelstationservice.appspot.com/countries", StationDTO[].class);
+            dtos = restTemplate.getForObject(urls[0], StationDTO[].class);
         } catch (RestClientException e) {
             Log.e(StationActivity.class.getName(), e.getMessage(), e);
         }

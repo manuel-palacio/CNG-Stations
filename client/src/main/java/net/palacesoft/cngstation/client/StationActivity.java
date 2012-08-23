@@ -52,6 +52,11 @@ public class StationActivity extends MapActivity {
     private Spinner countries, cities;
     private Address currentLocationAddress;
 
+    private static final String COUNTRY_URL = "http://fuelstationservice.appspot.com/stations/country/";
+    private static final String COUNTRIES_URL = "http://fuelstationservice.appspot.com/countries";
+    private static final String CITY_URL = "http://fuelstationservice.appspot.com/stations/city/";
+    private static final String CITIES_URL = "http://fuelstationservice.appspot.com/cities/country/";
+
     @Override
     protected boolean isRouteDisplayed() {
         return true;
@@ -75,7 +80,7 @@ public class StationActivity extends MapActivity {
             case R.id.refresh:
                 Address locationAddress = lookupAddressFromLocation(Locale.ENGLISH, currentLocation);
                 try {
-                    new StationLoader(this, locationAddress).execute("");
+                    new StationLoader(this, locationAddress).execute(COUNTRY_URL, CITY_URL);
                 } catch (AddressEmptyException e) {
                     showInfoMessage("Could not determine your location");
                 }
@@ -171,7 +176,7 @@ public class StationActivity extends MapActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
 
                 String country = adapterView.getItemAtPosition(pos).toString();
-                new CityLoader(StationActivity.this, country).execute("");
+                new CityLoader(StationActivity.this, country).execute(CITIES_URL);
             }
 
             @Override
@@ -188,18 +193,11 @@ public class StationActivity extends MapActivity {
             public void onClick(View v) {
                 String city = cities.getSelectedItem().toString();
 
-                Integer zoomLevel = null;
-                Address addressToZoomTo;
                 if (hasText(city)) {
-                    if (city.equals("All")) {
-                        addressToZoomTo = Country.valueOf(countries.getSelectedItem().toString()).getAddress();
-                        zoomLevel = 6;
-                    } else {
-                        String country = countries.getSelectedItem().toString();
-                        addressToZoomTo = lookupAddressFromLocationName(new Locale(Country.valueOf(country).getCountryCode()), city);
-                    }
+                    String country = countries.getSelectedItem().toString();
+                    Address addressToZoomTo = lookupAddressFromLocationName(new Locale(Country.valueOf(country).getCountryCode()), city);
                     try {
-                        new StationLoader(StationActivity.this, addressToZoomTo, zoomLevel).execute("");
+                        new StationLoader(StationActivity.this, addressToZoomTo).execute(COUNTRY_URL, CITY_URL);
                     } catch (AddressEmptyException e) {
                         showInfoMessage("Problem finding CNG stations for chosen location");
                     }
@@ -211,7 +209,7 @@ public class StationActivity extends MapActivity {
 
 
     private void loadAvailableCountriesList() {
-        new CountryLoader(this).execute("");
+        new CountryLoader(this).execute(COUNTRIES_URL);
     }
 
     private Address lookupAddressFromLocation(Locale locale, Location location) {
@@ -298,7 +296,7 @@ public class StationActivity extends MapActivity {
                         progressDialog.dismiss();
                         currentLocationAddress = lookupAddressFromLocation(Locale.ENGLISH, currentLocation);
                         try {
-                            new StationLoader(StationActivity.this, currentLocationAddress).execute("");
+                            new StationLoader(StationActivity.this, currentLocationAddress).execute(COUNTRY_URL, CITY_URL);
                         } catch (AddressEmptyException e) {
                             showInfoMessage("Could not determine your location");
                         }

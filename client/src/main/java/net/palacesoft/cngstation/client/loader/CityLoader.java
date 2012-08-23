@@ -34,7 +34,7 @@ import static android.R.layout.simple_spinner_dropdown_item;
 import static android.R.layout.simple_spinner_item;
 
 
-public class CityLoader extends AsyncTask<String, Integer, List<String>> {
+public class CityLoader extends AsyncTask<String, Void, List<String>> {
     private StationActivity stationActivity;
     private ProgressDialog progressDialog;
     private RestTemplate restTemplate = new RestTemplate();
@@ -53,10 +53,10 @@ public class CityLoader extends AsyncTask<String, Integer, List<String>> {
     }
 
     @Override
-    protected List<String> doInBackground(String... params) {
+    protected List<String> doInBackground(String... urls) {
         StationDTO[] dtos = new StationDTO[0];
         try {
-            dtos = restTemplate.getForObject("http://fuelstationservice.appspot.com/cities/country/{query}", StationDTO[].class, country);
+            dtos = restTemplate.getForObject(urls[0] + "{query}", StationDTO[].class, country);
         } catch (RestClientException e) {
             Log.e(StationActivity.class.getName(), e.getMessage(), e);
         }

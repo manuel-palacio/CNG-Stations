@@ -15,6 +15,14 @@
     </cron>
 
 
+
+    <cron>
+        <url>/indexLocations</url>
+        <description>Index locations</description>
+        <schedule>every 401 hours</schedule>
+    </cron>
+
+
     <cron>
         <url>/importStations?baseUrl=9&#38;countryName=Germany&#38;countryCode=DE</url>
         <description>import DE</description>

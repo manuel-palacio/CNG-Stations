@@ -27,6 +27,7 @@ import com.google.appengine.api.datastore.PropertyProjection
 import com.google.appengine.api.datastore.DatastoreServiceFactory
 import com.google.appengine.api.datastore.DatastoreService
 import com.google.appengine.api.datastore.Entity
+import com.google.appengine.api.datastore.KeyFactory
 
 class CngDao {
 
@@ -41,7 +42,7 @@ class CngDao {
 
         PreparedQuery preparedQuery = dataStore.prepare(query)
 
-        preparedQuery.asList(withDefaults())
+        preparedQuery.asIterator(withChunkSize(200).prefetchSize(200))
     }
 
     static def findStationsByCity(String city) {
@@ -51,7 +52,7 @@ class CngDao {
 
         PreparedQuery preparedQuery = dataStore.prepare(query)
 
-        preparedQuery.asList(withDefaults())
+        preparedQuery.asList(withChunkSize(200).prefetchSize(200))
     }
 
     static def findCountries() {
@@ -75,7 +76,15 @@ class CngDao {
         results.collectAll(new HashSet(), {it.getProperty("city")})
     }
 
-    static def addCountry(String countryName){
+    static def findStationById(String id) {
+        Query query = new Query(READABLE_STATION, KeyFactory.createKey(READABLE_STATION, Long.parseLong(id)))
+
+        PreparedQuery preparedQuery = dataStore.prepare(query)
+
+        preparedQuery.asSingleEntity()
+    }
+
+    static def addCountry(String countryName) {
 
         Query query = new Query("Country")
         query.addFilter("countryName", Query.FilterOperator.EQUAL, countryName)
@@ -84,7 +93,7 @@ class CngDao {
 
         if (!country) {
             country = new Entity("Country")
-            country.countryName = countryName
+            country.setProperty("countryName", countryName)
             dataStore.put country
         }
     }
