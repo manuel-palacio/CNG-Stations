@@ -83,7 +83,8 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
     }
 
     private List<StationOverlayItem> getLocalStations(String locality, String url) {
-        String queryURL = url + locality + "?latitude=" + geoPointToZoomTo.getLatitudeE6() + "&longitude=" + geoPointToZoomTo.getLongitudeE6();
+        String queryURL = url + locality + "?latitude=" + geoPointToZoomTo.getLatitudeE6() / 1E6 + "&longitude="
+                + geoPointToZoomTo.getLongitudeE6() / 1E6;
         return fetchStations(queryURL);
     }
 

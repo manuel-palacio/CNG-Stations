@@ -17,7 +17,7 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
 
 } else {
 
-    def stations = []
+    Iterator stations = null
 
     if (params.city) {
         stations = CngDao.findStationsByCity(params.city)
@@ -27,15 +27,15 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
         stations = CngDao.findStationsByCountryName(params.countryName)
     }
 
-    if (!stations.empty) {
+    if (stations?.hasNext()) {
         outputData(cache(asJson(stations)))
     } else {
         stations = getNearbyStations()
 
-        if (stations.empty) {
-            response.status = HttpServletResponse.SC_NOT_FOUND
-        } else {
+        if (stations.hasNext()) {
             outputData(cache(asJson(stations)))
+        } else {
+            response.status = HttpServletResponse.SC_NOT_FOUND
         }
     }
 
@@ -61,7 +61,7 @@ private def getNearbyStations() {
 
     }
 
-    stations
+    stations.iterator()
 }
 
 private def cache(String jsonString) {

@@ -52,7 +52,7 @@ class CngDao {
 
         PreparedQuery preparedQuery = dataStore.prepare(query)
 
-        preparedQuery.asList(withChunkSize(200).prefetchSize(200))
+        preparedQuery.asIterator(withChunkSize(200).prefetchSize(200))
     }
 
     static def findCountries() {

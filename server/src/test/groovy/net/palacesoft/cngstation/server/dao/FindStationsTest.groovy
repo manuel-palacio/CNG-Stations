@@ -25,11 +25,15 @@ class FindStationsTest extends AbstractStationTest {
 
         def stations = CngDao.findStationsByCountryName("Sweden")
 
-        Station station = PogoEntityCoercion.convert(stations[0], Station.class)
+        stations.each {
+            Station station = PogoEntityCoercion.convert(it, Station.class)
 
-        assert station.city
-        assert station.phoneNo
-        assert station.price
-        assert station.street
+            assert station.city
+            assert station.phoneNo
+            assert station.price
+            assert station.street
+        }
+
+
     }
 }
