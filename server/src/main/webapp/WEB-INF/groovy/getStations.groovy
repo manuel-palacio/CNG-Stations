@@ -47,6 +47,8 @@ private def getNearbyStations() {
     String longitude = params.longitude
 
     if (latitude && longitude) {
+        latitude = convertToDegrees(latitude)
+        longitude = convertToDegrees(longitude)
         def index = search.index("myindex", Consistency.PER_DOCUMENT)
 
         String queryStr = "distance(location, geopoint(${latitude}, ${longitude})) < 30000"
@@ -62,6 +64,14 @@ private def getNearbyStations() {
     }
 
     stations.iterator()
+}
+
+private def convertToDegrees(String value) {
+    if (!value.contains(".")) {
+        return Double.valueOf(value) / 1E6
+    }
+
+    value
 }
 
 private def cache(String jsonString) {

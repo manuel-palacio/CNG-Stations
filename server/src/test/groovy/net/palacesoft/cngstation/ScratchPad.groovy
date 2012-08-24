@@ -26,4 +26,13 @@ class Car {
 println new Car(mileage: 3.5).mileage
 
 
-println 59306073 / 1E6
+println convertToDegrees("59.306073")
+
+
+private def convertToDegrees(String value) {
+    if (!value.contains(".")) {
+        return Double.valueOf(value) / 1E6
+    }
+
+    value
+}
