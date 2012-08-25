@@ -36,3 +36,6 @@ private def convertToDegrees(String value) {
 
     value
 }
+
+
+println 1.8119442299999998E-5 * 1E6

@@ -77,10 +77,10 @@ public class StationActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                Address locationAddress = lookupAddressFromLocation(currentLocation);
                 try {
+                    Address locationAddress = lookupAddressFromLocation(currentLocation, Locale.getDefault());
                     new StationLoader(this, locationAddress).execute(CITY_URL);
-                } catch (AddressEmptyException e) {
+                } catch (Exception e) {
                     showInfoMessage("Could not determine your location");
                 }
 
@@ -195,9 +195,9 @@ public class StationActivity extends MapActivity {
                 String city = cities.getSelectedItem().toString();
 
                 if (hasText(city)) {
-                    String country = countries.getSelectedItem().toString();
-                    Address addressToZoomTo = lookupAddressFromLocationName(city);
                     try {
+                        String country = countries.getSelectedItem().toString();
+                        Address addressToZoomTo = lookupAddressFromLocationName(Locale.getDefault(), city);
                         new StationLoader(StationActivity.this, addressToZoomTo).execute(CITY_URL);
                     } catch (AddressEmptyException e) {
                         showInfoMessage("Problem finding CNG stations for chosen location");
@@ -205,7 +205,6 @@ public class StationActivity extends MapActivity {
                 }
             }
         });
-
     }
 
 
@@ -213,23 +212,20 @@ public class StationActivity extends MapActivity {
         new CountryLoader(this).execute(COUNTRIES_URL);
     }
 
-    private Address lookupAddressFromLocation(Location location) {
-        Geocoder geocoder = new Geocoder(this);
+    private Address lookupAddressFromLocation(Location location, Locale locale) throws IOException, AddressEmptyException {
+        Geocoder geocoder = new Geocoder(this, locale);
         List<Address> addresses = Collections.emptyList();
 
-        try {
-            if (location != null) {
-                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            }
-        } catch (IOException e) {
-            //ignore
+        if (location != null) {
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
         }
+
 
         return extractAddress(addresses);
     }
 
-    private Address lookupAddressFromLocationName(String city) {
-        Geocoder geocoder = new Geocoder(this);
+    private Address lookupAddressFromLocationName(Locale locale, String city) throws AddressEmptyException {
+        Geocoder geocoder = new Geocoder(this, locale);
         List<Address> addresses = Collections.emptyList();
         if (StringUtils.hasText(city)) {
             try {
@@ -246,9 +242,9 @@ public class StationActivity extends MapActivity {
         return address;
     }
 
-    private Address extractAddress(List<Address> addresses) {
+    private Address extractAddress(List<Address> addresses) throws AddressEmptyException {
         if (addresses.isEmpty()) {
-            return null;
+            throw new AddressEmptyException("Could not determine location address");
         }
 
         return addresses.get(0);
@@ -286,7 +282,7 @@ public class StationActivity extends MapActivity {
 
     private void startTrackingMyLocation() {
 
-        final ProgressDialog progressDialog = createProgressDialog("Determining your location...");
+        final ProgressDialog progressDialog = createProgressDialog("Trying to find your location...");
         progressDialog.show();
         myLocationOverlay.runOnFirstFix(new Runnable() {
             @Override
@@ -296,12 +292,13 @@ public class StationActivity extends MapActivity {
                     public void run() {
                         progressDialog.dismiss();
                         if (currentLocation != null) {
-                            currentLocationAddress = lookupAddressFromLocation(currentLocation);
+
                             try {
+                                currentLocationAddress = lookupAddressFromLocation(currentLocation, Locale.getDefault());
                                 new StationLoader(StationActivity.this, currentLocationAddress).execute(CITY_URL);
-                            } catch (AddressEmptyException e) {
+                            } catch (Exception e) {
                                 BugSenseHandler.log("Could not determine the user's location ", e);
-                                showInfoMessage("Could not determine your location");
+                                showInfoMessage("Could not determine your location. Refresh option might help");
                             }
                         }
                     }

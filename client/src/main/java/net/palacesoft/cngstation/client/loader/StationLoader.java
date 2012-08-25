@@ -62,7 +62,7 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
     protected List<StationOverlayItem> doInBackground(String... urls) {
         String locality = address.getLocality();
         String queryURL = urls[0] + locality + "?latitude=" + address.getLatitude() + "&longitude="
-                        + address.getLongitude() / 1E6;
+                        + address.getLongitude();
         return fetchStations(queryURL);
     }
 
