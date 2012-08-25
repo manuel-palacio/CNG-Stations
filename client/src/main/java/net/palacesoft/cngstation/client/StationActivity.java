@@ -52,7 +52,6 @@ public class StationActivity extends MapActivity {
     private Spinner countries, cities;
     private Address currentLocationAddress;
 
-    private static final String COUNTRY_URL = "http://fuelstationservice.appspot.com/stations/country/";
     private static final String COUNTRIES_URL = "http://fuelstationservice.appspot.com/countries";
     private static final String CITY_URL = "http://fuelstationservice.appspot.com/stations/city/";
     private static final String CITIES_URL = "http://fuelstationservice.appspot.com/cities/country/";
@@ -78,9 +77,9 @@ public class StationActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                Address locationAddress = lookupAddressFromLocation(Locale.ENGLISH, currentLocation);
+                Address locationAddress = lookupAddressFromLocation(currentLocation);
                 try {
-                    new StationLoader(this, locationAddress).execute(COUNTRY_URL, CITY_URL);
+                    new StationLoader(this, locationAddress).execute(CITY_URL);
                 } catch (AddressEmptyException e) {
                     showInfoMessage("Could not determine your location");
                 }
@@ -130,7 +129,9 @@ public class StationActivity extends MapActivity {
 
     private void logError(Exception e, String text) {
         Map<String, String> extraData = new HashMap<String, String>();
-        extraData.put("location", currentLocationAddress.getLocality());
+        if (currentLocationAddress != null) {
+            extraData.put("location", currentLocationAddress.getLocality());
+        }
         BugSenseHandler.log(text, extraData, e);
         showInfoMessage(text);
     }
@@ -195,9 +196,9 @@ public class StationActivity extends MapActivity {
 
                 if (hasText(city)) {
                     String country = countries.getSelectedItem().toString();
-                    Address addressToZoomTo = lookupAddressFromLocationName(new Locale(Country.valueOf(country).getCountryCode()), city);
+                    Address addressToZoomTo = lookupAddressFromLocationName(city);
                     try {
-                        new StationLoader(StationActivity.this, addressToZoomTo).execute(COUNTRY_URL, CITY_URL);
+                        new StationLoader(StationActivity.this, addressToZoomTo).execute(CITY_URL);
                     } catch (AddressEmptyException e) {
                         showInfoMessage("Problem finding CNG stations for chosen location");
                     }
@@ -212,8 +213,8 @@ public class StationActivity extends MapActivity {
         new CountryLoader(this).execute(COUNTRIES_URL);
     }
 
-    private Address lookupAddressFromLocation(Locale locale, Location location) {
-        Geocoder geocoder = new Geocoder(this, locale);
+    private Address lookupAddressFromLocation(Location location) {
+        Geocoder geocoder = new Geocoder(this);
         List<Address> addresses = Collections.emptyList();
 
         try {
@@ -227,14 +228,14 @@ public class StationActivity extends MapActivity {
         return extractAddress(addresses);
     }
 
-    private Address lookupAddressFromLocationName(Locale locale, String city) {
-        Geocoder geocoder = new Geocoder(this, locale);
+    private Address lookupAddressFromLocationName(String city) {
+        Geocoder geocoder = new Geocoder(this);
         List<Address> addresses = Collections.emptyList();
         if (StringUtils.hasText(city)) {
             try {
                 addresses = geocoder.getFromLocationName(city, 1);
             } catch (IOException e) {
-                BugSenseHandler.log("Error getting location name with geocoder", e);
+                BugSenseHandler.log("Error getting location name with GeoCoder", e);
             }
         }
         Address address = extractAddress(addresses);
@@ -294,11 +295,14 @@ public class StationActivity extends MapActivity {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
-                        currentLocationAddress = lookupAddressFromLocation(Locale.ENGLISH, currentLocation);
-                        try {
-                            new StationLoader(StationActivity.this, currentLocationAddress).execute(COUNTRY_URL, CITY_URL);
-                        } catch (AddressEmptyException e) {
-                            showInfoMessage("Could not determine your location");
+                        if (currentLocation != null) {
+                            currentLocationAddress = lookupAddressFromLocation(currentLocation);
+                            try {
+                                new StationLoader(StationActivity.this, currentLocationAddress).execute(CITY_URL);
+                            } catch (AddressEmptyException e) {
+                                BugSenseHandler.log("Could not determine the user's location ", e);
+                                showInfoMessage("Could not determine your location");
+                            }
                         }
                     }
                 });
@@ -324,15 +328,19 @@ public class StationActivity extends MapActivity {
     }
 
     public void setCountries(List<String> countriesList) {
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                simple_spinner_item, countriesList);
-        dataAdapter.setDropDownViewResource(simple_spinner_dropdown_item);
-        countries.setAdapter(dataAdapter);
+        if (!countriesList.isEmpty()) {
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                    simple_spinner_item, countriesList);
+            dataAdapter.setDropDownViewResource(simple_spinner_dropdown_item);
+            countries.setAdapter(dataAdapter);
 
-        String country = currentLocationAddress.getCountryName();
-        int countryIndex = countriesList.indexOf(country);
-        if (countryIndex > -1) {
-            countries.setSelection(countryIndex);
+            String country = currentLocationAddress.getCountryName();
+            int countryIndex = countriesList.indexOf(country);
+            if (countryIndex > -1) {
+                countries.setSelection(countryIndex);
+            }
+        } else {
+            showInfoMessage("Could not load country list");
         }
     }
 

@@ -33,12 +33,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.util.StringUtils.hasText;
-
 
 public class StationLoader extends AsyncTask<String, Void, List<StationOverlayItem>> {
     private ProgressDialog progressDialog;
-    private GeoPoint geoPointToZoomTo;
     private Address address;
     private StationActivity stationActivity;
     private RestTemplate restTemplate = new RestTemplate();
@@ -50,7 +47,6 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
             throw new AddressEmptyException("Cannot load stations without a location");
         }
         this.address = address;
-        geoPointToZoomTo = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
     }
 
 
@@ -64,27 +60,9 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
 
     @Override
     protected List<StationOverlayItem> doInBackground(String... urls) {
-        List<StationOverlayItem> results = new ArrayList<StationOverlayItem>();
         String locality = address.getLocality();
-        String countryName = address.getCountryName();
-
-        if (hasText(locality)) {
-            results = getLocalStations(locality, urls[1]);
-        } else if (hasText(countryName)) {
-            results = getCountryStations(countryName, urls[0]);
-        }
-
-        return results;
-    }
-
-    private List<StationOverlayItem> getCountryStations(String countryName, String url) {
-        String queryURL = url + countryName;
-        return fetchStations(queryURL);
-    }
-
-    private List<StationOverlayItem> getLocalStations(String locality, String url) {
-        String queryURL = url + locality + "?latitude=" + geoPointToZoomTo.getLatitudeE6() / 1E6 + "&longitude="
-                + geoPointToZoomTo.getLongitudeE6() / 1E6;
+        String queryURL = urls[0] + locality + "?latitude=" + address.getLatitude() + "&longitude="
+                        + address.getLongitude() / 1E6;
         return fetchStations(queryURL);
     }
 
@@ -114,7 +92,8 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
         progressDialog.dismiss();
 
         if (!overlayItems.isEmpty()) {
-            Integer zoomLevel = 12;
+            GeoPoint geoPointToZoomTo = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
+            Integer zoomLevel = 11;
             stationActivity.showStations(overlayItems, geoPointToZoomTo, zoomLevel);
         } else {
             stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());
