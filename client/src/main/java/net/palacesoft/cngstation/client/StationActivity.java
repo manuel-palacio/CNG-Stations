@@ -80,8 +80,10 @@ public class StationActivity extends MapActivity {
                 try {
                     Address locationAddress = lookupAddressFromLocation(currentLocation, Locale.getDefault());
                     new StationLoader(this, locationAddress).execute(CITY_URL);
-                } catch (Exception e) {
+                } catch (AddressEmptyException e) {
                     showInfoMessage("Could not determine your location");
+                } catch (IOException e) {
+                    //ignore
                 }
 
                 break;
@@ -296,9 +298,11 @@ public class StationActivity extends MapActivity {
                             try {
                                 currentLocationAddress = lookupAddressFromLocation(currentLocation, Locale.getDefault());
                                 new StationLoader(StationActivity.this, currentLocationAddress).execute(CITY_URL);
-                            } catch (Exception e) {
+                            } catch (AddressEmptyException e) {
                                 BugSenseHandler.log("Could not determine the user's location ", e);
                                 showInfoMessage("Could not determine your location. Refresh option might help");
+                            } catch (IOException e) {
+                                //ignore
                             }
                         }
                     }
@@ -331,10 +335,12 @@ public class StationActivity extends MapActivity {
             dataAdapter.setDropDownViewResource(simple_spinner_dropdown_item);
             countries.setAdapter(dataAdapter);
 
-            String country = currentLocationAddress.getCountryName();
-            int countryIndex = countriesList.indexOf(country);
-            if (countryIndex > -1) {
-                countries.setSelection(countryIndex);
+            if (currentLocationAddress != null) {
+                String country = currentLocationAddress.getCountryName();
+                int countryIndex = countriesList.indexOf(country);
+                if (countryIndex > -1) {
+                    countries.setSelection(countryIndex);
+                }
             }
         } else {
             showInfoMessage("Could not load country list");
