@@ -48,7 +48,7 @@ public class MetanoAutoScraper implements Scraper {
     private void getPage(List urls, HtmlPage htmlPage) {
 
         urls << htmlPage.getUrl().toString()
-        getPage(urls, htmlPage.getAnchorByText("Successiva >>").click())
+        getPage(urls, htmlPage.getAnchorByText("Successiva").click())
     }
 
 

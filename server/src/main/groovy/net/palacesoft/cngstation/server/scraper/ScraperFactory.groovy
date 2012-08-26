@@ -26,10 +26,11 @@ class ScraperFactory {
         }
 
         if (params.countryCode == "IT" || params.countryCode == "FR") {
-            return new MetanoAutoScraper(openCellNumber: 9, countryCode: params.countryCode, countryName: params.countryName)
+            return new MetanoAutoScraper(openCellNumber: 7, countryCode: params.countryCode, countryName: params.countryName)
         }
 
-        return new MetanoAutoScraper(openCellNumber: 8, countryCode: params.countryCode, countryName: params.countryName)
+
+        return new MetanoAutoScraper(openCellNumber: 6, countryCode: params.countryCode, countryName: params.countryName)
     }
 
 }
