@@ -172,6 +172,7 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
     public void addOverlayItems(List<StationOverlayItem> overlayItems) {
         this.overlayItems.addAll(overlayItems);
+        setLastFocusedIndex(-1);
         populate();
     }
 }

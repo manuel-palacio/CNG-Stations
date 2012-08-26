@@ -39,6 +39,7 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
     private Address address;
     private StationActivity stationActivity;
     private RestTemplate restTemplate = new RestTemplate();
+    private String city;
 
 
     public StationLoader(StationActivity stationActivity, Address address) throws AddressEmptyException {
@@ -47,6 +48,11 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
             throw new AddressEmptyException("Cannot load stations without a location");
         }
         this.address = address;
+    }
+
+    public StationLoader(StationActivity stationActivity, String city) {
+        this.stationActivity = stationActivity;
+        this.city = city;
     }
 
 
@@ -60,9 +66,14 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
 
     @Override
     protected List<StationOverlayItem> doInBackground(String... urls) {
-        String locality = address.getLocality();
-        String queryURL = urls[0] + locality + "?latitude=" + address.getLatitude() + "&longitude="
-                        + address.getLongitude();
+        String queryURL;
+        if (address != null) {
+            String locality = address.getLocality();
+            queryURL = urls[0] + locality + "?latitude=" + address.getLatitude() + "&longitude="
+                            + address.getLongitude();
+        } else {
+            queryURL = urls[0] + city;
+        }
         return fetchStations(queryURL);
     }
 
@@ -92,7 +103,13 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
         progressDialog.dismiss();
 
         if (!overlayItems.isEmpty()) {
-            GeoPoint geoPointToZoomTo = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
+            GeoPoint geoPointToZoomTo;
+            if (address != null) {
+                geoPointToZoomTo = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
+            } else {
+                StationDTO stationDTO = overlayItems.get(0).getStationDTO();
+                geoPointToZoomTo = new GeoPoint((int) (stationDTO.getLatitude() * 1E6), (int) (stationDTO.getLongitude() * 1E6));
+            }
             Integer zoomLevel = 11;
             stationActivity.showStations(overlayItems, geoPointToZoomTo, zoomLevel);
         } else {
