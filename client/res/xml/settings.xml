@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:title="Station search settings">
+
+        <ListPreference
+                android:title="Set max distance"
+                android:summary="Set the max distance allowed from your location for performing the search. Default is 20km"
+                android:key="distancePref"
+                android:defaultValue="20"
+                android:entries="@array/distance"
+                android:entryValues="@array/distanceValue"/>
+    </PreferenceCategory>
+</PreferenceScreen>

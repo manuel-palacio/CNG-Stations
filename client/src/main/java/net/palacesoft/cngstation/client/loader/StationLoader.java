@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.google.android.maps.GeoPoint;
 import net.palacesoft.cngstation.client.AddressEmptyException;
+import net.palacesoft.cngstation.client.Preferences;
 import net.palacesoft.cngstation.client.StationActivity;
 import net.palacesoft.cngstation.client.StationDTO;
 import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
@@ -34,25 +35,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StationLoader extends AsyncTask<String, Void, List<StationOverlayItem>> {
+public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem>> {
     private ProgressDialog progressDialog;
     private Address address;
     private StationActivity stationActivity;
+    private int zoomLevel;
     private RestTemplate restTemplate = new RestTemplate();
-    private String city;
+    private String locality;
+    private String url;
 
 
-    public StationLoader(StationActivity stationActivity, Address address) throws AddressEmptyException {
+    public StationLoader(StationActivity stationActivity, Address address, int zoomLevel, String url) throws AddressEmptyException {
         this.stationActivity = stationActivity;
+        this.zoomLevel = zoomLevel;
+        this.url = url;
         if (address == null) {
             throw new AddressEmptyException("Cannot load stations without a location");
         }
         this.address = address;
     }
 
-    public StationLoader(StationActivity stationActivity, String city) {
+    public StationLoader(StationActivity stationActivity, String locality, int zoomLevel, String url) {
         this.stationActivity = stationActivity;
-        this.city = city;
+        this.locality = locality;
+        this.zoomLevel = zoomLevel;
+        this.url = url;
     }
 
 
@@ -65,14 +72,14 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
 
 
     @Override
-    protected List<StationOverlayItem> doInBackground(String... urls) {
+    protected List<StationOverlayItem> doInBackground(Void... urls) {
         String queryURL;
         if (address != null) {
             String locality = address.getLocality();
-            queryURL = urls[0] + locality + "?latitude=" + address.getLatitude() + "&longitude="
-                            + address.getLongitude();
+            queryURL = url + locality + "?latitude=" + address.getLatitude() + "&longitude="
+                            + address.getLongitude() + "&distance=" + Preferences.getDistance(stationActivity);
         } else {
-            queryURL = urls[0] + city;
+            queryURL = url + locality;
         }
         return fetchStations(queryURL);
     }
@@ -110,7 +117,6 @@ public class StationLoader extends AsyncTask<String, Void, List<StationOverlayIt
                 StationDTO stationDTO = overlayItems.get(0).getStationDTO();
                 geoPointToZoomTo = new GeoPoint((int) (stationDTO.getLatitude() * 1E6), (int) (stationDTO.getLongitude() * 1E6));
             }
-            Integer zoomLevel = 11;
             stationActivity.showStations(overlayItems, geoPointToZoomTo, zoomLevel);
         } else {
             stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());

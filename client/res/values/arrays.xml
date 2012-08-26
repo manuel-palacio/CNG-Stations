@@ -1,0 +1,17 @@
+<resources>
+    <string-array name="distance">
+        <item>20 km</item>
+        <item>30 km</item>
+        <item>40 km</item>
+        <item>50 km</item>
+        <item>60 km</item>
+    </string-array>
+
+    <string-array name="distanceValue">
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+    </string-array>
+</resources>

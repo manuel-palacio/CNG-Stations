@@ -8,4 +8,5 @@
     <string name="cheapest">Mark cheapest</string>
     <string name="closest">Mark closest</string>
     <string name="location">Go to my location</string>
+    <string name="settings_title">Distance settings</string>
 </resources>

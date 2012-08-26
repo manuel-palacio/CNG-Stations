@@ -19,6 +19,7 @@
 package net.palacesoft.cngstation.client;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -56,6 +57,7 @@ public class StationActivity extends MapActivity {
 
     private static final String COUNTRIES_URL = "http://fuelstationservice.appspot.com/countries";
     private static final String CITY_URL = "http://fuelstationservice.appspot.com/stations/city/";
+    private static final String CITY_URL_v2 = "http://fuelstationservice.appspot.com/stations2/city/";
     private static final String CITIES_URL = "http://fuelstationservice.appspot.com/cities/country/";
 
     @Override
@@ -81,7 +83,7 @@ public class StationActivity extends MapActivity {
             case R.id.refresh:
                 try {
                     Address locationAddress = lookupAddressFromLocation(currentLocation);
-                    new StationLoader(this, locationAddress).execute(CITY_URL);
+                    new StationLoader(this, locationAddress, getZoomLevel(), CITY_URL_v2).execute();
                 } catch (AddressEmptyException e) {
                     showInfoMessage("Could not determine your location");
                 } catch (IOException e) {
@@ -102,6 +104,11 @@ public class StationActivity extends MapActivity {
                     }
                 }
                 break;
+
+            case R.id.settings:
+                startActivity(new Intent(this, Preferences.class));
+                break;
+
 
             case R.id.discard:
                 clearStationOverlay();
@@ -171,7 +178,16 @@ public class StationActivity extends MapActivity {
 
         addStationOverlay();
 
-        startTrackingMyLocation();
+        startTrackingMyLocation(getZoomLevel());
+    }
+
+    private Integer getZoomLevel() {
+        int distance = Preferences.getDistance(getApplicationContext());
+        if (distance > 40) {
+            return 9;
+        }
+
+        return 11;
     }
 
     private void initSearchForm() {
@@ -200,7 +216,7 @@ public class StationActivity extends MapActivity {
 
                 if (hasText(city)) {
                     try {
-                        new StationLoader(StationActivity.this, city).execute(CITY_URL);
+                        new StationLoader(StationActivity.this, city, getZoomLevel(), CITY_URL).execute();
                     } catch (Exception e) {
                         showInfoMessage("Problem finding CNG stations for chosen location");
                     }
@@ -265,7 +281,7 @@ public class StationActivity extends MapActivity {
         mapView.getOverlays().add(myLocationOverlay);
     }
 
-    private void startTrackingMyLocation() {
+    private void startTrackingMyLocation(final int zoomLevel) {
 
         final ProgressDialog progressDialog = createProgressDialog("Trying to find your location...");
         progressDialog.show();
@@ -280,7 +296,7 @@ public class StationActivity extends MapActivity {
 
                             try {
                                 currentLocationAddress = lookupAddressFromLocation(currentLocation);
-                                new StationLoader(StationActivity.this, currentLocationAddress).execute(CITY_URL);
+                                new StationLoader(StationActivity.this, currentLocationAddress, zoomLevel, CITY_URL_v2).execute();
                             } catch (AddressEmptyException e) {
                                 BugSenseHandler.log("Could not determine the user's location ", e);
                                 showInfoMessage("Could not determine your location. Refresh option might help");
