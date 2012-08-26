@@ -12,7 +12,7 @@ try {
 } catch (Exception exception) {
     mail.send from: "emanuel.palacio@gmail.com",
             to: "emanuel.palacio@gmail.com",
-            subject: "Problem scraping with fuelstationservice " + params.countryName,
+            subject: "Problem scraping with fuelstationservice " + params.baseUrl,
             textBody: exception.message
 
 }

@@ -44,4 +44,4 @@ results.each {
 datastore.put entities
 
 
-//memcache.clearAll()
+memcache.clearAll()
