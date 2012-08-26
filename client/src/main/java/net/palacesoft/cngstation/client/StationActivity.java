@@ -85,9 +85,9 @@ public class StationActivity extends MapActivity {
                     Address locationAddress = lookupAddressFromLocation(currentLocation);
                     new StationLoader(this, locationAddress, getZoomLevel(), CITY_URL_v2).execute();
                 } catch (AddressEmptyException e) {
-                    showInfoMessage("Could not determine your location");
+                    showInfoMessage("Could not determine your current location");
                 } catch (IOException e) {
-                    //ignore
+                    showInfoMessage("Network error. Try refreshing.");
                 }
 
                 break;
