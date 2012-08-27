@@ -35,17 +35,14 @@ public class Preferences extends PreferenceActivity {
         addPreferencesFromResource(R.xml.settings);
 
         Preference customPref = findPreference("distancePref");
-        customPref
-                .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        customPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 
-                    @Override
-                    public boolean onPreferenceChange(Preference preference, Object selection) {
-                        Intent intent = new Intent(getApplicationContext(), StationActivity.class);
-
-                        startActivity(intent);
-                        return true;
-                    }
-                });
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object selection) {
+                startActivity(new Intent(getApplicationContext(), StationActivity.class));
+                return true;
+            }
+        });
     }
 
     public static int getDistance(Context context) {
