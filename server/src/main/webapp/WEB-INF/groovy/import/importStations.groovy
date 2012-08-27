@@ -19,8 +19,7 @@ try {
 
 pagesToScrape.each {
     queues['optimized-queue'].add url: "/scrapePageTask",
-            method: 'GET', params: [pageUrl: it, countryCode: params.countryCode, countryName: params.countryName],
-            retryOptions: RetryOptions.Builder.withDefaults()
+            method: 'GET', params: [pageUrl: it, countryCode: params.countryCode, countryName: params.countryName]
 }
 
 

@@ -1,8 +1,9 @@
 import com.google.appengine.api.datastore.Entity
 import net.palacesoft.cngstation.server.scraper.ScraperFactory
 
+def gasStations = []
 try {
-    def gasStations = ScraperFactory.newInstance(params).scrapePage(params.pageUrl)
+    gasStations = ScraperFactory.newInstance(params).scrapePage(params.pageUrl)
 } catch (Exception exception) {
     mail.send from: "emanuel.palacio@gmail.com",
             to: "emanuel.palacio@gmail.com",
@@ -17,4 +18,6 @@ gasStations.each { station ->
     def entity = station as Entity
     entitiesToSave << entity
 }
-datastore.put entitiesToSave
+if (!entitiesToSave.empty) {
+    datastore.put entitiesToSave
+}
