@@ -43,7 +43,7 @@
     <cron>
         <url>/importStations?baseUrl=1&#38;countryName=Italy&#38;countryCode=IT</url>
         <description>import IT</description>
-        <schedule>15 of month 12:00</schedule>
+        <schedule>16 of month 12:00</schedule>
         <timezone>Europe/Stockholm</timezone>
     </cron>
 
@@ -58,6 +58,13 @@
         <url>/importStations?baseUrl=21&#38;countryName=Norway&#38;countryCode=NO</url>
         <description>import NO</description>
         <schedule>15 of month 09:00</schedule>
+        <timezone>Europe/Stockholm</timezone>
+    </cron>
+
+    <cron>
+        <url>/importStations?baseUrl=2&#38;countryName=Switzerland&#38;countryCode=CH</url>
+        <description>import CH</description>
+        <schedule>17 of month 09:00</schedule>
         <timezone>Europe/Stockholm</timezone>
     </cron>
 

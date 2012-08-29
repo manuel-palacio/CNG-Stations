@@ -20,7 +20,7 @@ package net.palacesoft.cngstation.server.model
 
 public enum Country {
 
-    Sweden("SE"), Austria("AT"), France("FR"), Spain("ES"), Italy("IT"), Germany("DE"), Norway("NO")
+    Sweden("SE"), Austria("AT"), France("FR"), Spain("ES"), Italy("IT"), Germany("DE"), Norway("NO"), Switzerland("CH")
 
 
     String countryCode

@@ -7,7 +7,7 @@ def results = datastore.execute {
     chunkSize 400
 }
 
-//datastore.delete results
+datastore.delete results
 
 
 def now = new Date()
