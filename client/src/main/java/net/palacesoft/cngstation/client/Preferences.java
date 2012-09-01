@@ -33,16 +33,6 @@ public class Preferences extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-
-        Preference customPref = findPreference("distancePref");
-        customPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object selection) {
-                startActivity(new Intent(getApplicationContext(), StationActivity.class));
-                return true;
-            }
-        });
     }
 
     public static int getDistance(Context context) {

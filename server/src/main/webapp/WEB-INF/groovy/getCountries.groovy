@@ -8,7 +8,7 @@ if ('countries' in memcache) {
     outputData(json)
 } else {
 
-    def countries = CngDao.findCountries()
+    def countries = CngDao.findCountries().sort{it.countryName}
 
     if (!countries.empty) {
 

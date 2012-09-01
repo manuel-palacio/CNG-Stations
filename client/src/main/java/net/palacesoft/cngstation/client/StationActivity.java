@@ -37,6 +37,7 @@ import net.palacesoft.cngstation.client.loader.CountryLoader;
 import net.palacesoft.cngstation.client.loader.StationLoader;
 import net.palacesoft.cngstation.client.mapoverlay.StationBalloonOverlay;
 import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -56,7 +57,6 @@ public class StationActivity extends MapActivity {
     private Address currentLocationAddress;
 
     private static final String COUNTRIES_URL = "http://fuelstationservice.appspot.com/countries";
-    private static final String CITY_URL = "http://fuelstationservice.appspot.com/stations/city/";
     private static final String CITY_URL_v2 = "http://fuelstationservice.appspot.com/stations2/city/";
     private static final String CITIES_URL = "http://fuelstationservice.appspot.com/cities/country/";
 
@@ -109,11 +109,6 @@ public class StationActivity extends MapActivity {
                 startActivity(new Intent(this, Preferences.class));
                 break;
 
-
-            case R.id.discard:
-                clearStationOverlay();
-                break;
-
             case R.id.cheapest:
                 try {
                     stationOverlay.popupCheapest();
@@ -128,10 +123,6 @@ public class StationActivity extends MapActivity {
                 } catch (Exception e) {
                     logError(e, "Problem showing the closest station");
                 }
-                break;
-
-            case R.id.location:
-                mapController.animateTo(myLocationOverlay.getMyLocation());
                 break;
         }
 
@@ -187,7 +178,7 @@ public class StationActivity extends MapActivity {
             return 9;
         }
 
-        return 11;
+        return 10;
     }
 
     private void initSearchForm() {
@@ -216,13 +207,26 @@ public class StationActivity extends MapActivity {
 
                 if (hasText(city)) {
                     try {
-                        new StationLoader(StationActivity.this, city, getZoomLevel(), CITY_URL).execute();
+                        Address address = lookupAddressFromLocationName(city, countries.getSelectedItem().toString());
+                        new StationLoader(StationActivity.this, address, getZoomLevel(), CITY_URL_v2).execute();
                     } catch (Exception e) {
                         showInfoMessage("Problem finding CNG stations for chosen location");
                     }
                 }
             }
         });
+    }
+
+    private Address lookupAddressFromLocationName(String city, String country) throws IOException, AddressEmptyException {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = Collections.emptyList();
+
+        if (StringUtils.hasText(city)) {
+            addresses = geocoder.getFromLocationName(city + " " + country, 1);
+        }
+
+
+        return extractAddress(addresses);
     }
 
 
@@ -346,10 +350,16 @@ public class StationActivity extends MapActivity {
         }
     }
 
-    public void showStations(List<StationOverlayItem> overlayItems, GeoPoint geoPoint, int zoomLevel) {
+    public void showStations(List<StationOverlayItem> overlayItems, GeoPoint geoPoint, int zoomLevel, String location) {
         stationOverlay.clear();
         stationOverlay.addOverlayItems(overlayItems);
         mapController.animateTo(geoPoint);
         mapController.setZoom(zoomLevel);
+        int distance = Preferences.getDistance(this);
+        if (overlayItems.size() > 1) {
+            showInfoMessage("Showing " + overlayItems.size() + " results within " + distance + " km from " + location);
+        } else {
+            showInfoMessage("Showing " + overlayItems.size() + " result within " + distance + " km from " + location);
+        }
     }
 }

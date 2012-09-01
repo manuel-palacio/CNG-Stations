@@ -41,7 +41,6 @@ public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem
     private StationActivity stationActivity;
     private int zoomLevel;
     private RestTemplate restTemplate = new RestTemplate();
-    private String locality;
     private String url;
 
 
@@ -55,13 +54,6 @@ public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem
         this.address = address;
     }
 
-    public StationLoader(StationActivity stationActivity, String locality, int zoomLevel, String url) {
-        this.stationActivity = stationActivity;
-        this.locality = locality;
-        this.zoomLevel = zoomLevel;
-        this.url = url;
-    }
-
 
     @Override
     protected void onPreExecute() {
@@ -73,14 +65,8 @@ public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem
 
     @Override
     protected List<StationOverlayItem> doInBackground(Void... urls) {
-        String queryURL;
-        if (address != null) {
-            String locality = address.getLocality();
-            queryURL = url + locality + "?latitude=" + address.getLatitude() + "&longitude="
-                            + address.getLongitude() + "&distance=" + Preferences.getDistance(stationActivity);
-        } else {
-            queryURL = url + locality;
-        }
+        String queryURL = url + address.getLocality() + "?latitude=" + address.getLatitude() + "&longitude="
+                                    + address.getLongitude() + "&distance=" + Preferences.getDistance(stationActivity);
         return fetchStations(queryURL);
     }
 
@@ -111,13 +97,8 @@ public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem
 
         if (!overlayItems.isEmpty()) {
             GeoPoint geoPointToZoomTo;
-            if (address != null) {
-                geoPointToZoomTo = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
-            } else {
-                StationDTO stationDTO = overlayItems.get(0).getStationDTO();
-                geoPointToZoomTo = new GeoPoint((int) (stationDTO.getLatitude() * 1E6), (int) (stationDTO.getLongitude() * 1E6));
-            }
-            stationActivity.showStations(overlayItems, geoPointToZoomTo, zoomLevel);
+            geoPointToZoomTo = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
+            stationActivity.showStations(overlayItems, geoPointToZoomTo, zoomLevel, address.getLocality());
         } else {
             stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());
         }
