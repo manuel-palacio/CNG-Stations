@@ -24,7 +24,7 @@ pagesToScrape.each {
 
 
 if (!pagesToScrape.empty) {
-    defaultQueue.add url: "/addCountryTask",
+    defaultQueue.add url: "/import/addCountryTask",
                method: 'GET', params: [countryName: params.countryName]
 }
 
