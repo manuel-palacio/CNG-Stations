@@ -2,7 +2,10 @@ def longPeriod = localMode ? 0 : 24.hours
 def shortPeriod = localMode ? 0 : 1.hour
 
 get "/addCountryTask", forward: "/import/addCountryTask.groovy"
+get "/deleteStationsTask", forward: "/import/deleteStationsTask.groovy"
+get "/copyStationsTask", forward: "/import/copyStationsTask.groovy"
 get "/indexLocations", forward: "/import/indexLocations.groovy"
+get "/indexTask", forward: "/import/indexTask.groovy"
 get "/importStations", forward: "/import/importStations.groovy"
 get "/scrapePageTask", forward: "/import/scrapePageTask.groovy"
 get "/exportImport", forward: "/import/exportImport.groovy"

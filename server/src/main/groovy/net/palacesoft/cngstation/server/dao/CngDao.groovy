@@ -42,7 +42,7 @@ class CngDao {
 
         PreparedQuery preparedQuery = dataStore.prepare(query)
 
-        preparedQuery.asIterator(withChunkSize(200).prefetchSize(200))
+        preparedQuery.asIterator(withChunkSize(400).prefetchSize(400))
     }
 
     static def findStationsByCity(String city) {

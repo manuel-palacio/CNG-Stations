@@ -17,6 +17,28 @@
         <timezone>Europe/Stockholm</timezone>
     </cron>
 
+
+    <cron>
+        <url>/importStations?baseUrl=20&#38;countryName=Belgium&#38;countryCode=BE</url>
+        <description>import BE</description>
+        <schedule>14 of month 09:00</schedule>
+        <timezone>Europe/Stockholm</timezone>
+    </cron>
+
+    <cron>
+        <url>/importStations?baseUrl=20&#38;countryName=Finland&#38;countryCode=FI</url>
+        <description>import FI</description>
+        <schedule>14 of month 09:00</schedule>
+        <timezone>Europe/Stockholm</timezone>
+    </cron>
+
+    <cron>
+        <url>/importStations?baseUrl=7&#38;countryName=Netherlands&#38;countryCode=NL</url>
+        <description>import NL</description>
+        <schedule>14 of month 09:00</schedule>
+        <timezone>Europe/Stockholm</timezone>
+    </cron>
+
     <cron>
         <url>/importStations?baseUrl=3&#38;countryName=Austria&#38;countryCode=AT</url>
         <description>import AT</description>
