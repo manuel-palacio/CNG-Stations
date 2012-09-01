@@ -37,7 +37,7 @@ public class Preferences extends PreferenceActivity {
 
     public static int getDistance(Context context) {
 
-        return new Integer(PreferenceManager.getDefaultSharedPreferences(context).getString("distancePref", "20"));
+        return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("distancePref", "20"));
 
     }
 }

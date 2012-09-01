@@ -113,7 +113,7 @@ public class StationActivity extends MapActivity {
                 try {
                     stationOverlay.popupCheapest();
                 } catch (Exception e) {
-                    logError(e, "Problem showing the cheapest station");
+                    logError(e, "Could not show the cheapest station");
                 }
                 break;
 
@@ -121,7 +121,7 @@ public class StationActivity extends MapActivity {
                 try {
                     stationOverlay.popupClosest();
                 } catch (Exception e) {
-                    logError(e, "Problem showing the closest station");
+                    logError(e, "Could not show the closest station");
                 }
                 break;
         }

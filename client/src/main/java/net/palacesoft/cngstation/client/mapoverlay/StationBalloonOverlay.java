@@ -147,8 +147,10 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
     public void popupCheapest() {
         Set<OverlayItem> copy = new TreeSet<OverlayItem>(overlayItems);
-        OverlayItem cheapest = copy.iterator().next();
-        tapOverlay(cheapest);
+        if (!copy.isEmpty()) {
+            OverlayItem cheapest = copy.iterator().next();
+            tapOverlay(cheapest);
+        }
     }
 
     public void popupClosest() {
@@ -161,7 +163,9 @@ public class StationBalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
             distances.put(distance, next);
         }
 
-        tapOverlay(distances.get(distances.keySet().iterator().next()));
+        if (!distances.isEmpty()) {
+            tapOverlay(distances.get(distances.keySet().iterator().next()));
+        }
     }
 
     private void tapOverlay(OverlayItem item) {
