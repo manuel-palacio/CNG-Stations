@@ -28,6 +28,7 @@ import net.palacesoft.cngstation.client.Preferences;
 import net.palacesoft.cngstation.client.StationActivity;
 import net.palacesoft.cngstation.client.StationDTO;
 import net.palacesoft.cngstation.client.mapoverlay.StationOverlayItem;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,6 +43,7 @@ public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem
     private int zoomLevel;
     private RestTemplate restTemplate = new RestTemplate();
     private String url;
+    private String errorMessage;
 
 
     public StationLoader(StationActivity stationActivity, Address address, int zoomLevel, String url) throws AddressEmptyException {
@@ -76,7 +78,9 @@ public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem
         try {
             stations = restTemplate.getForObject(queryURL, StationDTO[].class);
         } catch (RestClientException e) {
-            Log.e(StationActivity.class.getName(), e.getMessage(), e);
+            if(e instanceof HttpServerErrorException){
+                errorMessage = "Service is currently down";
+            }
         }
         for (StationDTO stationDTO : stations) {
             StationOverlayItem overlayItem = createOverlayItem(stationDTO);
@@ -100,7 +104,11 @@ public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem
             geoPointToZoomTo = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
             stationActivity.showStations(overlayItems, geoPointToZoomTo, zoomLevel, address.getLocality());
         } else {
-            stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());
+            if (errorMessage == null) {
+                stationActivity.showInfoMessage("Could not find CNG stations for location: " + address.getLocality());
+            } else {
+                stationActivity.showInfoMessage(errorMessage);
+            }
         }
     }
 }
