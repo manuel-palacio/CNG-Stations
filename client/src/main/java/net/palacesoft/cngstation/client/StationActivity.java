@@ -138,11 +138,6 @@ public class StationActivity extends MapActivity {
         showInfoMessage(text);
     }
 
-    public void clearStationOverlay() {
-        mapView.getOverlays().remove(stationOverlay);
-        mapView.invalidate();
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -203,9 +198,10 @@ public class StationActivity extends MapActivity {
 
             @Override
             public void onClick(View v) {
-                String city = cities.getSelectedItem().toString();
+                Object selection = cities.getSelectedItem();
 
-                if (hasText(city)) {
+                if (selection != null && hasText(selection.toString())) {
+                    String city = selection.toString();
                     try {
                         Address address = lookupAddressFromLocationName(city, countries.getSelectedItem().toString());
                         new StationLoader(StationActivity.this, address, getZoomLevel(), CITY_URL_v2).execute();

@@ -19,7 +19,7 @@
 
 
     <cron>
-        <url>/importStations?baseUrl=20&#38;countryName=Belgium&#38;countryCode=BE</url>
+        <url>/importStations?baseUrl=6&#38;countryName=Belgium&#38;countryCode=BE</url>
         <description>import BE</description>
         <schedule>14 of month 09:00</schedule>
         <timezone>Europe/Stockholm</timezone>

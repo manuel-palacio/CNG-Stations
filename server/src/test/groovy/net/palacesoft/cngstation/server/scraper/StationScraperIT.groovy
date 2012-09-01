@@ -90,4 +90,25 @@ class StationScraperIT {
             assert it.price
         }
     }
+
+    @Test
+    void scrapeBE() {
+        def scraper = ScraperFactory.newInstance(countryCode: "BE", countryName: "Belgium")
+        def stations = []
+        List<String> pages = scraper.getUrlsToScrape("6")
+        pages.each {
+            stations.addAll scraper.scrapePage(it)
+        }
+        print stations.size()
+
+        assert !stations.empty
+
+        stations.each {
+            assert it.city
+            assert it.street
+            assert it.latitude
+            assert it.longitude
+            assert it.price
+        }
+    }
 }
