@@ -57,7 +57,7 @@ public class StationActivity extends MapActivity {
     private Address currentLocationAddress;
 
     private static final String COUNTRIES_URL = "http://fuelstationservice.appspot.com/countries";
-    private static final String CITY_URL_v2 = "http://fuelstationservice.appspot.com/stations2/city/";
+    private static final String STATIONS_URL = "http://fuelstationservice.appspot.com/stations/near/";
     private static final String CITIES_URL = "http://fuelstationservice.appspot.com/cities/country/";
 
     @Override
@@ -83,7 +83,7 @@ public class StationActivity extends MapActivity {
             case R.id.refresh:
                 try {
                     Address locationAddress = lookupAddressFromLocation(currentLocation);
-                    new StationLoader(this, locationAddress, getZoomLevel(), CITY_URL_v2).execute();
+                    new StationLoader(this, locationAddress, getZoomLevel(), STATIONS_URL).execute();
                 } catch (AddressEmptyException e) {
                     showInfoMessage("Could not determine your current location");
                 } catch (IOException e) {
@@ -204,7 +204,7 @@ public class StationActivity extends MapActivity {
                     String city = selection.toString();
                     try {
                         Address address = lookupAddressFromLocationName(city, countries.getSelectedItem().toString());
-                        new StationLoader(StationActivity.this, address, getZoomLevel(), CITY_URL_v2).execute();
+                        new StationLoader(StationActivity.this, address, getZoomLevel(), STATIONS_URL).execute();
                     } catch (Exception e) {
                         showInfoMessage("Problem finding CNG stations for chosen location");
                     }
@@ -296,7 +296,7 @@ public class StationActivity extends MapActivity {
 
                             try {
                                 currentLocationAddress = lookupAddressFromLocation(currentLocation);
-                                new StationLoader(StationActivity.this, currentLocationAddress, zoomLevel, CITY_URL_v2).execute();
+                                new StationLoader(StationActivity.this, currentLocationAddress, zoomLevel, STATIONS_URL).execute();
                             } catch (AddressEmptyException e) {
                                 BugSenseHandler.log("Could not determine the user's location ", e);
                                 showInfoMessage("Could not determine your location. Refresh option might help");

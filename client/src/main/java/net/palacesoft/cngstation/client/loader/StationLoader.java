@@ -79,7 +79,7 @@ public class StationLoader extends AsyncTask<Void, Void, List<StationOverlayItem
             stations = restTemplate.getForObject(queryURL, StationDTO[].class);
         } catch (RestClientException e) {
             if(e instanceof HttpServerErrorException){
-                errorMessage = "Service is currently down";
+                errorMessage = "Unfortunately the CNG Service is down";
             }
         }
         for (StationDTO stationDTO : stations) {
