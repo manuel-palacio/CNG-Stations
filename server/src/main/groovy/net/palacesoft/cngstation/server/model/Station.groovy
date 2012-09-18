@@ -38,7 +38,7 @@ class Station implements Serializable {
     String phoneNo
     String web
     String email
-    String type = StationType.CNG.name()
+    String type
     @Indexed Date dateUpdated = new Date()
 
 
@@ -48,12 +48,13 @@ class Station implements Serializable {
 
         private Station station = new Station()
 
-        Builder(String latitude, String longitude, String city, Country country) {
+        Builder(String latitude, String longitude, String city, Country country, StationType type) {
             station.latitude = latitude
             station.longitude = longitude
             station.city = city
             station.countryName = country.name()
             station.countryCode = country.countryCode
+            station.type = type.name()
             station.id = longitude + latitude
         }
 
@@ -110,18 +111,23 @@ class Station implements Serializable {
         Station station = (Station) o
 
         if (id != station.id) return false
+        if (type != station.type) return false
 
         return true
     }
 
     int hashCode() {
-        return (id != null ? id.hashCode() : 0)
+        int result
+        result = (id != null ? id.hashCode() : 0)
+        result = 31 * result + (type != null ? type.hashCode() : 0)
+        return result
     }
 
     @Override
     public String toString() {
         return "Station{" +
                 "countryCode='" + countryCode + '\'' +
+                ", type='" + type + '\'' +
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +
                 ", operatedBy='" + operatedBy + '\'' +

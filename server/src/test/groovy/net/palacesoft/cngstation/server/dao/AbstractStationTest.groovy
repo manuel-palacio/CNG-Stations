@@ -27,6 +27,7 @@ import com.google.appengine.api.datastore.Entity
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig
 import org.junit.After
+import net.palacesoft.cngstation.server.model.StationType
 
 abstract class AbstractStationTest {
 
@@ -44,7 +45,7 @@ abstract class AbstractStationTest {
         DatastoreService ds = DatastoreServiceFactory.datastoreService
 
 
-        def station = new Station.Builder("lat", "long", "Stockholm", Country.Sweden).
+        def station = new Station.Builder("lat", "long", "Stockholm", Country.Sweden, StationType.CNG).
                 withPhoneNo("phone").withStreet("street").withPrice("price").build()
 
         def entity = new Entity(CngDao.READABLE_STATION)

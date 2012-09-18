@@ -1,4 +1,3 @@
-import com.google.appengine.api.taskqueue.RetryOptions
 import groovyx.gaelyk.logging.GroovyLogger
 import net.palacesoft.cngstation.server.scraper.ScraperFactory
 
@@ -18,7 +17,7 @@ try {
 }
 
 pagesToScrape.each {
-    queues['optimized-queue'].add url: "/scrapePageTask",
+    queues['optimized-queue'].add url: "/import/scrapePageTask",
             method: 'GET', params: [pageUrl: it, countryCode: params.countryCode, countryName: params.countryName]
 }
 

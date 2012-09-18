@@ -4,7 +4,6 @@ import org.junit.Test
 
 class FindCitiesTest extends AbstractStationTest {
 
-
     @Test
     void findCities() {
 
@@ -13,8 +12,5 @@ class FindCitiesTest extends AbstractStationTest {
         cities.each {
             assert it == "Stockholm"
         }
-
     }
-
-
 }

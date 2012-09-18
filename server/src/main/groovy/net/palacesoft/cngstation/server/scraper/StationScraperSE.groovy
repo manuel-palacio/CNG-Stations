@@ -24,6 +24,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable
 
 import net.palacesoft.cngstation.server.model.Country
 import net.palacesoft.cngstation.server.model.Station
+import net.palacesoft.cngstation.server.model.StationType
 
 class StationScraperSE implements Scraper {
 
@@ -81,7 +82,7 @@ class StationScraperSE implements Scraper {
                 if (latitude && longitude) {
 
                     Country country = Country.values().find {it.countryCode == countryCode}
-                    Station station = new Station.Builder(latitude, longitude, city, country).withPrice(price).
+                    Station station = new Station.Builder(latitude, longitude, city, country, StationType.CNG).withPrice(price).
                             withPhoneNo(phones.join(",")).withStreet(street).withOperatedBy(operatedBy).
                             withOpeningHours(openingHours).withPayment(payment).build()
 

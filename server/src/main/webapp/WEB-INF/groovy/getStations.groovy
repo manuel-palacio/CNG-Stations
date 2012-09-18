@@ -100,7 +100,7 @@ def asJson(def stations) {
 
 def filterPrice(String price) {
     price = price?.replace(",", ".")
-    def regExp = price =~ /(\d+.\d+)(\W*kg)/
+    def regExp = price =~ /(\d+.\d+)(.*kg)/
     if (regExp.size() == 0) return price
     regExp[0][1]
 }

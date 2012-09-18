@@ -13,14 +13,6 @@
         <version>1.0.0</version>
     </parent>
 
-    <repositories>
-        <repository>
-            <id>spock</id>
-            <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
-
-
     <dependencies>
 
         <dependency>
