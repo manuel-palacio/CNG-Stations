@@ -1,11 +1,12 @@
 import com.google.appengine.api.datastore.Entity
-import com.google.appengine.api.search.Consistency
+import com.google.appengine.api.search.Index
+import com.google.appengine.api.search.IndexSpec
 import com.google.appengine.api.search.Results
 import com.google.appengine.api.search.ScoredDocument
+import com.google.appengine.api.search.SearchServiceFactory
 import net.palacesoft.cngstation.server.dao.CngDao
 import net.sf.json.JSONArray
 
-import javax.servlet.http.HttpServletResponse
 
 if ('stations_' + params.city + "_distance_" + params.distance in memcache) {
     String json = memcache['stations_' + params.city + "_distance_" + params.distance]
@@ -18,9 +19,13 @@ if ('stations_' + params.city + "_distance_" + params.distance in memcache) {
     if (stations.hasNext()) {
         outputData(cache(asJson(stations)))
     } else {
-        response.status = HttpServletResponse.SC_NOT_FOUND
+        forward '/getStations.groovy'
     }
+}
 
+def Index getIndex() {
+    IndexSpec indexSpec = IndexSpec.newBuilder().setName("cngindex").build();
+    return SearchServiceFactory.getSearchService().getIndex(indexSpec);
 }
 
 private def getNearbyStations() {
@@ -31,17 +36,21 @@ private def getNearbyStations() {
     if (latitude && longitude) {
         latitude = convertToDegrees(latitude)
         longitude = convertToDegrees(longitude)
-        def index = search.index("myindex", Consistency.PER_DOCUMENT)
+
 
         String distance = "30"
         if(params.distance){
            distance = params.distance
         }
 
-        String queryStr = "distance(location, geopoint(${latitude}, ${longitude})) < ${distance}000"
-
-        Results<ScoredDocument> results = index.search(queryStr)
-        results.each {
+        String queryStr = "distance(geopoint(${latitude}, ${longitude}),location) < ${distance}000"
+        Results<ScoredDocument> results = null
+        try {
+            results = getIndex().search(queryStr)
+        } catch (Exception e) {
+            //probable quota exceeded
+        }
+        results?.each {
             Entity station = CngDao.findStationById(it.id)
             if (station) {
                 stations << station

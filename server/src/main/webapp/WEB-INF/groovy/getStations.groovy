@@ -1,7 +1,9 @@
 import com.google.appengine.api.datastore.Entity
-import com.google.appengine.api.search.Consistency
+import com.google.appengine.api.search.Index
+import com.google.appengine.api.search.IndexSpec
 import com.google.appengine.api.search.Results
 import com.google.appengine.api.search.ScoredDocument
+import com.google.appengine.api.search.SearchServiceFactory
 import net.palacesoft.cngstation.server.dao.CngDao
 import net.sf.json.JSONArray
 
@@ -41,6 +43,11 @@ if (params.countryName && 'stations_' + params.countryName in memcache) {
 
 }
 
+def Index getIndex() {
+    IndexSpec indexSpec = IndexSpec.newBuilder().setName("myindex").build();
+    return SearchServiceFactory.getSearchService().getIndex(indexSpec);
+}
+
 private def getNearbyStations() {
     def stations = []
     String latitude = params.latitude
@@ -49,7 +56,7 @@ private def getNearbyStations() {
     if (latitude && longitude) {
         latitude = convertToDegrees(latitude)
         longitude = convertToDegrees(longitude)
-        def index = search.index("myindex", Consistency.PER_DOCUMENT)
+        def index = getIndex()
 
         String queryStr = "distance(location, geopoint(${latitude}, ${longitude})) < 30000"
 

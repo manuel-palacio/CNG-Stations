@@ -19,10 +19,17 @@
         <module>server</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>gaelyk</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+
     <properties>
         <gmavenVersion>1.4</gmavenVersion>
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
-        <groovyVersion>2.0.1</groovyVersion>
+        <groovyVersion>2.1.3</groovyVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
