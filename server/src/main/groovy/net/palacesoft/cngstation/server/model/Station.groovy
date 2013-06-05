@@ -42,7 +42,7 @@ class Station implements Serializable {
     @Indexed Date dateUpdated = new Date()
 
 
-    private Station() {}
+    Station() {}
 
     static class Builder {
 
